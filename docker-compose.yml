@@ -1,5 +1,12 @@
 version: '3.8'
 
+networks:
+  red:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1
+
 services:
   php:
     build:
@@ -9,6 +16,10 @@ services:
       - "8000:80"
     volumes:
       - ./:/var/www/html
+    networks:
+      red:
+        ipv4_address: 172.20.0.22
+
   db:  
     container_name: pg_container  
     image: postgres  
@@ -18,7 +29,11 @@ services:
       POSTGRES_PASSWORD: root  
       POSTGRES_DB: magiccinema
     ports:  
-      - "5432:5432"  
+      - "5432:5432"
+    networks:
+      red:
+        ipv4_address: 172.20.0.23
+
   pgadmin:  
     container_name: pgadmin4_container  
     image: dpage/pgadmin4  
@@ -28,3 +43,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root  
     ports:  
       - "5050:80"
+    networks:
+      red:
+        ipv4_address: 172.20.0.24

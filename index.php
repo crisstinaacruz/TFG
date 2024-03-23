@@ -1,39 +1,54 @@
+<?php
+// Inicia la sesión
+session_start();
+
+include_once "includes/Navbar.php";
+
+// Verifica si el usuario está autenticado
+if (isset($_SESSION["email"])) {
+	Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+} else {
+	Navbar::renderUnauthenticatedNavbar();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<!-- Font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap-reboot.min.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-grid.min.css">
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="assets/css/jquery.mCustomScrollbar.min.css">
-    <link rel="stylesheet" href="assets/css/nouislider.min.css">
-    <link rel="stylesheet" href="assets/css/ionicons.min.css">
-    <link rel="stylesheet" href="assets/css/plyr.css">
-    <link rel="stylesheet" href="assets/css/photoswipe.css">
-    <link rel="stylesheet" href="assets/css/default-skin.css">
-    <link rel="stylesheet" href="assets/css/main.css">
+	<!-- CSS -->
+	<link rel="stylesheet" href="assets/css/bootstrap-reboot.min.css">
+	<link rel="stylesheet" href="assets/css/bootstrap-grid.min.css">
+	<link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="assets/css/jquery.mCustomScrollbar.min.css">
+	<link rel="stylesheet" href="assets/css/nouislider.min.css">
+	<link rel="stylesheet" href="assets/css/ionicons.min.css">
+	<link rel="stylesheet" href="assets/css/plyr.css">
+	<link rel="stylesheet" href="assets/css/photoswipe.css">
+	<link rel="stylesheet" href="assets/css/default-skin.css">
+	<link rel="stylesheet" href="assets/css/main.css">
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="assets/icon/icono.png" sizes="32x32">
+	<!-- Favicons -->
+	<link rel="icon" type="image/png" href="assets/icon/icono.png" sizes="32x32">
 
 
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <title>Magic Cinema</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<title>Magic Cinema</title>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
+
 <body class="body">
 
 
-	
+
 
 	<!-- content -->
 	<section class="content">

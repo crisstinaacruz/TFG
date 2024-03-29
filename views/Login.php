@@ -1,5 +1,10 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php';
+
 // Primero, verifica si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// Realiza la conexión a la base de datos y realiza la consulta
@@ -22,19 +27,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$usuario = $statement->fetch(PDO::FETCH_ASSOC);
 
 			if (password_verify($password, $usuario["password"])) {
-                // Genera un código alfanumérico
-                $verificationCode = substr(md5(uniqid(mt_rand(), true)), 0, 6);
+				// Genera un código alfanumérico
+				$verificationCode = substr(md5(uniqid(mt_rand(), true)), 0, 6);
 
-                // Define la marca de tiempo de expiración (1 minuto desde ahora)
-                $expirationTime = time() + 60;
+				// Define la marca de tiempo de expiración (1 minuto desde ahora)
+				$expirationTime = time() + 60;
 
-                // Inserta el código en la tabla check_codes
-                $insertSql = "INSERT INTO check_codes (email, codigo, expira_en) VALUES (:email, :codigo, :expiration)";
-                $insertStatement = $conexion->prepare($insertSql);
-                $insertStatement->bindValue(":email", $email, PDO::PARAM_STR);
-                $insertStatement->bindValue(":codigo", $verificationCode, PDO::PARAM_STR);
-                $insertStatement->bindValue(":expiration", date('Y-m-d H:i:s', $expirationTime), PDO::PARAM_STR);
-                $insertStatement->execute();
+				// Inserta el código en la tabla check_codes
+				$insertSql = "INSERT INTO check_codes (email, codigo, expira_en) VALUES (:email, :codigo, :expiration)";
+				$insertStatement = $conexion->prepare($insertSql);
+				$insertStatement->bindValue(":email", $email, PDO::PARAM_STR);
+				$insertStatement->bindValue(":codigo", $verificationCode, PDO::PARAM_STR);
+				$insertStatement->bindValue(":expiration", date('Y-m-d H:i:s', $expirationTime), PDO::PARAM_STR);
+				$insertStatement->execute();
+
+				// Envía el correo de confirmación
+				enviarCorreoConfirmacion($email, $verificationCode);
 
 				header("Location: authentication.php?email=" . $email);
 				exit;
@@ -54,6 +62,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		echo "<script>alert('Error al conectar a la base de datos.');</script>";
 	}
 }
+
+function enviarCorreoConfirmacion($email, $verificationCode)
+{
+	// Configuración de PHPMailer
+	$mail = new PHPMailer(true);
+	try {
+		$mail->isSMTP();
+		$mail->Host = 'smtp.hostinger.com';
+		$mail->SMTPAuth = true;
+		$mail->Username = 'no-reply@magiccinema.es';
+		$mail->Password = 'MagicCinema2023*';
+		$mail->SMTPSecure = 'ssl';
+		$mail->Port = 465;
+
+		$mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
+		$mail->addAddress($email);
+
+		$mail->isHTML(true);
+		$mail->CharSet = 'UTF-8';
+		$mail->Subject = 'Codigo de verificación';
+		$mail->Body = 'Tu código de verificación es: ' . $verificationCode;
+
+		$mail->send();
+	} catch (Exception $e) {
+		echo "<script>alert('Error al enviar el correo de verificación: {$mail->ErrorInfo}');</script>";
+	}
+}
+
 ?>
 
 

@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Procesar la imagen si se ha subido correctamente
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../../../uploads/peliculas'; // Directorio donde se guardarán las imágenes
+        $uploadDir = '../../../uploads/peliculas/'; // Directorio donde se guardarán las imágenes
         $uploadFile = $uploadDir . basename($_FILES['imagen']['name']);
         
         // Mueve el archivo al directorio de destino

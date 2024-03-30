@@ -9,6 +9,7 @@ class PromoInsert {
     public function __construct() {
         $this->pdo = ConnectDatabase::conectar();
     }
+    
 
     public function insertarPromo($titulo, $descripcion, $fecha, $imagen) {
         

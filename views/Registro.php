@@ -1,41 +1,78 @@
 <?php
 include_once "../includes/config.php";
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 $conexion = ConnectDatabase::conectar();
 
+require '../vendor/autoload.php';
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	try {
-		// Verificar si el usuario ya existe
-		$sql_verificar = "SELECT * FROM usuarios WHERE email = :email";
-		$resultado_verificar = $conexion->prepare($sql_verificar);
-		$resultado_verificar->bindValue(":email", $_POST["email"], PDO::PARAM_STR);
-		$resultado_verificar->execute();
+    try {
+        // Verificar si el usuario ya existe
+        $sql_verificar = "SELECT * FROM usuarios WHERE email = :email";
+        $resultado_verificar = $conexion->prepare($sql_verificar);
+        $resultado_verificar->bindValue(":email", $_POST["email"], PDO::PARAM_STR);
+        $resultado_verificar->execute();
 
-		if ($resultado_verificar->rowCount() > 0) {
-			echo "<script>alert('El usuario ya existe.');</script>";
-		}
+        if ($resultado_verificar->rowCount() > 0) {
+            echo "<script>alert('El usuario ya existe.');</script>";
+        }
 
-		// Si el usuario no existe, insertarlo en la base de datos
-		$sql_insertar = "INSERT INTO usuarios (nombre, apellidos, password, email) VALUES (:nombre, :lastname, :password, :email)";
-		$resultado_insertar = $conexion->prepare($sql_insertar);
+        // Si el usuario no existe, insertarlo en la base de datos
+        $sql_insertar = "INSERT INTO usuarios (nombre, apellidos, password, email) VALUES (:nombre, :lastname, :password, :email)";
+        $resultado_insertar = $conexion->prepare($sql_insertar);
 
-		$pass_cifrado = password_hash($_POST["password"], PASSWORD_DEFAULT);
+        $pass_cifrado = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-		$resultado_insertar->execute(array(":nombre" => $_POST["name"], ":lastname" => $_POST["lastname"], ":password" => $pass_cifrado, ":email" => $_POST["email"]));
+        $resultado_insertar->execute(array(":nombre" => $_POST["name"], ":lastname" => $_POST["lastname"], ":password" => $pass_cifrado, ":email" => $_POST["email"]));
 
-		// Redirigir al usuario a la página de inicio de sesión después del registro
-		header("Location: Login.php");
-		exit;
-	} catch (Exception $e) {
-		echo "Línea del error: " . $e->getLine();
-		echo  "<p>" . $e->getMessage() . "</p>";
-	}
+        // Llamar a la función enviarCorreoConfirmacion después de que el usuario se haya registrado exitosamente
+        $registro_exitoso = $resultado_insertar->rowCount() > 0;
+        if ($registro_exitoso) {
+            // Llamar a la función enviarCorreoConfirmacion para enviar el correo de confirmación
+            enviarCorreoConfirmacion($_POST["email"]);
+        }
+
+        // Redirigir al usuario a la página de inicio de sesión después del registro
+        header("Location: Login.php");
+        exit;
+    } catch (Exception $e) {
+        // Mostrar error en un alert
+        echo "<script>alert('Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.');</script>";
+    }
 }
 
-// Cerrar la conexión si aún está abierta
-if ($conexion) {
-	$conexion = null;
+// Función para enviar el correo de confirmación
+function enviarCorreoConfirmacion($email)
+{
+    // Configuración de PHPMailer
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.hostinger.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'no-reply@magiccinema.es';
+        $mail->Password = 'MagicCinema2023*';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
+
+        $mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
+        $mail->addAddress($email);
+
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = 'Confirmación de Registro';
+        $mail->Body = 'Gracias por registrarte en nuestro sitio. Tu cuenta ha sido creada con éxito.';
+
+        $mail->send();
+    } catch (Exception $e) {
+        // Mostrar error en un alert
+        echo "<script>alert('Error al enviar el correo de confirmación. Por favor, inténtalo de nuevo más tarde.');</script>";
+    }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -156,4 +193,7 @@ if ($conexion) {
 	<script src="../../assets/js/jquery.mCustomScrollbar.min.js"></script>
 	<script src="../../assets/js/wNumb.js"></script>
 	<script src="../../assets/js/nouislider.min.js"></script>
-	<script src="../../assets/js/plyr.min
+	<script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

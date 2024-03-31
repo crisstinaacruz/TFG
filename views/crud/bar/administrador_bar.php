@@ -29,12 +29,10 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
 
-<!-- Favicons -->
-<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="../icon/favicon-32x32.png">
-<link rel="apple-touch-icon" sizes="72x72" href="../icon/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114" href="../icon/apple-touch-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="144x144" href="../icon/apple-touch-icon-144x144.png">
+
+
+<link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
+
 
 <meta name="description" content="">
 <meta name="keywords" content="">
@@ -99,7 +97,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 		</section>
 
     <div class="contain mt-5 mx-5">
-    <a href="form_añadir_bar.php?id=' . $bar['bar_id'] . '" class="btn btn-primary btn-sm mt-3">Añadir nuevo producto al bar</a>
+    <a href="form_añadir_bar.php" class="btn btn-primary btn-sm mt-3">Añadir nuevo producto al bar</a>
     <table class="table table-striped table-bordered mt-4 w-100">
         <thead class="thead-dark">
             <tr>
@@ -115,7 +113,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                     echo '<tr>';
                     echo '<td>' . $bar['titulo'] . '</td>';
                     echo '<td>' . $bar['precio'] . '</td>';
-                    echo '<td><img src="data:image/jpeg;base64,' . base64_encode($bar['imagen']) . '" class="img-thumbnail" style="max-width: 100px;" alt="Película"></td>';
+                    echo '<td><img src="'. $bar['imagen'] . '" class="img-thumbnail" style="max-width: 100px;" alt="Película"></td>';
                     echo '<td>
                             <a href="editar_bar.php?id=' . $bar['bar_id'] . '" class="btn btn-warning btn-sm mt-3">Editar</a>
                             <a href="delete_bar.php?id=' . $bar['bar_id'] . '" class="btn btn-danger btn-sm mt-3">Eliminar</a>

@@ -1,3 +1,72 @@
+<?php
+
+include_once '../../../includes/config.php';
+
+class PromoInsert {
+
+    private $pdo;
+
+    public function __construct() {
+        $this->pdo = ConnectDatabase::conectar();
+    }
+    
+
+    public function insertarPromo($titulo, $descripcion, $fecha, $imagen) {
+        
+        if ($this->validarDatos($titulo, $descripcion, $fecha, $imagen)) {
+            $imagen = $this->procesarImagen($imagen);
+            
+            $statement = $this->pdo->prepare("INSERT INTO promociones (titulo, descripcion, fecha, imagen) VALUES (?, ?, ?, ?)");
+
+            $statement->execute([$titulo, $descripcion, $fecha, $imagen]);
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    private function validarDatos($titulo, $descripcion, $fecha, $imagen) {
+        return !empty($titulo) && !empty($descripcion) && !empty($fecha) && !empty($imagen);
+    }
+
+    private function procesarImagen($imagen) {
+        $directorioDestino = "../../../uploads/promociones/";
+        $archivoDestino = $directorioDestino . basename($_FILES['imagen']['name']);
+        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $archivoDestino)) {
+            // Retorna la ruta del archivo si se sube exitosamente
+            return $archivoDestino;
+        } else {
+            // Retorna null si falla la subida
+            return null;
+        }
+    }
+    
+}
+
+$PromoInsert = new PromoInsert();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $titulo = $_POST['titulo'];
+    $descripcion = $_POST['descripcion'];
+    $fecha = $_POST['fecha'];
+
+    if ($PromoInsert->insertarPromo($titulo, $descripcion, $fecha, $_FILES['imagen'])) {
+        header('Location: administrador_promo.php');
+        exit();
+
+    } else {
+        echo "Error en la validación de datos.";
+    }
+
+} else {
+    
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,12 +89,8 @@
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
 
-<!-- Favicons -->
-<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="../icon/favicon-32x32.png">
-<link rel="apple-touch-icon" sizes="72x72" href="../icon/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114" href="../icon/apple-touch-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="144x144" href="../icon/apple-touch-icon-144x144.png">
+<link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
+
 
 <meta name="description" content="">
 <meta name="keywords" content="">
@@ -82,7 +147,7 @@
     <div class="container mt-5 text-white">
         <h2 class="mb-3 text-black">-</h2>
         <h2 class="mb-4">Nueva promoción</h2>
-        <form action="insert_promo.php" method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="titulo" class="form-label">Título:</label>
                 <input type="text" class="form-control" name="titulo" required>

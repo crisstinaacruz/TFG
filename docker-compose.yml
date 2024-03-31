@@ -27,7 +27,7 @@ services:
     environment:  
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: cruzflixDB
+      POSTGRES_DB: magiccinema
     ports:  
       - "5432:5432"
     networks:

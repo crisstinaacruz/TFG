@@ -1,25 +1,65 @@
 <?php
+
 include_once '../../../includes/config.php';
-$pdo = ConnectDatabase::conectar();
 
-$id = $titulo = $descripcion = $fecha = $imagen = '';
+class BarInsert {
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+    private $pdo;
 
-    $id = $_GET['id'];
+    public function __construct() {
+        $this->pdo = ConnectDatabase::conectar();
+    }
 
-    $statement = $pdo->prepare("SELECT * FROM promociones WHERE promocion_id = ?");
-    $statement->execute([$id]);
-    $promociones = $statement->fetch(PDO::FETCH_ASSOC);
+    public function insertarBar($titulo, $precio, $imagen) {
+        
+        if ($this->validarDatos($titulo, $precio, $imagen)) {
+            $imagen = $this->procesarImagen($imagen);
+            
+            $statement = $this->pdo->prepare("INSERT INTO bar (titulo, precio, imagen) VALUES (?, ?, ?)");
 
-    $titulo = $promociones['titulo'];
-    $descripcion = $promociones['descripcion'];
-    $clasificacion = $promociones['clasificacion'];
-    $fecha = $promociones['fecha'];
-    $imagen = base64_encode($promociones['imagen']);
+            $statement->execute([$titulo, $precio, $imagen]);
 
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    private function validarDatos($titulo, $precio, $imagen) {
+        return !empty($titulo) && !empty($precio) && !empty($imagen);
+    }
+
+    private function procesarImagen($imagen) {
+        $directorioDestino = "../../../uploads/bar/";
+        $archivoDestino = $directorioDestino . basename($_FILES['imagen']['name']);
+        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $archivoDestino)) {
+            // Retorna la ruta del archivo si se sube exitosamente
+            return $archivoDestino;
+        } else {
+            // Retorna null si falla la subida
+            return null;
+        }
+    }
+}
+
+$BarInsert = new BarInsert();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $titulo = $_POST['titulo'];
+    $precio = $_POST['precio'];
+
+    if ($BarInsert->insertarBar($titulo, $precio, $_FILES['imagen'])) {
+        header('Location: administrador_bar.php');
+        exit();
+
+    } else {
+        echo "Error en la validación de datos.";
+    }
+
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
 <meta name="description" content="">
 <meta name="keywords" content="">
-<title>Magic Cinema - Editar promociones</title>
+<title>Magic Cinema - Nuevo bar</title>
 
 </head>
     <body>
@@ -67,18 +107,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                                 </li>
 
                                 <li class="header__nav-item">
-                                    <a href="administrador_promo.php" class="header__nav-link">Promociones</a>
+                                    <a href="../promociones/administrador_promo.php" class="header__nav-link">Promociones</a>
                                 </li>
 
                                 <li class="header__nav-item">
-                                    <a href="" class="header__nav-link">Horarios</a>
+                                    <a href="../horarios/administrador_horario.php" class="header__nav-link">Horarios</a>
                                 </li>
 
                                 <li class="header__nav-item">
-                                    <a href="../bar/administrador_bar.php" class="header__nav-link">Bar</a>
+                                    <a href="administrador_bar.php" class="header__nav-link">Bar</a>
                                 </li>
 
-                                <a href="administrador_promo.php" class="header__sign-in">
+                                <a href="administrador_pelicula.php" class="header__sign-in">
                                     <i class="icon ion-ios-log-in"></i>
                                     <span>Volver</span>
                                 </a>
@@ -98,33 +138,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     </header>
     
     <div class="container mt-5 text-white">
-        <h2 class="mt-5">Editar Promociones</h2>
-        <form action="update_promo.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="<?php echo $id; ?>">
-
-            <div class="form-row">
-                <div class="form-group mb-3 mt-5">
-                    <label for="titulo">Título:</label>
-                    <input type="text" class="form-control" name="titulo" value="<?php echo $titulo; ?>" required>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="descripcion">Descripción:</label>
-                    <textarea class="form-control" name="descripcion" required rows="5"><?php echo $descripcion; ?></textarea>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="fecha">Fecha:</label>
-                    <input type="date" class="form-control" name="fecha" value="<?php echo $fecha; ?>">
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="imagen">Imagen:</label>
-                    <input type="file" class="form-control" name="imagen" accept="image/*">
-                </div>
+        <h2 class="mb-3 text-black">-</h2>
+        <h2 class="mb-4">Nuevo Bar</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título:</label>
+                <input type="text" class="form-control" name="titulo" required>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-3 mb-3">Guardar Cambios</button>
+            <div class="mb-3">
+                <label for="precio" class="form-label">Precio:</label>
+                <input type="text" class="form-control" name="precio" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="imagen" class="form-label">Imagen:</label>
+                <input type="file" class="form-control" name="imagen" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
     </div>
 
@@ -144,11 +176,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
 </body>
 </html>
-
-<?php
-} else {
-
-    header('Location: administrador_promo.php');
-    exit();
-}
-?>

@@ -7,7 +7,7 @@ function getFooterHTML() {
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Sobre nosotros</h6>
                     <ul class="footer__list">
-                        <li><a href="../../html/QuienesSomos.html">Quienés somos</a></li>
+                        <li><a href="../views/html/QuienesSomos.html">Quienés somos</a></li>
                         <li><a href="#">Trabaja con nosotros</a></li>
                     </ul>
                 </div>
@@ -15,9 +15,9 @@ function getFooterHTML() {
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Legal</h6>
                     <ul class="footer__list">
-                        <li><a href="../../html/AvisLegal.html">Aviso Legal</a></li>
-                        <li><a href="../../html/CondicionesCompra.html">Condiciones de compra</a></li>
-                        <li><a href="../../html/politicas.html">Políticas de privacidad</a></li>
+                        <li><a href="../views/html/AvisLegal.html">Aviso Legal</a></li>
+                        <li><a href="../views/html/CondicionesCompra.html">Condiciones de compra</a></li>
+                        <li><a href="../views/html/politicas.html">Políticas de privacidad</a></li>
                     </ul>
                 </div>
 

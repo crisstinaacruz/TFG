@@ -14,6 +14,7 @@ if (isset($_SESSION["email"])) {
 }
 
 
+
 $mensajeEnviado = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -93,6 +94,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body class="body">
+<?php 
+    include_once "../includes/Navbar.php";
+
+    if (isset($_SESSION["email"])) {
+		Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+	} else {
+		Navbar::renderUnauthenticatedNavbar();
+	}
+
+    ?>
 
  <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
         <!-- home -->
@@ -173,6 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once "../includes/footer.php";
     echo getFooterHTML();
     ?> <!-- end footer -->
+
 
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

@@ -102,7 +102,6 @@ session_start();
     include_once "../includes/footer.php";
     echo getFooterHTML();
     ?> <!-- end footer -->
-
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>

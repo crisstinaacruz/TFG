@@ -50,7 +50,6 @@ session_start();
 
     ?>
 
-
     <!-- end home -->
 
     <!-- content -->
@@ -71,6 +70,7 @@ session_start();
         BillboardHandler::mostrarCartelera();
         ?>
 
+
         <!-- end content tabs -->
         </div>
     </section>
@@ -81,6 +81,7 @@ session_start();
     include_once "../includes/footer.php";
     echo getFooterHTML();
     ?> <!-- end footer -->
+
 
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

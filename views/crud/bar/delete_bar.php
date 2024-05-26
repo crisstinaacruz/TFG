@@ -2,7 +2,7 @@
 
 include_once '../../../includes/config.php';
 
-class PromoDelete {
+class BarDelete {
 
     private $pdo;
 
@@ -10,10 +10,10 @@ class PromoDelete {
         $this->pdo = ConnectDatabase::conectar();
     }
 
-    public function eliminarPromo($id) {
+    public function eliminarBar($id) {
         
         if ($this->validarId($id)) {
-            $statement = $this->pdo->prepare("DELETE FROM promociones WHERE promocion_id = ?");
+            $statement = $this->pdo->prepare("DELETE FROM bar WHERE bar_id = ?");
             $statement->execute([$id]);
             return true;
 
@@ -28,14 +28,14 @@ class PromoDelete {
     }
 }
 
-$PromoDelete = new PromoDelete();
+$BarDelete = new BarDelete();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
    
     $id = $_GET['id'];
 
-    if ($PromoDelete->eliminarPromo($id)) {
-        header('Location: administrador_promo.php');
+    if ($BarDelete->eliminarBar($id)) {
+        header('Location: administrador_bar.php');
         exit();
 
     } else {
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     }
 
 } else {
-    header('Location: administrador_promo.php');
+    header('Location: administrador_bar.php');
     exit();
 }
 ?>

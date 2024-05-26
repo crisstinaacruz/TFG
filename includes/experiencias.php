@@ -1,5 +1,6 @@
 <?php
 
+
 class ExperienciasHandler
 {
     public static function obtenerExperienciasLimitadas($pdo, $limite)

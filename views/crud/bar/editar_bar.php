@@ -2,21 +2,19 @@
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$id = $titulo = $descripcion = $fecha = $imagen = '';
+$id = $titulo = $precio = $imagen = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
     $id = $_GET['id'];
 
-    $statement = $pdo->prepare("SELECT * FROM promociones WHERE promocion_id = ?");
+    $statement = $pdo->prepare("SELECT * FROM bar WHERE bar_id = ?");
     $statement->execute([$id]);
-    $promociones = $statement->fetch(PDO::FETCH_ASSOC);
+    $bar = $statement->fetch(PDO::FETCH_ASSOC);
 
-    $titulo = $promociones['titulo'];
-    $descripcion = $promociones['descripcion'];
-    $clasificacion = $promociones['clasificacion'];
-    $fecha = $promociones['fecha'];
-    $imagen = base64_encode($promociones['imagen']);
+    $titulo = $bar['titulo'];
+    $precio = $bar['precio'];
+    $imagen = base64_encode($bar['imagen']);
 
 ?>
 
@@ -42,12 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
 
+
 <link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
 
 
 <meta name="description" content="">
 <meta name="keywords" content="">
-<title>Magic Cinema - Editar promociones</title>
+<title>Magic Cinema - Editar bar</title>
 
 </head>
     <body>
@@ -67,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                                 </li>
 
                                 <li class="header__nav-item">
-                                    <a href="administrador_promo.php" class="header__nav-link">Promociones</a>
+                                    <a href="../promociones/administrador_promo.php" class="header__nav-link">Promociones</a>
                                 </li>
 
                                 <li class="header__nav-item">
@@ -75,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                                 </li>
 
                                 <li class="header__nav-item">
-                                    <a href="../bar/administrador_bar.php" class="header__nav-link">Bar</a>
+                                    <a href="administrador_bar.php" class="header__nav-link">Bar</a>
                                 </li>
 
-                                <a href="administrador_promo.php" class="header__sign-in">
+                                <a href="administrador_pelicula.php" class="header__sign-in">
                                     <i class="icon ion-ios-log-in"></i>
                                     <span>Volver</span>
                                 </a>
@@ -97,36 +96,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         </div>
     </header>
     
-    <div class="container mt-5 text-white">
-        <h2 class="mt-5">Editar Promociones</h2>
-        <form action="update_promo.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="<?php echo $id; ?>">
+        <div class="container mt-5 text-white">
+            <h2 class="mb-3 text-black">-</h2>
+            <h2 class="mb-4">Editar Bar</h2>
+            <form action="update_bar.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<?php echo $id; ?>">
 
-            <div class="form-row">
-                <div class="form-group mb-3 mt-5">
-                    <label for="titulo">Título:</label>
-                    <input type="text" class="form-control" name="titulo" value="<?php echo $titulo; ?>" required>
-                </div>
+                <div class="form-row">
+                    <div class="form-group mb-3">
+                        <label for="titulo">Título:</label>
+                        <input type="text" class="form-control" name="titulo" value="<?php echo $titulo; ?>" required>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label for="descripcion">Descripción:</label>
-                    <textarea class="form-control" name="descripcion" required rows="5"><?php echo $descripcion; ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label for="descripcion">Precio:</label>
+                        <textarea class="form-control" name="precio" required rows="5"><?php echo $precio; ?></textarea>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label for="fecha">Fecha:</label>
-                    <input type="date" class="form-control" name="fecha" value="<?php echo $fecha; ?>">
-                </div>
+                    <div class="form-group mb-3">
+                        <label for="imagen">Imagen:</label>
+                        <input type="file" class="form-control" name="imagen" accept="image/*">
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label for="imagen">Imagen:</label>
-                    <input type="file" class="form-control" name="imagen" accept="image/*">
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary mt-3 mb-3">Guardar Cambios</button>
-        </form>
-    </div>
+                <button type="submit" class="btn btn-primary mt-3 mb-3">Guardar Cambios</button>
+            </form>
+        </div>
 
     <!-- JS -->
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
@@ -148,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 <?php
 } else {
 
-    header('Location: administrador_promo.php');
+    header('Location: administrador_bar.php');
     exit();
 }
 ?>

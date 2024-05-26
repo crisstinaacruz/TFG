@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-
 $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
 $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
 $correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
@@ -100,7 +99,6 @@ $idsButacasArray = explode(',', $idsButacas);
 
 
     </section>
-
     <!-- footer -->
     <footer class=" footer">
         <div class="container">

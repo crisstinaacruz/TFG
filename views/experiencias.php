@@ -1,7 +1,6 @@
 <?php
 session_start();
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -25,7 +24,6 @@ session_start();
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
 
@@ -47,7 +45,6 @@ session_start();
     } else {
         Navbar::renderUnauthenticatedNavbar();
     }
-
 
     ?>
 
@@ -86,6 +83,7 @@ session_start();
     </section>
 
     <?php
+
     try {
         include_once '../includes/config.php';
 
@@ -126,6 +124,7 @@ session_start();
     include_once "../includes/footer.php";
     echo getFooterHTML();
     ?> <!-- end footer -->
+
 
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

@@ -20,7 +20,6 @@ try {
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -82,12 +81,11 @@ try {
     <?php echo $tarjetasHTML; ?>
     <!-- end content -->
 
-    <!-- footer -->
+
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
     ?>
-    <!-- end footer -->
 
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

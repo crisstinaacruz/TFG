@@ -61,6 +61,7 @@ class BillboardHandler
             <!-- card -->
             <div class="card card--big border border-0" style="background-color: transparent;">
                 <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
+
                 <div class="card__content">
                     <h3 class="card__title">', $titulo, '</h3>
                     <span class="card__category">

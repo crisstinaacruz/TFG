@@ -53,14 +53,15 @@ class BillboardHandler
     private static function mostrarPelicula($registro)
     {
         $id_pelicula = $registro['pelicula_id'];
-        $imagen_binaria = $registro['imagen'];
+        $imagen_ruta = $registro['imagen']; // Suponiendo que este campo contiene la ruta de la imagen
         $titulo = $registro['titulo'];
         $genero = $registro['genero'];
 
         echo '<div class="item">
             <!-- card -->
             <div class="card card--big border border-0" style="background-color: transparent;">
-                <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="'. $registro['imagen'] . '" class="card-img-top" alt="', $titulo, '"></a>
+                <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
+
                 <div class="card__content">
                     <h3 class="card__title">', $titulo, '</h3>
                     <span class="card__category">
@@ -110,7 +111,7 @@ class BillboardHandler
     private static function mostrarPeliculaCartelera($registro)
     {
         $id_pelicula = $registro['pelicula_id'];
-        $imagen_binaria = $registro['imagen'];
+        $imagen_ruta = $registro['imagen']; // Suponiendo que este campo contiene la ruta de la imagen
         $titulo = $registro['titulo'];
         $genero = $registro['genero'];
         $edad = $registro['clasificacion'];
@@ -120,7 +121,7 @@ class BillboardHandler
                 <div class="card card--list border border-0" style="background-color: transparent;">
                     <div class="row">
                         <div class="col-12 col-sm-4">
-                            <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="'. $registro['imagen'] . '" class="card-img-top" alt="', $titulo, '"></a>
+                            <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
                         </div>
 
                         <div class="col-12 col-sm-8">

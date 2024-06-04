@@ -120,9 +120,7 @@ class Navbar
                                         <div class="offcanvas-body">
                                             <div>
                                                 <div class="row my-3">
-                                                    <div class="col-12 my-2">
-                                                        <a href="../../views/user.php">Ver perfil</a>
-                                                    </div>
+
                                                     <div class="col-12 my-2">
                                                         <a href="../../views/reservas.php">Mis reservas</a>
                                                     </div>

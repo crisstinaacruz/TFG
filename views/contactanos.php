@@ -1,11 +1,18 @@
 <?php
-
-session_start();
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
+include_once "../includes/Navbar.php";
+
+
+// Verifica si el usuario está autenticado
+if (isset($_SESSION["email"])) {
+    Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+} else {
+    Navbar::renderUnauthenticatedNavbar();
+}
+
 
 
 $mensajeEnviado = false;
@@ -73,12 +80,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
-    <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
-
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="icon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="icon/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icon/apple-touch-icon-144x144.png">
 
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <title>Magic Cinema - Contáctanos</title>
+    <title>Magic Cinema</title>
 
 </head>
 
@@ -168,10 +179,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </form>
 
+    <!-- footer -->
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
-    ?>
+    ?> <!-- end footer -->
+
 
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

@@ -1,7 +1,5 @@
 <?php
-
 session_start();
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -36,14 +34,17 @@ session_start();
 </head>
 
 <body class="body">
-    <?php 
+
+<?php
     include_once "../includes/Navbar.php";
 
+
+    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
-		Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
-	} else {
-		Navbar::renderUnauthenticatedNavbar();
-	}
+        Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+    } else {
+        Navbar::renderUnauthenticatedNavbar();
+    }
 
     ?>
 
@@ -82,7 +83,7 @@ session_start();
     </section>
 
     <?php
-    
+
     try {
         include_once '../includes/config.php';
 
@@ -118,11 +119,12 @@ session_start();
             <?php echo ExperienciasHandler::generarHTMLExperienciasSalas($experiencias); ?>
         </div>
     </section>
-
+    <!-- footer -->
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
-    ?>
+    ?> <!-- end footer -->
+
 
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

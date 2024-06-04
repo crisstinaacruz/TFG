@@ -1,29 +1,5 @@
 <?php
-
-include '../includes/navbarFunctions.php';
-NavbarHandler::generateNavbar();
-
-
-// Redirige al usuario si no ha iniciado sesión
-if (empty($_SESSION["Usuario_ID"])) {
-    // Puedes manejar la inactividad aquí o simplemente mostrar un mensaje de sesión no iniciada
-}
-
-// Verifica el tiempo de inactividad
-if (isset($_SESSION['tiempo'])) {
-    $inactivo = 40; // Establece el tiempo de inactividad en segundos
-    $vida_session = time() - $_SESSION['tiempo'];
-
-    if ($vida_session > $inactivo) {
-        session_unset();
-        session_destroy();
-        // Puedes redirigir o manejar la inactividad aquí
-    } else {
-        $_SESSION['tiempo'] = time();
-    }
-} else {
-    $_SESSION['tiempo'] = time();
-}
+session_start();
 
 $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
 $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
@@ -59,11 +35,8 @@ $idsButacasArray = explode(',', $idsButacas);
     <link rel="stylesheet" href="../assets/css/main.css">
 
     <!-- Favicons -->
-    <link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="icon/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="icon/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icon/apple-touch-icon-144x144.png">
+    <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
+
 
     <meta name="description" content="">
     <meta name="keywords" content="">
@@ -74,11 +47,19 @@ $idsButacasArray = explode(',', $idsButacas);
 
 <body>
 
+    <?php
+    include_once "../includes/Navbar.php";
 
+    if (isset($_SESSION["email"])) {
+        Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+    } else {
+        Navbar::renderUnauthenticatedNavbar();
+    }
+    ?>
     <section class="home">
         <!-- home bg -->
         <div class="owl-carousel home__bg">
-        <div class="item home__cover" data-bg="../assets/img/home/home__bg.jpg"></div>
+            <div class="item home__cover" data-bg="../assets/img/home/home__bg.jpg"></div>
 
         </div>
         <!-- end home bg -->
@@ -118,7 +99,6 @@ $idsButacasArray = explode(',', $idsButacas);
 
 
     </section>
-   
     <!-- footer -->
     <footer class=" footer">
         <div class="container">
@@ -131,7 +111,7 @@ $idsButacasArray = explode(',', $idsButacas);
                     </ul>
                 </div>
                 <!-- end footer list -->
-    
+
                 <!-- footer list -->
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Legal</h6>
@@ -142,7 +122,7 @@ $idsButacasArray = explode(',', $idsButacas);
                     </ul>
                 </div>
                 <!-- end footer list -->
-    
+
                 <!-- footer list -->
                 <div class="col-12 col-sm-4 col-md-3">
                     <h6 class="footer__title">Contacto</h6>

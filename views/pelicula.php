@@ -1,6 +1,5 @@
 <?php
-include '../includes/navbarFunctions.php';
-NavbarHandler::generateNavbar();
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -25,11 +24,7 @@ NavbarHandler::generateNavbar();
     <link rel="stylesheet" href="../assets/css/main.css">
 
     <!-- Favicons -->
-    <link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="icon/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="icon/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icon/apple-touch-icon-144x144.png">
+    <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
     <meta name="description" content="">
     <meta name="keywords" content="">
@@ -38,6 +33,21 @@ NavbarHandler::generateNavbar();
 </head>
 
 <body>
+
+<?php
+    include_once "../includes/Navbar.php";
+
+
+    // Verifica si el usuario está autenticado
+    if (isset($_SESSION["email"])) {
+        Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+    } else {
+        Navbar::renderUnauthenticatedNavbar();
+    }
+
+
+    ?>
+
     <!-- header -->
 
     <section class="section details">
@@ -88,9 +98,10 @@ NavbarHandler::generateNavbar();
     </section>
 
     <!-- footer -->
-    <?php require_once("footer.php");?>
-    <!-- end footer -->
-
+    <?php
+    include_once "../includes/footer.php";
+    echo getFooterHTML();
+    ?> <!-- end footer -->
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>

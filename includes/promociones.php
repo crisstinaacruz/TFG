@@ -37,7 +37,7 @@ class PromocionesHandler
                     <div class="card m-5" style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); max-width: 1040px; border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <img src="<?php echo $promocion['imagen']; ?>" class="img-fluid rounded-start" alt="Promoción">
+                                <img src=",<?php echo $promocion['imagen']; ?>" class="img-fluid rounded-start" alt="Promoción">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">

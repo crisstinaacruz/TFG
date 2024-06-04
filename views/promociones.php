@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 try {
@@ -44,8 +43,8 @@ try {
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
-
 
     <meta name="description" content="">
     <meta name="keywords" content="">
@@ -57,14 +56,16 @@ try {
     <?php
     include_once "../includes/Navbar.php";
 
+
+    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
-		Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
-	} else {
-		Navbar::renderUnauthenticatedNavbar();
-	}
+        Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
+    } else {
+        Navbar::renderUnauthenticatedNavbar();
+    }
+
 
     ?>
-
     <!-- home -->
     <section class="home">
         <!-- home bg -->
@@ -80,12 +81,12 @@ try {
     <?php echo $tarjetasHTML; ?>
     <!-- end content -->
 
+
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
     ?>
 
-    
     <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>

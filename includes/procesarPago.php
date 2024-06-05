@@ -25,7 +25,7 @@ class ProcesarPago
 
         $idsButacasStr = implode(',', $idsButacasArray);
         // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
-        $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE id_asiento IN ($idsButacasStr)";
+        $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute();
     }
@@ -38,13 +38,12 @@ class ProcesarPago
             // Obtener información sobre el asiento desde la base de datos (ajusta según tu esquema)
             $infoAsiento = $this->obtenerInfoAsiento($asientoId);
             // Realizar inserción en la tabla de reservas
-            $sql = "INSERT INTO reservas (usuario_id, horario_id, asiento_id, correo_cliente) VALUES (:usuario_id, :horario_id, :asiento_id, :correo_usuario)";
+            $sql = "INSERT INTO reservas (usuario_id, horario_id, asiento_id) VALUES (:usuario_id, :horario_id, :asiento_id)";
             $stmt = $this->conexion->prepare($sql);
 
             $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
             $stmt->bindParam(':horario_id', $horarioId, PDO::PARAM_INT);
             $stmt->bindParam(':asiento_id', $asientoId, PDO::PARAM_INT);
-            $stmt->bindParam(':correo_usuario', $correoUsuario, PDO::PARAM_STR);
             $stmt->execute();
 
             ProcesarPago::enviarCorreo($correoUsuario, $infoAsiento);
@@ -55,13 +54,25 @@ class ProcesarPago
 
     private function obtenerInfoAsiento($asientoId)
     {
-        // Consulta para obtener información del asiento (ajusta según tu esquema)
-        $sql = "SELECT a.*, h.*, p.titulo AS titulo_pelicula, s.nombre_sala 
-            FROM asientos a
-            INNER JOIN horarios h ON a.Horario_id = h.Horario_ID
-            INNER JOIN peliculas p ON h.Pelicula_ID = p.Pelicula_ID
-            INNER JOIN salas s ON h.Sala_ID = s.Sala_ID
-            WHERE a.id_asiento = :asiento_id";
+        // Consulta para obtener información del asiento
+        $sql = "SELECT 
+                    p.titulo AS titulo_pelicula,
+                    a.numero_fila,
+                    a.numero_columna,
+                    s.nombre AS sala_nombre,
+                    h.fecha AS horario_fecha
+                FROM 
+                    asientos a
+                LEFT JOIN 
+                    reservas r ON a.asiento_id = r.asiento_id
+                LEFT JOIN 
+                    horarios h ON r.horario_id = h.horario_id
+                LEFT JOIN 
+                    peliculas p ON h.pelicula_id = p.pelicula_id
+                INNER JOIN 
+                    salas s ON a.sala_id = s.sala_id
+                WHERE 
+                    a.asiento_id = :asiento_id";
     
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':asiento_id', $asientoId, PDO::PARAM_INT);

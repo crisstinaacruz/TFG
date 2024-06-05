@@ -117,13 +117,6 @@ $conexion = null;
                 </div>
 
                 <div class="form-check">
-                    <input style="color:#fff; font-family: 'Open Sans', sans-serif;" class="form-check-input" type="radio" name="metodoPago" value="credito" id="creditoRadio" onchange="mostrarCredito()">
-                    <label style="color:#fff; font-family: 'Open Sans', sans-serif;" class="form-check-label" for="creditoRadio">
-                        Tarjeta de Crédito
-                    </label>
-                </div>
-
-                <div class="form-check">
                     <input style="color:#fff; font-family: 'Open Sans', sans-serif;" class="form-check-input" type="radio" name="metodoPago" value="paypal" id="paypalRadio" onchange="ocultarSeccion()">
                     <label style="color:#fff; font-family: 'Open Sans', sans-serif;" class="form-check-label" for="paypalRadio">
                         PayPal

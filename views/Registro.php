@@ -44,8 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Función para enviar el correo de confirmación
-function enviarCorreoConfirmacion($email)
-{
+function enviarCorreoConfirmacion($email) {
     // Configuración de PHPMailer
     $mail = new PHPMailer(true);
     try {
@@ -57,20 +56,80 @@ function enviarCorreoConfirmacion($email)
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
 
-        $mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
+        $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
         $mail->addAddress($email);
 
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = 'Confirmación de Registro';
-        $mail->Body = 'Gracias por registrarte en nuestro sitio. Tu cuenta ha sido creada con éxito.';
+
+        $mail->Body = '
+        <html>
+        <head>
+            <style>
+                .email-container {
+                    width: 100%;
+                    max-width: 600px;
+                    margin: auto;
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    background-color: #f7f7f7;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                    background-color: #4CAF50;
+                    color: white;
+                    text-align: center;
+                    padding: 10px 0;
+                    border-radius: 10px 10px 0 0;
+                }
+                .content {
+                    margin: 20px 0;
+                    text-align: center;
+                }
+                .footer {
+                    text-align: center;
+                    font-size: 12px;
+                    color: #777;
+                }
+                .button {
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 20px 0;
+                    border-radius: 5px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <h1>Magic Cinema</h1>
+                </div>
+                <div class="content">
+                    <h2>Bienvenido a Magic Cinema</h2>
+                    <p>Gracias por registrarte en nuestro sitio. Tu cuenta ha sido creada con éxito.</p>
+                    <p>Ahora puedes disfrutar de todas las ventajas y novedades que ofrecemos.</p>
+                </div>
+                <div class="footer">
+                    <p>&copy; 2023 Magic Cinema. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </body>
+        </html>';
 
         $mail->send();
     } catch (Exception $e) {
-        // Mostrar error en un alert
         echo "<script>alert('Error al enviar el correo de confirmación. Por favor, inténtalo de nuevo más tarde.');</script>";
     }
 }
+
 ?>
 
 

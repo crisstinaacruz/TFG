@@ -10,7 +10,7 @@ $filas = $_POST['filas'];
 $fecha = $_POST['fecha'];
 
 // Obtener Sala_ID y pelicula_ID
-$sqlSala = "SELECT Sala_ID FROM salas WHERE Nombre_sala = :sala";
+$sqlSala = "SELECT sala_id FROM salas WHERE nombre = :sala";
 $stmtSala = $pdo->prepare($sqlSala);
 $stmtSala->bindParam(':sala', $sala, PDO::PARAM_STR);
 $stmtSala->execute();
@@ -25,7 +25,7 @@ $peliculaId = $stmtPelicula->fetchColumn();
 $fechaFormateada = date('Y-m-d H:i:s', strtotime($fecha));
 
 // Insertar el horario en la tabla de horarios
-$sqlHorario = "INSERT INTO horarios (Sala_ID, Pelicula_ID, Fecha_hora_inicio) VALUES (
+$sqlHorario = "INSERT INTO horarios (sala_id, pelicula_id, fecha) VALUES (
     :salaId,
     :peliculaId,
     :fecha
@@ -42,18 +42,16 @@ $horarioId = $pdo->lastInsertId();
 // Insertar los asientos en la tabla de asientos
 for ($fila = 1; $fila <= $filas; $fila++) {
     for ($columna = 1; $columna <= $columnas; $columna++) {
-        $sqlAsiento = "INSERT INTO asientos (id_sala, numero_fila, numero_columna, estado_asiento, Horario_id) VALUES (
+        $sqlAsiento = "INSERT INTO asientos (sala_id, numero_fila, numero_columna, estado_asiento) VALUES (
             :salaId,
             :fila,
             :columna,
-            'Disponible',
-            :horarioId
-        )";
+            'Disponible'
+            )";
         $stmtAsiento = $pdo->prepare($sqlAsiento);
         $stmtAsiento->bindParam(':salaId', $salaId, PDO::PARAM_INT);
         $stmtAsiento->bindParam(':fila', $fila, PDO::PARAM_INT);
         $stmtAsiento->bindParam(':columna', $columna, PDO::PARAM_INT);
-        $stmtAsiento->bindParam(':horarioId', $horarioId, PDO::PARAM_INT);
         $stmtAsiento->execute();
     }
 }

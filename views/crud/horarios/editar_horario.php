@@ -8,13 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
     $id = $_GET['id'];
 
-    $statement = $pdo->prepare("SELECT * FROM horarios WHERE Horario_ID= ?");
+    $statement = $pdo->prepare("SELECT * FROM horarios WHERE horario_id= ?");
     $statement->execute([$id]);
     $horario = $statement->fetch(PDO::FETCH_ASSOC);
 
-    $sala = $horario['Sala_ID'];
-    $pelicula = $horario['Pelicula_ID'];
-    $fecha = $horario['Fecha_hora_inicio'];
+    $sala = $horario['sala_id'];
+    $pelicula = $horario['pelicula_id'];
+    $fecha = $horario['fecha'];
 
 
 ?>

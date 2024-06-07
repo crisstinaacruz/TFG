@@ -29,6 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $procesarPago->actualizarButacas($idsButacas);
     $procesarPago->realizarReserva($idsButacas, $usuarioId, $correoUsuario, $id_horario);
+    header('Location: ../../index.php');
+    exit();
 }
 
 

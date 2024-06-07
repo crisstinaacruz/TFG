@@ -8,7 +8,7 @@ $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
-$statement2 = $pdo->prepare("SELECT Nombre_sala FROM salas");
+$statement2 = $pdo->prepare("SELECT nombre FROM salas");
 $statement2->execute();
 $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 
@@ -104,7 +104,7 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
         <?php
         foreach ($resultados2 as $sala) {
             // Imprime cada opción en el formato correcto
-            echo "<option value=\"{$sala['Nombre_sala']}\">{$sala['Nombre_sala']}</option>";
+            echo "<option value=\"{$sala['nombre']}\">{$sala['nombre']}</option>";
         }
         ?>
     </select>

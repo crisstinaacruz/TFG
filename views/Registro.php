@@ -118,7 +118,7 @@ function enviarCorreoConfirmacion($email) {
                     <p>Ahora puedes disfrutar de todas las ventajas y novedades que ofrecemos.</p>
                 </div>
                 <div class="footer">
-                    <p>&copy; 2023 Magic Cinema. Todos los derechos reservados.</p>
+                    <p>&copy; 2024 Magic Cinema. Todos los derechos reservados.</p>
                 </div>
             </div>
         </body>

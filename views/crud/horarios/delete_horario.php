@@ -10,23 +10,23 @@ class HorarioDelete {
         $this->pdo = ConnectDatabase::conectar();
     }
     
-    public function eliminarAsientos($id) {
+    // public function eliminarAsientos($id) {
         
-        if ($this->validarId($id)) {
-            $statement = $this->pdo->prepare("DELETE FROM asientos WHERE Horario_id = ?");
-            $statement->execute([$id]);
-            return true;
+    //     if ($this->validarId($id)) {
+    //         $statement = $this->pdo->prepare("DELETE FROM asientos WHERE Horario_id = ?");
+    //         $statement->execute([$id]);
+    //         return true;
 
-        } else {
-            return false;
+    //     } else {
+    //         return false;
 
-        }
-    }
+    //     }
+    // }
 
     public function eliminarHorarios($id) {
         
         if ($this->validarId($id)) {
-            $statement = $this->pdo->prepare("DELETE FROM horarios WHERE Horario_ID = ?");
+            $statement = $this->pdo->prepare("DELETE FROM horarios WHERE horario_id = ?");
             $statement->execute([$id]);
             return true;
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
    
     $id = $_GET['id'];
 
-    if ($HorarioDelete->eliminarAsientos($id) && $HorarioDelete->eliminarHorarios($id)) {
+    if ($HorarioDelete->eliminarHorarios($id)) {
         header('Location: administrador_horario.php');
         exit();
 

@@ -78,7 +78,7 @@ session_start();
 							<h5 class="card-title fw-bold" style="color:#fff; font-family: 'Open Sans', sans-serif;">¡Todos tus deseos con este viaje lleno de magia!</h5>
 							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Compra ya tu entrada online y haz tus sueños realidad ganando este viaje a Disneyland® Paris</p>
 							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Participa en el sorteo con "Wish: El poder de los deseos" y podrás conseguir un viaje en familia al lugar donde todos los deseos se hacen realidad.</p>
-							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">El sorteo termina el: 26/11/2023</p>
+							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">El sorteo termina el: 26/07/2024</p>
 						</div>
 					</div>
 				</div>
@@ -93,7 +93,7 @@ session_start();
 							<h5 class="card-title fw-bold" style="color:#fff; font-family: 'Open Sans', sans-serif;">¡Consigue varios premios inspirados en la película!</h5>
 							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Compra ya tus entradas online para ver "Wonka" y consigue todos estos premios</p>
 							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">¿Te vienes de viaje por el mundo con el joven Willy Wonka? Sé de los primeros en conocer la historia del personaje más emblemático de Roald Dahl. ¡Y consigue varios premios inspirados en la película!</p>
-							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">La película se estrena el: 06/12/2023</p>
+							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">La película se estrena el: 30/06/2024</p>
 						</div>
 					</div>
 				</div>
@@ -108,7 +108,7 @@ session_start();
 							<h5 class="card-title fw-bold" style="color:#fff; font-family: 'Open Sans', sans-serif;">¡Consigue varios premios inspirados en la película!</h5>
 							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Compra ya tus entradas online para ver "Los Juegos del Hambre: Balada de pájaros cantores y serpientes" y consigue todos estos premios.</p>
 							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">¿Te atreves a seguir de cerca los primeros Juegos? Viaja al Distrito 12 de hace 65 años a través de la gran pantalla. ¡Y consigue varios premios inspirados en la película!</p>
-							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">La película se estrena el: 17/11/2023</p>
+							<p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">La película se estrena el: 01/07/2024</p>
 						</div>
 					</div>
 				</div>

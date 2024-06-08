@@ -8,7 +8,6 @@ function getFooterHTML() {
                     <h6 class="footer__title">Sobre nosotros</h6>
                     <ul class="footer__list">
                         <li><a href="../views/html/QuienesSomos.html">Quienés somos</a></li>
-                        <li><a href="#">Trabaja con nosotros</a></li>
                     </ul>
                 </div>
 

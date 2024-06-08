@@ -43,7 +43,7 @@ try {
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
-    <!-- Favicons -->
+    
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
     <meta name="description" content="">

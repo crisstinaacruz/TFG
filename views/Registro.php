@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Función para enviar el correo de confirmación
+// Función para enviar el correo de confirmación
 function enviarCorreoConfirmacion($email) {
     // Configuración de PHPMailer
     $mail = new PHPMailer(true);
@@ -52,7 +53,7 @@ function enviarCorreoConfirmacion($email) {
         $mail->Host = 'smtp.hostinger.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'no-reply@magiccinema.es';
-        $mail->Password = 'MagicCinema2023*';
+        $mail->Password = 'MagicCinema2024*';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
 
@@ -67,43 +68,58 @@ function enviarCorreoConfirmacion($email) {
         <html>
         <head>
             <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                }
                 .email-container {
                     width: 100%;
                     max-width: 600px;
                     margin: auto;
+                    background-color: #fff;
                     font-family: Arial, sans-serif;
                     color: #333;
-                    background-color: #f7f7f7;
                     padding: 20px;
                     border-radius: 10px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
                 }
                 .header {
-                    background-color: #4CAF50;
-                    color: white;
+                    background: linear-gradient(90deg, #ff007f, #ff7f00);
+                    color: #fff;
                     text-align: center;
-                    padding: 10px 0;
+                    padding: 20px 0;
                     border-radius: 10px 10px 0 0;
                 }
                 .content {
-                    margin: 20px 0;
-                    text-align: center;
+                    padding: 20px;
+                    text-align: left;
+                    color: #555;
+                }
+                .content h2 {
+                    color: #4E2644;
                 }
                 .footer {
                     text-align: center;
                     font-size: 12px;
-                    color: #777;
+                    color: #999;
+                    margin-top: 20px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 10px;
                 }
                 .button {
-                    background-color: #4CAF50;
-                    color: white;
+                    background: linear-gradient(90deg, #ff007f, #ff7f00);
                     padding: 10px 20px;
                     text-align: center;
                     text-decoration: none;
-                    display: inline-block;
+                    display: block;
                     font-size: 16px;
-                    margin: 20px 0;
+                    margin: 20px auto;
                     border-radius: 5px;
+                    width: fit-content;
+                }
+                a.button:hover {
+                    background: linear-gradient(90deg, #e60073, #e67300);
                 }
             </style>
         </head>
@@ -116,6 +132,7 @@ function enviarCorreoConfirmacion($email) {
                     <h2>Bienvenido a Magic Cinema</h2>
                     <p>Gracias por registrarte en nuestro sitio. Tu cuenta ha sido creada con éxito.</p>
                     <p>Ahora puedes disfrutar de todas las ventajas y novedades que ofrecemos.</p>
+                    <a href="https://magiccinema.es" class="button" style="color: #FFFFFF;">Visítanos</a>
                 </div>
                 <div class="footer">
                     <p>&copy; 2024 Magic Cinema. Todos los derechos reservados.</p>
@@ -129,6 +146,8 @@ function enviarCorreoConfirmacion($email) {
         echo "<script>alert('Error al enviar el correo de confirmación. Por favor, inténtalo de nuevo más tarde.');</script>";
     }
 }
+
+
 
 ?>
 

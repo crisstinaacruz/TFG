@@ -131,8 +131,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Sobre nosotros</h6>
                     <ul class="footer__list">
-                        <li><a href="../../html/QuienesSomos.html">Quienés somos</a></li>
-                        <li><a href="#">Trabaja con nosotros</a></li>
+                        <li><a href="../../html/QuienesSomos.html">Quiénes somos</a></li>
                     </ul>
                 </div>
 
@@ -141,20 +140,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <ul class="footer__list">
                         <li><a href="../../html/AvisLegal.html">Aviso Legal</a></li>
                         <li><a href="../../html/CondicionesCompra.html">Condiciones de compra</a></li>
-                        <li><a href="../../html/politicas.html">Políticas de privacidad</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-12 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Contacto</h6>
-                    <ul class="footer__list">
-                        <li><a href="tel:+34624233403">+34 624 23 34 03</a></li>
-                        <li><a href="mailto:atencionalclient@cinemmagic.com">atencionalclient@magiccinema.com</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+    
 
     <!-- JS -->
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>

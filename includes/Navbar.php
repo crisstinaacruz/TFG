@@ -1,11 +1,14 @@
 <?php
+session_start();
 
 class Navbar
 {
     public static function renderAuthenticatedNavbar($email)
     {
+        
+        $_SESSION['usuario'] = $email; 
 
-        if ($email == "admi@gmail.com") {
+        if ($email == "admi@gmail.com") {          
             echo '<header class="header">
             <div class="header__wrap">
                 <div class="container">
@@ -31,7 +34,7 @@ class Navbar
                                     </li>
         
                                     <li class="header__nav-item">
-                                        <a href="../views/contactanos.php" class="header__nav-link">Contactanos</a>
+                                        <a href="../views/contactanos.php" class="header__nav-link">Contáctanos</a>
                                     </li>
                                 </ul>
         
@@ -102,7 +105,7 @@ class Navbar
                                         </li>
     
                                         <li class="header__nav-item">
-                                            <a href="../../views/contactanos.php" class="header__nav-link">Contactanos</a>
+                                            <a href="../../views/contactanos.php" class="header__nav-link">Contáctanos</a>
                                         </li>
                                     </ul>
     
@@ -120,7 +123,9 @@ class Navbar
                                         <div class="offcanvas-body">
                                             <div>
                                                 <div class="row my-3">
-
+                                                    <div class="col-12 my-2">
+                                                        <a href="../views/user.php">Ver perfil</a>
+                                                    </div>
                                                     <div class="col-12 my-2">
                                                         <a href="../../views/reservas.php">Mis reservas</a>
                                                     </div>

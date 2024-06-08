@@ -2,48 +2,25 @@
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$id = $titulo = $descripcion = $director = $genero = $duracion = $clasificacion = $fecha_de_estreno = $imagen = $trailer_url = '';
-$pelicula = [];
+$id = $_GET['id'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    $id = $_GET['id'];
+$statement = $pdo->prepare("SELECT * FROM peliculas WHERE pelicula_id = ?");
+$statement->execute([$id]);
+$pelicula = $statement->fetch(PDO::FETCH_ASSOC);
 
-    $statement = $pdo->prepare("SELECT * FROM peliculas WHERE pelicula_id = ?");
-    $statement->execute([$id]);
-    $pelicula = $statement->fetch(PDO::FETCH_ASSOC);
-
-    $titulo = $pelicula['titulo'];
-    $descripcion = $pelicula['descripcion'];
-    $director = $pelicula['director'];
-    $genero = $pelicula['genero'];
-    $duracion = $pelicula['duracion'];
-    $clasificacion = $pelicula['clasificacion'];
-    $fecha_de_estreno = $pelicula['fecha_de_estreno'];
-    // Verificar si la clave 'imagen' está definida antes de acceder a ella
-    $imagen = isset($pelicula['imagen']) ? $pelicula['imagen'] : '';
-    $trailer_url = $pelicula['trailer_url'];
+if ($statement->rowCount() === 0) {
+    echo '<script>alert("El ID proporcionado no existe en la base de datos.");</script>';
 }
 
-class PeliculaUpdate {
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = ConnectDatabase::conectar();
-    }
-
-    public function actualizarPelicula($id, $titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url) {
-        $statement = $this->pdo->prepare("UPDATE peliculas SET 
-            titulo = ?, descripcion = ?, director = ?, genero = ?, duracion = ?, 
-            clasificacion = ?, fecha_de_estreno = ?, imagen = ?, trailer_url = ? WHERE pelicula_id = ?");
-
-        return $statement->execute([
-            $titulo, $descripcion, $director, $genero, $duracion,
-            $clasificacion, $fecha_de_estreno, $imagen, $trailer_url, $id
-        ]);
-    }
-}
-
-$PeliculaUpdate = new PeliculaUpdate();
+$titulo = $pelicula['titulo'];
+$descripcion = $pelicula['descripcion'];
+$director = $pelicula['director'];
+$genero = $pelicula['genero'];
+$duracion = $pelicula['duracion'];
+$clasificacion = $pelicula['clasificacion'];
+$fecha_de_estreno = $pelicula['fecha_de_estreno'];
+$imagen = $pelicula['imagen'];
+$trailer_url = $pelicula['trailer_url'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
@@ -55,34 +32,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clasificacion = $_POST['clasificacion'];
     $fecha_de_estreno = $_POST['fecha_de_estreno'];
     $trailer_url = $_POST['trailer_url'];
-    
-    // Verificar si se ha cargado un nuevo archivo de imagen
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../../../uploads/peliculas/';
-        $uploadFile = $uploadDir . basename($_FILES['imagen']['name']);
 
-        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $uploadFile)) {
-            // Si se carga un nuevo archivo de imagen, actualizar la ruta de la imagen
-            $imagen = $uploadFile;
-        } else {
-            echo '<script>alert("Error al subir la imagen.");</script>';
-            exit();
-        }
-    } else {
-        // Si no se cargó un nuevo archivo de imagen, mantener la ruta de la imagen existente
-        $imagen = $pelicula['imagen'];
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $nuevaimag = '../../../uploads/peliculas/' . $_FILES['imagen']['name'];
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $nuevaimag);
+        $imagen = $nuevaimag;
     }
 
-    if ($PeliculaUpdate->actualizarPelicula($id, $titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url)) {
+    if (!empty($titulo) && !empty($descripcion) && !empty($director) && !empty($genero) && !empty($duracion) && !empty($clasificacion) && !empty($fecha_de_estreno) && !empty($trailer_url)) {
+        $statement = $pdo->prepare("UPDATE peliculas SET titulo = ?, descripcion = ?, director = ?, genero = ?, duracion = ?, clasificacion = ?, fecha_de_estreno = ?, imagen = ?, trailer_url = ? WHERE pelicula_id = ?");
+        $statement->execute([$titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url, $id]);
+
         header('Location: administrador_pelicula.php');
         exit();
     } else {
-        echo '<script>alert("Error al actualizar la película.");</script>';
+        echo '<script>alert("Por favor, rellene todos los campos.");</script>';
     }
 }
 ?>
-
-
 
 
 

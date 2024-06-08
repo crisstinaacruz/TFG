@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -63,32 +63,103 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 }
 
+// Función para enviar el correo de verificación
 function enviarCorreoConfirmacion($email, $verificationCode)
 {
-	// Configuración de PHPMailer
-	$mail = new PHPMailer(true);
-	try {
-		$mail->isSMTP();
-		$mail->Host = 'smtp.hostinger.com';
-		$mail->SMTPAuth = true;
-		$mail->Username = 'no-reply@magiccinema.es';
-		$mail->Password = 'MagicCinema2023*';
-		$mail->SMTPSecure = 'ssl';
-		$mail->Port = 465;
+    // Configuración de PHPMailer
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.hostinger.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'no-reply@magiccinema.es';
+        $mail->Password = 'MagicCinema2024*';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
 
-		$mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
-		$mail->addAddress($email);
+        $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
+        $mail->addAddress($email);
 
-		$mail->isHTML(true);
-		$mail->CharSet = 'UTF-8';
-		$mail->Subject = 'Codigo de verificación';
-		$mail->Body = 'Tu código de verificación es: ' . $verificationCode;
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = 'Código de Verificación';
 
-		$mail->send();
-	} catch (Exception $e) {
-		echo "<script>alert('Error al enviar el correo de verificación: {$mail->ErrorInfo}');</script>";
-	}
+        $mail->Body = '
+        <html>
+        <head>
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                }
+                .email-container {
+                    width: 100%;
+                    max-width: 600px;
+                    margin: auto;
+                    background-color: #fff;
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                }
+                .header {
+                    background: linear-gradient(90deg, #ff007f, #ff7f00);
+                    color: #fff;
+                    text-align: center;
+                    padding: 20px 0;
+                    border-radius: 10px 10px 0 0;
+                }
+                .content {
+                    padding: 20px;
+                    text-align: left;
+                    color: #555;
+                }
+                
+                .verification-code {
+                    background-color: #333;
+                    color: #fff;
+                    padding: 10px;
+                    border-radius: 5px;
+                    text-align: center;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin: 20px 0;
+                }
+                .footer {
+                    text-align: center;
+                    font-size: 12px;
+                    color: #999;
+                    margin-top: 20px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 10px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <h1>Magic Cinema</h1>
+                </div>
+                <div class="content">
+                    <h2>Tu Código de Verificación</h2>
+                    <p>Utiliza el siguiente código para verificar tu cuenta:</p>
+                    <div class="verification-code">' . $verificationCode . '</div>
+                </div>
+                <div class="footer">
+                    <p>&copy; 2024 Magic Cinema. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </body>
+        </html>';
+
+        $mail->send();
+    } catch (Exception $e) {
+        echo "<script>alert('Error al enviar el correo de verificación. Por favor, inténtalo de nuevo más tarde.');</script>";
+    }
 }
+
 
 ?>
 

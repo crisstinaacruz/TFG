@@ -2,21 +2,44 @@
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$id = $titulo = $descripcion = $fecha = $imagen = '';
+$id = $_GET['id'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+$statement = $pdo->prepare("SELECT * FROM promociones WHERE promocion_id = ?");
+$statement->execute([$id]);
+$promociones = $statement->fetch(PDO::FETCH_ASSOC);
 
-    $id = $_GET['id'];
+if ($statement->rowCount() === 0) {
+    echo '<script>alert("El ID proporcionado no existe en la base de datos.");</script>';
+}
 
-    $statement = $pdo->prepare("SELECT * FROM promociones WHERE promocion_id = ?");
-    $statement->execute([$id]);
-    $promociones = $statement->fetch(PDO::FETCH_ASSOC);
+$titulo = $promociones['titulo'];
+$descripcion = $promociones['descripcion'];
+$fecha = $promociones['fecha'];
+$imagen = $promociones['imagen'];
 
-    $titulo = $promociones['titulo'];
-    $descripcion = $promociones['descripcion'];
-    $clasificacion = $promociones['clasificacion'];
-    $fecha = $promociones['fecha'];
-    $imagen = base64_encode($promociones['imagen']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'];
+    $titulo = $_POST['titulo'];
+    $descripcion = $_POST['descripcion'];
+    $fecha = $_POST['fecha'];
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $nuevaimag = '../../../uploads/promociones/' . $_FILES['imagen']['name'];
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $nuevaimag);
+        $imagen = $nuevaimag;
+    }
+
+    if (!empty($titulo) && !empty($descripcion) && !empty($fecha) && !empty($imagen)) {
+        $statement = $pdo->prepare("UPDATE promociones SET titulo = ?, descripcion = ?, fecha = ?, imagen = ? WHERE promocion_id = ?");
+        $statement->execute([$titulo, $descripcion, $fecha, $imagen, $id]);
+
+        header('Location: administrador_promo.php');
+        exit();
+    } else {
+        echo '<script>alert("Por favor, rellene todos los campos.");</script>';
+    }
+}
+
 
 ?>
 
@@ -99,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     
     <div class="container mt-5 text-white">
         <h2 class="mt-5">Editar Promociones</h2>
-        <form action="update_promo.php" method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
 
             <div class="form-row">
@@ -121,6 +144,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                 <div class="form-group mb-3">
                     <label for="imagen">Imagen:</label>
                     <input type="file" class="form-control" name="imagen" accept="image/*">
+                    <?php echo '<img src="' . $promociones['imagen'] . '" class="img-thumbnail my-3" style="max-width: 100px;" alt="Promocion">';
+                    ?>
                 </div>
             </div>
 
@@ -144,11 +169,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
 </body>
 </html>
-
-<?php
-} else {
-
-    header('Location: administrador_promo.php');
-    exit();
-}
-?>

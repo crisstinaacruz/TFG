@@ -129,13 +129,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             </div>
                         </div>
-                        <!--Grid row-->
                         <div class="text-center text-md-left py-3">
                             <button class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Enviar</button>
                         </div>
                         <div class="status"></div>
                     </div>
-                    <!--Grid column-->
                 </div>
 
             </section>

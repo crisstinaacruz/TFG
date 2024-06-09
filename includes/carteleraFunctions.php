@@ -1,4 +1,5 @@
 <?php
+
 include_once '../includes/config.php';
 
 class BillboardHandler
@@ -12,16 +13,16 @@ class BillboardHandler
 
     private static function mostrarCarousel($resultado)
     {
-        echo '<!-- home -->
+        echo '
             <section class="home">
-                <!-- home bg -->
+
                 <div class="owl-carousel home__bg">
                     <div class="item home__cover" data-bg="../assets/img/home/home__bg.jpg"></div>
                     <div class="item home__cover" data-bg="../assets/img/home/home__bg2.jpg"></div>
                     <div class="item home__cover" data-bg="../assets/img/home/home__bg3.jpg"></div>
                     <div class="item home__cover" data-bg="../assets/img/home/home__bg4.jpg"></div>
                 </div>
-                <!-- end home bg -->
+
 
                 <div class="container">
                     <div class="row">
@@ -53,12 +54,11 @@ class BillboardHandler
     private static function mostrarPelicula($registro)
     {
         $id_pelicula = $registro['pelicula_id'];
-        $imagen_ruta = $registro['imagen']; // Suponiendo que este campo contiene la ruta de la imagen
+        $imagen_ruta = $registro['imagen'];
         $titulo = $registro['titulo'];
         $genero = $registro['genero'];
 
         echo '<div class="item">
-            <!-- card -->
             <div class="card card--big border border-0" style="background-color: transparent;">
                 <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
 
@@ -69,13 +69,12 @@ class BillboardHandler
                     </span>
                 </div>
             </div>
-            <!-- end card -->
         </div>';
     }
 
     public static function mostrarTopPeliculas()
     {
-        $sql = "SELECT * FROM peliculas ORDER BY pelicula_id DESC LIMIT 7";
+        $sql = "SELECT * FROM peliculas ORDER BY titulo ASC";
         $resultado = self::obtenerPeliculas($sql);
 
         if ($resultado->rowCount() > 0) {
@@ -91,7 +90,7 @@ class BillboardHandler
         if ($resultado->rowCount() > 0) {
 
             echo '<div class="container">
-                <!-- content tabs -->
+
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
                         <div class="row">';
@@ -109,42 +108,46 @@ class BillboardHandler
     }
 
     private static function mostrarPeliculaCartelera($registro)
-    {
-        $id_pelicula = $registro['pelicula_id'];
-        $imagen_ruta = $registro['imagen']; // Suponiendo que este campo contiene la ruta de la imagen
-        $titulo = $registro['titulo'];
-        $genero = $registro['genero'];
-        $edad = $registro['clasificacion'];
-        $descripcion = $registro['descripcion'];
+{
+    $id_pelicula = $registro['pelicula_id'];
+    $imagen_ruta = $registro['imagen'];
+    $titulo = $registro['titulo'];
+    $genero = $registro['genero'];
+    $edad = $registro['clasificacion'];
+    $descripcion = $registro['descripcion'];
 
-        echo '<div class="col-6 col-sm-12 col-lg-6">
-                <div class="card card--list border border-0" style="background-color: transparent;">
-                    <div class="row">
-                        <div class="col-12 col-sm-4">
-                            <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
-                        </div>
+    // Limitar la longitud de la descripción a 100 caracteres
+    $descripcion_corta = strlen($descripcion) > 220 ? substr($descripcion, 0, 220) . "..." : $descripcion;
 
-                        <div class="col-12 col-sm-8">
-                            <div class="card__content">
-                                <h3 class="card__title"><a href="../views/pelicula.php?id=', $id_pelicula, '">', $titulo, '</a></h3>
-                                <span class="card__category">
-                                    <a href="#">', $genero, '</a>
-                                </span>
+    echo '<div class="col-6 col-sm-12 col-lg-6">
+            <div class="card card--list border border-0" style="background-color: transparent;">
+                <div class="row">
+                    <div class="col-12 col-sm-4">
+                        <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
+                    </div>
 
-                                <div class="card__wrap">
-                                    <ul class="card__list">
-                                        <li> + ', $edad, '</li>
-                                    </ul>
-                                </div>
+                    <div class="col-12 col-sm-8">
+                        <div class="card__content mt-1">
+                            <h3 class="card__title mt-1"><a href="../views/pelicula.php?id=', $id_pelicula, '">', $id_pelicula, $titulo, '</a></h3>
+                            <span class="card__category">
+                                <a href="#">', $genero, '</a>
+                            </span>
 
-                                <div class="card__description">
-                                    <p>', $descripcion, '</p>
-                                </div>
+                            <div class="card__wrap">
+                                <ul class="card__list">
+                                    <li> + ', $edad, '</li>
+                                </ul>
+                            </div>
+
+                            <div class="card__description">
+                                <p>', $descripcion_corta, '</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>';
-    }
+            </div>
+        </div>';
+}
+
 }
 ?>

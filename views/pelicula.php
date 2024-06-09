@@ -1,5 +1,34 @@
 <?php
 session_start();
+include_once '../includes/peliculaFunctions.php';
+include_once '../includes/config.php';
+
+// Obtener el ID de la película desde la URL
+$id_pelicula = isset($_GET['id']) ? intval($_GET['id']) : null;
+
+if ($id_pelicula === 0) {
+    // Redirigir a cartelera.php si no se proporciona un ID de película válido
+    header("Location: cartelera.php");
+    exit();
+}
+
+// Conectar a la base de datos
+$conexion = ConnectDatabase::conectar();
+
+// Preparar la consulta para verificar si la película existe
+$sql = "SELECT COUNT(*) FROM peliculas WHERE pelicula_id = :id";
+$stmt = $conexion->prepare($sql);
+$stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
+$stmt->execute();
+
+// Verificar si se encontró la película
+$pelicula_existe = $stmt->fetchColumn();
+
+if (!$pelicula_existe) {
+    // Redirigir a cartelera.php si la película no existe
+    header("Location: cartelera.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -8,10 +37,10 @@ session_start();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- CSS -->
+
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
@@ -23,7 +52,6 @@ session_start();
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
     <meta name="description" content="">
@@ -37,41 +65,36 @@ session_start();
 <?php
     include_once "../includes/Navbar.php";
 
-
-    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
         Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
     } else {
         Navbar::renderUnauthenticatedNavbar();
     }
+ ?>
 
-
-    ?>
-
-    <!-- header -->
 
     <section class="section details">
-        <!-- details background -->
         <div class="details__bg" data-bg="img/home/home__bg.jpg"></div>
-        <!-- end details background -->
+
         <?php
-        include_once '../includes/peliculaFunctions.php';
 
-        // Obtener el ID de la película desde la URL
-        $id_pelicula = isset($_GET['id']) ? $_GET['id'] : null;
 
-        // Llama a la función para obtener la información de la película en formato HTML
+    if ($pelicula_existe) {
+        // Mostrar información de la película
         echo InfoPeliculaHandler::obtenerInformacionPelicula($id_pelicula);
-        ?>
-        <!-- end content -->
+    } else {
+        // Redirigir a cartelera.php si la película no existe
+        header("Location: cartelera.php");
+        exit();
+    }
 
-        <!-- player -->
+?>
 
-        <!-- end player -->
+
         </div>
         </div>
         </div>
-        <!-- end details content -->
+
     </section>
 
     <section class="content">
@@ -97,12 +120,11 @@ session_start();
 
     </section>
 
-    <!-- footer -->
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
-    ?> <!-- end footer -->
-    <!-- JS -->
+    ?>
+
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/owl.carousel.min.js"></script>

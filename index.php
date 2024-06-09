@@ -54,13 +54,12 @@ session_start();
 	?>
 
 
-	<!-- content -->
 	<section class="content">
 		<div class="content__head">
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
-						<!-- content title -->
+
 						<h2 class="content__title">Ofertas y Sorteos</h2>
 					</div>
 				</div>

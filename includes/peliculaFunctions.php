@@ -10,66 +10,69 @@ class InfoPeliculaHandler
         $pelicula = self::obtenerPeliculaPorID($conexion, $id_pelicula);
 
         if ($pelicula) {
-            $html = '<div class="container">';
-            $html .= '<div class="row">';
-            $html .= '<div class="col-12">';
-            $html .= '<h1 class="details__title">' . $pelicula['titulo'] . '</h1>';
-            $html .= '</div>';
+            echo '<div class="container">';
+            echo '<div class="row">';
+            echo '<div class="col-12">';
+            echo '<h1 class="details__title">' . $pelicula['titulo'] . '</h1>';
+            echo '</div>';
 
-            $html .= '<div class="col-12 col-xl-6">';
-            $html .= '<div class="card card--details border border-0" style="background-color: transparent;">';
-            $html .= '<div class="row">';
-            $html .= '<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-5">';
-            $html .= '<div class="card__cover">';
-            $html .= '<img src="' . $pelicula['imagen'] . '" class="card-img-top" alt="' . $pelicula['titulo'] . '">';
-            $html .= '</div>';
-            $html .= '</div>';
+            echo '<div class="col-12 col-xl-6">';
+            echo '<div class="card card--details border border-0" style="background-color: transparent;">';
+            echo '<div class="row">';
+            echo '<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-5">';
+            echo '<div class="card__cover">';
+            echo '<img src="' . $pelicula['imagen'] . '" class="card-img-top" alt="' . $pelicula['titulo'] . '">';
+            echo '</div>';
+            echo '</div>';
 
-            $html .= '<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-7">';
-            $html .= '<div class="card__content">';
-            $html .= '<div class="card__wrap">';
-            $html .= '<ul class="card__list">';
-            $html .= '<li> +' . $pelicula['clasificacion'] . '</li>';
-            $html .= '</ul>';
-            $html .= '</div>';
-            $html .= '<ul class="card__meta">';
-            $html .= '<li><span>Genero:</span> <a href="#">' . $pelicula['genero'] . '</a></li>';
-            $html .= '<li><span>Fecha de Lanazamiento:</span> ' . $pelicula['fecha_de_estreno'] . '</li>';
-            $html .= '<li><span>Duración:</span> ' . $pelicula['duracion'] . '</li>';
-            $html .= '</ul>';
-            $html .= '<div class="card__description card__description--details">';
-            $html .= $pelicula['descripcion'] . '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '<div class="col-12 col-xl-6">';
-            $html .= '<iframe width="560" height="315" src=' . $pelicula['trailer_url'] . ' frameborder="0" allowfullscreen class="container"></iframe>';
-            $html .= ' </div>';
+            echo '<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-7">';
+            echo '<div class="card__content">';
+            echo '<div class="card__wrap">';
+            echo '<ul class="card__list">';
+            echo '<li> +' . $pelicula['clasificacion'] . '</li>';
+            echo '</ul>';
+            echo '</div>';
+            echo '<ul class="card__meta">';
+            echo '<li><span>Genero:</span> <a href="#">' . $pelicula['genero'] . '</a></li>';
+            echo '<li><span>Fecha de Lanazamiento:</span> ' . $pelicula['fecha_de_estreno'] . '</li>';
+            echo '<li><span>Duración:</span> ' . $pelicula['duracion'] . '</li>';
+            echo '</ul>';
+            echo '<div class="card__description card__description--details">';
+            echo $pelicula['descripcion'] . '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '<div class="col-12 col-xl-6">';
+            echo '<iframe width="560" height="315" src=' . $pelicula['trailer_url'] . ' frameborder="0" allowfullscreen class="container"></iframe>';
+            echo ' </div>';
+            echo '</div>';
 
-            return $html;
+            return;
         } else {
-            return '<p style="color: #fff;">La película no existe.</p>';
+            echo '<p style="color: #fff;">La película no existe.</p>';
+            return;
         }
     }
+
     public static function obtenerInformacionPeliculaEntrada($id_pelicula)
     {
         $conexion = ConnectDatabase::conectar();
-    
+
         if ($id_pelicula !== null) {
-            $html = '<div class="container">';
-            $html .= '<div class="row">';
-    
+            echo '<div class="container">';
+            echo '<div class="row">';
+
             $horarios = self::obtenerHorariosPelicula($conexion, $id_pelicula);
-    
+
             if ($horarios) {
                 foreach ($horarios as $fila) {
-                    $html .= '<div class="col-sm-4 mb-3 mb-sm-0">';
-                    $html .= '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
-                    $html .= '<div class="card-body p-3">';
-                    $html .= '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $fila['nombre_pelicula'] . '</h4>';
-                    
+                    echo '<div class="col-sm-4 mb-3 mb-sm-0">';
+                    echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
+                    echo '<div class="card-body p-3">';
+                    echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $fila['nombre_pelicula'] . '</h4>';
+
                     if (isset($fila['fecha'])) {
                         $fechaFormateada = date('d-m-Y', strtotime($fila['fecha']));
                         $horaFormateada = date('H:i', strtotime($fila['fecha']));
@@ -77,34 +80,33 @@ class InfoPeliculaHandler
                         $fechaFormateada = 'Fecha no disponible';
                         $horaFormateada = 'Hora no disponible';
                     }
-    
-                    $html .= '<p class="card-text text-white" style ="font-family: \'Open Sans\', sans-serif;"><strong>Fecha:</strong> ' . $fechaFormateada . '</p>';
-                    $html .= '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sala:</strong> ' . $fila['sala_nombre'] . '</p>';
-                    $html .= '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sesión:</strong> ' . $horaFormateada . '</p>';
-                    $html .= '<a href="comprarEntrada.php?id=' . $fila['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
-                    $html .= '</div>';
-                    $html .= '</div>';
-                    $html .= '</div>';
+
+                    echo '<p class="card-text text-white" style ="font-family: \'Open Sans\', sans-serif;"><strong>Fecha:</strong> ' . $fechaFormateada . '</p>';
+                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sala:</strong> ' . $fila['sala_nombre'] . '</p>';
+                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sesión:</strong> ' . $horaFormateada . '</p>';
+                    echo '<a href="comprarEntrada.php?id=' . $fila['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
                 }
-    
-                $html .= '</div>';
-                $html .= '</div>';
+
+                echo '</div>';
+                echo '</div>';
             } else {
                 // Muestra el mensaje de error con el nombre de la película en lugar del ID
                 $nombre_pelicula = self::obtenerNombrePeliculaPorID($conexion, $id_pelicula);
-    
-                $html .= '<div class="container">';
-                $html .= '<p style="color: #fff; font-family: \'.Open Sans\', sans-serif;">No hay fecha para la película ' . $nombre_pelicula . '</p>';
-                $html .= '</div>';
+
+                echo '<div class="container">';
+                echo '<p style="color: #fff; font-family: \'.Open Sans\', sans-serif;">No hay fecha para la película ' . $nombre_pelicula . '</p>';
+                echo '</div>';
             }
-    
-            return $html;
+
+            return;
         } else {
-            return 'ID de película no proporcionado.';
+            echo 'ID de película no proporcionado.';
+            return;
         }
     }
-    
-    
 
     private static function obtenerPeliculaPorID($conexion, $id_pelicula)
     {
@@ -130,12 +132,11 @@ class InfoPeliculaHandler
                 INNER JOIN
                     salas s ON h.sala_id = s.sala_id
                 WHERE 
-                    p.pelicula_id = :id;"; // Agregar el filtro WHERE
-    
+                    p.pelicula_id = :id;"; // Ag
         $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT); // Asegúrate de que el nombre del parámetro coincida
+        $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
         $stmt->execute();
-    
+
         if ($stmt->rowCount() > 0) {
             $resultados = [];
             while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -146,8 +147,6 @@ class InfoPeliculaHandler
             return false;
         }
     }
-    
-    
 
     private static function obtenerNombrePeliculaPorID($conexion, $id_pelicula)
     {
@@ -159,3 +158,6 @@ class InfoPeliculaHandler
         return $stmt->fetch(PDO::FETCH_ASSOC)['titulo'];
     }
 }
+
+
+?>

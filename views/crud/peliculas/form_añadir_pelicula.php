@@ -13,18 +13,18 @@ class PeliculaInsert
 
     public function insertarPelicula($titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url)
     {
-        $statement = $this->pdo->prepare("INSERT INTO peliculas (titulo, descripcion, director, genero, duracion, clasificacion, fecha_de_estreno, imagen, trailer_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $statement = $this->pdo->prepare("
+            INSERT INTO peliculas (titulo, descripcion, director, genero, duracion, clasificacion, fecha_de_estreno, imagen, trailer_url) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
 
-        $statement->execute([$titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url]);
-
-        return true;
+        return $statement->execute([$titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url]);
     }
 }
 
 $PeliculaInsert = new PeliculaInsert();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $titulo = $_POST['titulo'];
     $descripcion = $_POST['descripcion'];
     $director = $_POST['director'];
@@ -32,36 +32,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $duracion = $_POST['duracion'];
     $clasificacion = $_POST['clasificacion'];
     $fecha_de_estreno = $_POST['fecha_de_estreno'];
-    $imagen = ''; // Inicializa la variable de la imagen
-
-    // Procesar la imagen si se ha subido correctamente
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../../../uploads/peliculas/'; // Directorio donde se guardarán las imágenes
-        $uploadFile = $uploadDir . basename($_FILES['imagen']['name']);
-        
-        // Mueve el archivo al directorio de destino
-        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $uploadFile)) {
-            $imagen = $uploadFile; // Asigna la ruta de la imagen
-        } else {
-            echo "Error al subir la imagen.";
-            exit();
-        }
-    } else {
-        echo "Error al subir la imagen.";
-        exit();
-    }
-
     $trailer_url = $_POST['trailer_url'];
 
-    if ($PeliculaInsert->insertarPelicula($titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url)) {
-        // Aquí podrías redirigir a una página de éxito o mostrar un mensaje de éxito
-        header('Location: administrador_pelicula.php');
-        exit();
+    $imagen = '';
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $imagen = '../../../uploads/peliculas/' . basename($_FILES['imagen']['name']);
+        if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen)) {
+            echo '<script>alert("Error al subir la imagen.");</script>';
+
+        }
+
+        if ($PeliculaInsert->insertarPelicula($titulo, $descripcion, $director, $genero, $duracion, $clasificacion, $fecha_de_estreno, $imagen, $trailer_url)) {
+            header('Location: administrador_pelicula.php');
+            exit();
+        } else {
+            echo '<script>alert("Error al insertar la película.");</script>';
+        }
+
     } else {
-        echo "Error al insertar la película.";
+        echo '<script>alert("No has subido una imagen.");</script>';
     }
+
+    
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -70,11 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="../../../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../../../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../../../assets/css/owl.carousel.min.css">
@@ -86,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../../../assets/css/default-skin.css">
     <link rel="stylesheet" href="../../../assets/css/main.css">
 
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
 
     <meta name="description" content="">
@@ -178,12 +172,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group mb-3">
                 <label for="fecha_de_estreno">Fecha de Estreno:</label>
-                <input type="date" class="form-control" name="fecha_de_estreno">
+                <input type="date" class="form-control" name="fecha_de_estreno" required>
             </div>
 
             <div class="form-group mb-3">
                 <label for="imagen">Imagen:</label>
-                <input type="file" class="form-control" name="imagen" accept="image/*">
+                <input type="file" class="form-control" name="imagen" accept="image/*" required>
             </div>
 
             <div class="form-group mb-3">
@@ -195,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
-    <!-- JS -->
+
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/owl.carousel.min.js"></script>
@@ -210,5 +204,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="../../../assets/js/main.js"></script>
 
 </body>
-
 </html>

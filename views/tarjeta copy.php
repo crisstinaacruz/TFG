@@ -1,49 +1,25 @@
 <?php
 session_start();
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
-require '../vendor/autoload.php';
+// Incluye el archivo de configuración y establece la conexión a la base de datos
 include_once '../includes/config.php';
-
-
 $conexion = ConnectDatabase::conectar();
 
 // Obtiene los datos necesarios desde la URL
 $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
-$email = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : null;
+$usuarioId = isset($_SESSION["Usuario_ID"]) ? $_SESSION["Usuario_ID"] : null;
 $correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
 $id_horario = $_GET['idHorario'];
 $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
 
-// Obtiene el usuario_id a partir del email
-$query_usuario = "SELECT usuario_id FROM usuarios WHERE email = :email";
-$statement_usuario = $conexion->prepare($query_usuario);
-$statement_usuario->bindParam(':email', $email);
-$statement_usuario->execute();
-$usuario_id = $statement_usuario->fetch(PDO::FETCH_ASSOC)['usuario_id'];
-
-// Obtiene la fecha del horario y el pelicula_id
-$query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :id_horario";
+$query_fecha = "SELECT fecha FROM horarios WHERE horario_id = :id_horario";
 $statement_fecha = $conexion->prepare($query_fecha);
 $statement_fecha->bindParam(':id_horario', $id_horario);
 $statement_fecha->execute();
-$resultado_horario = $statement_fecha->fetch(PDO::FETCH_ASSOC);
-$fecha_horario = $resultado_horario['fecha'];
-$pelicula_id = $resultado_horario['pelicula_id'];
-
+$fecha_horario = $statement_fecha->fetch(PDO::FETCH_ASSOC)['fecha'];
 // Formatear la fecha y hora
-$fecha_formateada = date('d-m-Y', strtotime($fecha_horario));
+$fecha_formateada = date('Y-m-d', strtotime($fecha_horario));
 $hora_formateada = date('H:i', strtotime($fecha_horario));
-
-// Obtener el título de la película
-$query_pelicula = "SELECT titulo FROM peliculas WHERE pelicula_id = :pelicula_id";
-$statement_pelicula = $conexion->prepare($query_pelicula);
-$statement_pelicula->bindParam(':pelicula_id', $pelicula_id);
-$statement_pelicula->execute();
-$titulo_pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC)['titulo'];
-
-
 
 // Generar firma para Redsys
 function generateSignature($parameters, $key) {
@@ -81,88 +57,6 @@ $parameters = json_encode(array(
 // Clave secreta proporcionada por Redsys
 $secretKey = "clave_secreta";
 $signature = generateSignature($parameters, $secretKey);
-
-if (isset($_POST['pagar'])) {
-    class ProcesarPago
-    {
-        private $pdo;
-    
-        public function __construct()
-        {
-            $this->pdo = ConnectDatabase::conectar();
-        }
-    
-        public function actualizarButacas($idsButacas)
-        {
-            $idsButacasArray = explode(',', $idsButacas);
-    
-            // Escapar y formatear los IDs para la consulta SQL
-            $idsButacasArray = array_map(function ($id) {
-                return intval($id);
-            }, $idsButacasArray);
-    
-            $idsButacasStr = implode(',', $idsButacasArray);
-            // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
-            $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-        }
-    
-    
-        public function realizarReserva($idsButacas, $usuario_id, $email, $id_horario)
-        {
-            $idsButacasArray = explode(',', $idsButacas);
-            foreach ($idsButacasArray as $asientoId) {
-                // Obtener información sobre el asiento desde la base de datos (ajusta según tu esquema)
-                $infoAsiento = $this->obtenerInfoAsiento($asientoId);
-                // Realizar inserción en la tabla de reservas
-                $sql = "INSERT INTO reservas (usuario_id, id_horario, asiento_id) VALUES (:usuario_id, :id_horario, :asiento_id)";
-                $stmt = $this->pdo->prepare($sql);
-    
-                $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-                $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
-                $stmt->bindParam(':asiento_id', $asientoId, PDO::PARAM_INT);
-                $stmt->execute();
-    
-                $this->enviarCorreo($email, $infoAsiento);
-            }
-        }
-    
-        public function enviarCorreo($email, $infoAsiento)
-        {
-            // Configuración de PHPMailer
-            $mail = new PHPMailer(true);
-            try {
-                $mail->isSMTP();
-                $mail->Host = 'smtp.hostinger.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'no-reply@magiccinema.es';
-                $mail->Password = 'MagicCinema2024*';
-                $mail->SMTPSecure = 'ssl';
-                $mail->Port = 465;
-    
-                $mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
-                $mail->addAddress($email);
-    
-                $mail->isHTML(true);
-                $mail->CharSet = 'UTF-8';
-                $mail->Subject = 'Reserva Confirmada';
-    
-                $body = "Gracias por tu reserva. Aquí está la información detallada:<br><br>" .
-                    "Película: {$infoAsiento['titulo_pelicula']}<br>" .
-                    "Sala: {$infoAsiento['nombre_sala']}<br>" .
-                    "Asiento: Fila {$infoAsiento['fila']}, Columna {$infoAsiento['columna']}<br>";
-    
-                $mail->Body = $body;
-    
-                $mail->send();
-            } catch (Exception $e) {
-                echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
-            }
-        }
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -212,7 +106,7 @@ if (isset($_POST['pagar'])) {
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="content__title">Resumen de Compra <?php echo $usuario_id; ?></h2>
+                        <h2 class="content__title">Resumen de Compra</h2>
                     </div>
                 </div>
             </div>
@@ -221,7 +115,6 @@ if (isset($_POST['pagar'])) {
             <div class="container mt-5">
                 <h2 class="content__title">Total a Pagar: <?php echo $total; ?> €</h2>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Entradas:</h3>
-                <p style="color:#fff; font-family: 'Open Sans', sans-serif;">Película: <?php echo $titulo_pelicula; ?></p>
                 <ul style="color:#fff; font-family: 'Open Sans', sans-serif;">
                     <?php
                     // Parsear los IDs de las butacas y obtener la información de la sala, fila y columna para cada una
@@ -257,10 +150,7 @@ if (isset($_POST['pagar'])) {
                     <input type="hidden" name="Ds_Merchant_UrlOK" value="<?php echo $urlOK; ?>">
                     <input type="hidden" name="Ds_Merchant_UrlKO" value="<?php echo $urlKO; ?>">
                     <input type="hidden" name="Ds_Merchant_MerchantSignature" value="<?php echo $signature; ?>">
-                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar">Pagar</button>
-
-                    
-
+                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary">Pagar</button>
                 </form>
             </div>
         </div>
@@ -286,4 +176,6 @@ if (isset($_POST['pagar'])) {
     <script src="../assets/js/main.js"></script>
 
 </body>
+
 </html>
+

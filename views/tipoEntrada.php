@@ -3,6 +3,8 @@
 session_start();
 
 
+include_once "includes/Navbar.php";
+
 // Define variables para los campos del formulario
 $nombreUsuario = '';
 $apellidosUsuario = '';
@@ -11,23 +13,24 @@ $correoUsuario = '';
 
 // Si el formulario se envió por POST, procesa las butacas seleccionadas
 // Recuperar el número total de butacas desde la URL
-$id_horario = $_GET['idHorario'];
+$id_horario = isset($_GET['idHorario']) ? $_GET['idHorario'] : '';
 $totalButacas = isset($_GET['butacas']) ? $_GET['butacas'] : 0;
 $idsButacas = isset($_GET['id']) ? $_GET['id'] : '';
 $idsButacasArray = is_array($idsButacas) ? $idsButacas : explode(',', $idsButacas);
 $numeroTotalIDs = count($idsButacasArray);
 
 
+
 // Si el usuario ha iniciado sesión, obtén los datos del usuario desde la base de datos
-if (!empty($_SESSION["Usuario_ID"])) {
+if (!empty($_SESSION["usuario"])) {
     try {
         // Conecta con la base de datos utilizando tu clase de conexión
         include_once '../includes/config.php';
         $conexion = ConnectDatabase::conectar();
 
         // Prepara y ejecuta la consulta SQL para obtener los datos del usuario
-        $consulta = $conexion->prepare("SELECT nombre, apellidos, correo_electronico FROM usuarios WHERE Usuario_ID = :usuario_id");
-        $consulta->bindParam(':usuario_id', $_SESSION['Usuario_ID'], PDO::PARAM_INT);
+        $consulta = $conexion->prepare("SELECT nombre, apellidos, email FROM usuarios WHERE email = :usuario");
+        $consulta->bindParam(':usuario', $_SESSION['usuario'], PDO::PARAM_INT);
         $consulta->execute();
 
         // Obtiene los resultados
@@ -36,7 +39,7 @@ if (!empty($_SESSION["Usuario_ID"])) {
         // Asigna los datos del usuario a las variables
         $nombreUsuario = $resultado['nombre'];
         $apellidosUsuario = $resultado['apellidos'];
-        $correoUsuario = $resultado['correo_electronico'];
+        $correoUsuario = $resultado['email'];
 
         // Almacena el correo electrónico en una cookie con una duración de 1 hora
     } catch (PDOException $e) {
@@ -158,12 +161,11 @@ if (!empty($_SESSION["Usuario_ID"])) {
 
     ?>
     <section class="home">
-        <!-- home bg -->
+
         <div class="owl-carousel home__bg">
             <div class="item home__cover" data-bg="../assets/img/home/home__bg3.jpg"></div>
 
         </div>
-        <!-- end home bg -->
     </section>
 
     <section class="content">
@@ -171,7 +173,6 @@ if (!empty($_SESSION["Usuario_ID"])) {
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <!-- content title -->
                         <h2 class="content__title">Tipo de Entrada</h2>
                     </div>
                 </div>
@@ -182,14 +183,14 @@ if (!empty($_SESSION["Usuario_ID"])) {
             <form action="procesarCompra.php" method="post" class="sign__form" onsubmit="return validarFormulario();">
 
                 <div class="sign__group">
-                    <input type="text" id="nombre" name="nombre" class="sign__input" placeholder="Nombre" value="<?php echo htmlspecialchars($nombreUsuario); ?>" required>
+                    <input type="text" id="nombre" name="nombre" class="sign__input" placeholder="Nombre" value="<?php echo $nombreUsuario; ?>" required>
                 </div>
 
                 <div class="sign__group">
-                    <input type="text" id="apellidos" name="apellidos" class="sign__input" placeholder="Apellidos" value="<?php echo htmlspecialchars($apellidosUsuario); ?>" required>
+                    <input type="text" id="apellidos" name="apellidos" class="sign__input" placeholder="Apellidos" value="<?php echo $apellidosUsuario; ?>" required>
                 </div>
                 <div class="sign__group">
-                    <input type="email" id="correo" name="correo" class="sign__input" placeholder="Correo Electronico" value="<?php echo htmlspecialchars($correoUsuario); ?>" required>
+                    <input type="email" id="correo" name="correo" class="sign__input" placeholder="Correo Electronico" value="<?php echo $correoUsuario; ?>" required>
                 </div>
             </form>
             <script>
@@ -261,8 +262,6 @@ if (!empty($_SESSION["Usuario_ID"])) {
             <button id="continuarBtn" class="my-3" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" onclick="comprobarSeleccion(), validarFormulario()">Continuar</button>
 
         </div>
-        <!-- <input type="text" name="butacasSeleccionadas" value="<?php echo htmlspecialchars($totalButacas); ?>"> -->
-
 
     </section>
 
@@ -270,20 +269,15 @@ if (!empty($_SESSION["Usuario_ID"])) {
 
     </section>
 
-    <!-- footer -->
     <footer class=" footer">
         <div class="container">
             <div class="row justify-content-center">
-                <!-- footer list -->
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Sobre nosotros</h6>
                     <ul class="footer__list">
                         <li><a href="QuienesSomos.php">Quienés somos</a></li>
                     </ul>
                 </div>
-                <!-- end footer list -->
-
-                <!-- footer list -->
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Legal</h6>
                     <ul class="footer__list">
@@ -292,9 +286,7 @@ if (!empty($_SESSION["Usuario_ID"])) {
                         <li><a href="politicas.php">Políticas de privacidad</a></li>
                     </ul>
                 </div>
-                <!-- end footer list -->
 
-                <!-- footer list -->
                 <div class="col-12 col-sm-4 col-md-3">
                     <h6 class="footer__title">Contacto</h6>
                     <ul class="footer__list">
@@ -302,12 +294,11 @@ if (!empty($_SESSION["Usuario_ID"])) {
                         <li><a href="mailto:atencionalcliente@magiccinema.es">atencionalcliente@magiccinema.es</a></li>
                     </ul>
                 </div>
-                <!-- end footer list -->
+
             </div>
         </div>
     </footer>
-    <!-- end footer -->
-    <!-- JS -->
+
     <script>
         var maxEntradas = <?php echo $totalButacas; ?>;
         var totalEntradasSeleccionadas = 0;
@@ -337,7 +328,7 @@ if (!empty($_SESSION["Usuario_ID"])) {
 
             // Verificar si el total seleccionado es igual al máximo permitido
             if (totalSeleccionado === maxEntradas) {
-                <?php if (!empty($_SESSION["Usuario_ID"])) : ?>
+                <?php if (!empty($_SESSION["usuario"])) : ?>
                     var correoUsuario = <?php echo json_encode($correoUsuario); ?>;
                 <?php else : ?>
                     var correoUsuario = document.getElementById('correo').value.trim();

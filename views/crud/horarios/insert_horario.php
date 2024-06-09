@@ -42,7 +42,7 @@ $horarioId = $pdo->lastInsertId();
 // Insertar los asientos en la tabla de asientos
 for ($fila = 1; $fila <= $filas; $fila++) {
     for ($columna = 1; $columna <= $columnas; $columna++) {
-        $sqlAsiento = "INSERT INTO asientos (sala_id, numero_fila, numero_columna, estado_asiento) VALUES (
+        $sqlAsiento = "INSERT INTO asientos (sala_id, fila, columna, estado_asiento) VALUES (
             :salaId,
             :fila,
             :columna,

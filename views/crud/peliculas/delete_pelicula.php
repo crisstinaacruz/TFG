@@ -11,37 +11,51 @@ class PeliculaDelete {
     }
 
     public function eliminarPelicula($id) {
-        
-        if ($this->validarId($id)) {
-            $statement = $this->pdo->prepare("DELETE FROM peliculas WHERE pelicula_id = ?");
-            $statement->execute([$id]);
+        try {
+            // Verificar si la película existe
+            $statementCheck = $this->pdo->prepare("SELECT * FROM peliculas WHERE pelicula_id = ?");
+            $statementCheck->execute([$id]);
+            if ($statementCheck->rowCount() === 0) {
+                throw new Exception("La película no existe.");
+            }
+
+            // Eliminar los registros dependientes en la tabla reservas
+            $statementReservas = $this->pdo->prepare("
+                DELETE FROM reservas 
+                WHERE horario_id IN (SELECT horario_id FROM horarios WHERE pelicula_id = ?)
+            ");
+            $statementReservas->execute([$id]);
+
+            // Eliminar los registros dependientes en la tabla horarios
+            $statementHorarios = $this->pdo->prepare("DELETE FROM horarios WHERE pelicula_id = ?");
+            $statementHorarios->execute([$id]);
+
+            // Eliminar la película
+            $statementPeliculas = $this->pdo->prepare("DELETE FROM peliculas WHERE pelicula_id = ?");
+            $statementPeliculas->execute([$id]);
+
             return true;
-
-        } else {
-            return false;
-
+        } catch (Exception $e) {
+            throw new Exception("Error al eliminar la película: " . $e->getMessage());
         }
-    }
-
-    private function validarId($id) {
-        return is_numeric($id) && $id > 0;
     }
 }
 
 $PeliculaDelete = new PeliculaDelete();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-   
     $id = $_GET['id'];
 
-    if ($PeliculaDelete->eliminarPelicula($id)) {
-        header('Location: administrador_pelicula.php');
-        exit();
-
-    } else {
-        echo "Error en la validación del ID.";
+    try {
+        if ($PeliculaDelete->eliminarPelicula($id)) {
+            header('Location: administrador_pelicula.php');
+            exit();
+        } else {
+            echo "Error al eliminar la película.";
+        }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
-
 } else {
     header('Location: administrador_pelicula.php');
     exit();

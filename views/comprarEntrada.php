@@ -9,7 +9,7 @@ $id_horario = $_GET['id'];
 $conexion = ConnectDatabase::conectar();
 
 $sql = "
-    SELECT a.asiento_id, a.numero_fila, a.numero_columna, a.estado_asiento
+    SELECT a.asiento_id, a.fila, a.columna, a.estado_asiento
     FROM horarios h
     JOIN salas s ON h.sala_id = s.sala_id
     JOIN asientos a ON s.sala_id = a.sala_id
@@ -24,8 +24,8 @@ $stmt->execute();
 $asientos = [];
 $idButacas = [];
 while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $asientos[$fila['numero_fila']][$fila['numero_columna']] = $fila['estado_asiento'];
-    $idButacas[$fila['numero_fila']][$fila['numero_columna']] = $fila['asiento_id'];
+    $asientos[$fila['fila']][$fila['columna']] = $fila['estado_asiento'];
+    $idButacas[$fila['fila']][$fila['columna']] = $fila['asiento_id'];
 }
 ?>
 
@@ -110,12 +110,10 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <div class="container">
             <?php
             $sql = "SELECT h.fecha, s.nombre AS sala_nombre, p.titulo AS nombre_pelicula
-FROM horarios h
-INNER JOIN salas s ON h.sala_id = s.sala_id
-INNER JOIN peliculas p ON h.pelicula_id = p.pelicula_id
-WHERE h.horario_id = :id";
-
-
+                    FROM horarios h
+                    INNER JOIN salas s ON h.sala_id = s.sala_id
+                    INNER JOIN peliculas p ON h.pelicula_id = p.pelicula_id
+                    WHERE h.horario_id = :id";
 
             $stmt = $conexion->prepare($sql);
             $stmt->bindParam(':id', $id_horario, PDO::PARAM_INT);

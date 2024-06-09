@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -9,11 +10,9 @@ session_start();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
@@ -25,7 +24,6 @@ session_start();
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
 
@@ -33,6 +31,7 @@ session_start();
     <meta name="keywords" content="">
     <title>Cartelera Magic Cinema</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
 </head>
 
 <body class="body">
@@ -50,15 +49,11 @@ session_start();
 
     ?>
 
-    <!-- end home -->
-
-    <!-- content -->
     <section class="content">
         <div class="content__head">
             <div class="container">
                 <div class="row">
-                    <div class="col-6">
-                        <!-- content title -->
+                <div class="col-6 mt-4">
                         <h2 class="content__title">Cartelera</h2>
                     </div>
                 </div>
@@ -71,19 +66,14 @@ session_start();
         ?>
 
 
-        <!-- end content tabs -->
         </div>
     </section>
-    <!-- end content -->
 
-    <!-- footer -->
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
-    ?> <!-- end footer -->
+    ?>
 
-
-    <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/owl.carousel.min.js"></script>

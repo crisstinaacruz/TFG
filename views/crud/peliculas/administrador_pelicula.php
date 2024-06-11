@@ -4,7 +4,7 @@ session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$statement = $pdo->prepare("SELECT * FROM peliculas");
+$statement = $pdo->prepare("SELECT * FROM peliculas ORDER BY pelicula_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 ?>

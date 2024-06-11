@@ -3,7 +3,7 @@ include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
 // Obtener los resultados de la tabla horarios
-$statement = $pdo->prepare("SELECT * FROM horarios");
+$statement = $pdo->prepare("SELECT * FROM horarios ORDER BY horario_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 

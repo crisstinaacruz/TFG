@@ -13,8 +13,7 @@ $usuario_id = $_SESSION['usuario_id'];
 
 // Obtiene los datos necesarios desde la URL
 $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
-$email = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : null;
-$correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
+$email = isset($_SESSION["email"]) ? $_SESSION["email"] : null;
 $horario_id = $_GET['idHorario'];
 $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
 
@@ -42,62 +41,194 @@ $titulo_pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC)['titulo'];
 
 
 
+class ProcesarPago
+{
+    private $pdo;
 
-
-
-    class ProcesarPago
+    public function __construct()
     {
-        private $pdo;
-    
-        public function __construct()
-        {
-            $this->pdo = ConnectDatabase::conectar();
-        }
-    
-        public function actualizarButacas($idsButacas)
-        {
-            $idsButacasArray = explode(',', $idsButacas);
-    
-            // Escapar y formatear los IDs para la consulta SQL
-            $idsButacasArray = array_map(function ($id) {
-                return intval($id);
-            }, $idsButacasArray);
-    
-            $idsButacasStr = implode(',', $idsButacasArray);
-            // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
-            $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-        }
-    
-    
-        public function realizarReserva($idsButacas, $usuario_id, $horario_id)
-        {
-            $idsButacasArray = explode(',', $idsButacas);
-            foreach ($idsButacasArray as $asientoId) {
-                // Obtener información sobre el asiento desde la base de datos (ajusta según tu esquema)
-
-                // Realizar inserción en la tabla de reservas
-                $sql = "INSERT INTO reservas (usuario_id, horario_id, asiento_id) VALUES (:usuario_id, :horario_id, :asiento_id)";
-                $stmt = $this->pdo->prepare($sql);
-    
-                $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-                $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
-                $stmt->bindParam(':asiento_id', $asientoId, PDO::PARAM_INT);
-                $stmt->execute();
-    
-                
-            }
-        }
-    
-       
+        $this->pdo = ConnectDatabase::conectar();
     }
 
+    public function actualizarButacas($idsButacas)
+    {
+        $idsButacasArray = explode(',', $idsButacas);
+
+        // Escapar y formatear los IDs para la consulta SQL
+        $idsButacasArray = array_map('intval', $idsButacasArray);
+        $idsButacasStr = implode(',', $idsButacasArray);
+
+        // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
+        $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    public function realizarReserva($idsButacas, $usuario_id, $horario_id)
+    {
+        $sql = "INSERT INTO reservas (usuario_id, horario_id) VALUES (:usuario_id, :horario_id)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+        $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $reserva_id = $this->pdo->lastInsertId();
+
+        $idsButacasArray = explode(',', $idsButacas);
+        foreach ($idsButacasArray as $asiento_id) {
+            $sql_asiento = "INSERT INTO reserva_asientos (reserva_id, asiento_id) VALUES (:reserva_id, :asiento_id)";
+            $stmt_asiento = $this->pdo->prepare($sql_asiento);
+            $stmt_asiento->bindParam(':reserva_id', $reserva_id, PDO::PARAM_INT);
+            $stmt_asiento->bindParam(':asiento_id', $asiento_id, PDO::PARAM_INT);
+            $stmt_asiento->execute();
+        }
+
+        return $reserva_id;
+    }
+
+    public function enviarCorreo($email, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada)
+    {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.hostinger.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'no-reply@magiccinema.es';
+            $mail->Password = 'MagicCinema2024*';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
+
+            $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = 'Reserva Confirmada';
+
+            $body = "
+            <!DOCTYPE html>
+            <html lang='es'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        background-color: #f8f9fa;
+                        color: #343a40;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
+                    .header {
+                        background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+                        padding: 20px;
+                        border-radius: 8px 8px 0 0;
+                        color: #fff;
+                        text-align: center;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 24px;
+                    }
+                    .content {
+                        padding: 20px;
+                    }
+                    .content h2 {
+                        color: #ff55a5;
+                        font-size: 20px;
+                        margin-top: 0;
+                    }
+                    .content p {
+                        margin: 10px 0;
+                    }
+                    .content ul {
+                        list-style-type: none;
+                        padding: 0;
+                    }
+                    .content ul li {
+                        background-color: #f1f1f1;
+                        margin: 5px 0;
+                        padding: 10px;
+                        border-radius: 4px;
+                    }
+                    .footer {
+                        text-align: center;
+                        padding: 20px;
+                        font-size: 12px;
+                        color: #6c757d;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>Reserva Confirmada</h1>
+                    </div>
+                    <div class='content'>
+                        <h2>Gracias por tu reserva. Aquí está la información detallada:</h2>
+                        <p><strong>Película:</strong> {$titulo_pelicula}</p>
+                        <p><strong>Fecha y Hora:</strong> {$fecha_formateada} a las {$hora_formateada}</p>
+                        <p><strong>Asientos:</strong></p>
+                        <ul>";
+
+            foreach ($asientos_info as $asiento) {
+                $body .= "<li>Sala: {$asiento['sala']} - Fila: {$asiento['fila']}, Columna: {$asiento['columna']}</li>";
+            }
+
+            $body .= "
+                        </ul>
+                    </div>
+                    <div class='footer'>
+                        &copy; 2024 Magic Cinema. Todos los derechos reservados.
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            $mail->Body = $body;
+
+
+            $mail->send();
+        } catch (Exception $e) {
+            echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
+        }
+    }
+}
 
 if (isset($_POST['pagar'])) {
     $procesarPago = new ProcesarPago();
     $procesarPago->actualizarButacas($idsButacas);
-    $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
+    $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
+
+    // Obtener los detalles de los asientos recién reservados
+    $idsButacasArray = explode(',', $idsButacas);
+    $asientos_info = [];
+    foreach ($idsButacasArray as $asiento_id) {
+        $query = "SELECT salas.nombre AS sala, asientos.fila, asientos.columna 
+                  FROM asientos 
+                  INNER JOIN salas ON asientos.sala_id = salas.sala_id 
+                  WHERE asiento_id = :asiento_id";
+        $statement = $conexion->prepare($query);
+        $statement->bindParam(':asiento_id', $asiento_id);
+        $statement->execute();
+        $asientos_info[] = $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Enviar correo con los detalles de los asientos
+    $procesarPago->enviarCorreo($email, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
+
+    // Mostrar los detalles en la página de confirmación
+    $_SESSION['asientos_info'] = $asientos_info;
+    $_SESSION['titulo_pelicula'] = $titulo_pelicula;
+    $_SESSION['fecha_formateada'] = $fecha_formateada;
+    $_SESSION['hora_formateada'] = $hora_formateada;
+
 }
 
 
@@ -179,8 +310,8 @@ if (isset($_POST['pagar'])) {
                     }
                     ?>
                 </ul>
-                <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;  margin-top: 20px;"">Correo Electrónico:</h3>
-                <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $correoUsuario; ?></p>
+                <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;  margin-top: 20px;">Correo Electrónico:</h3>
+                <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $email; ?></p>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha y Hora:</h3>
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $fecha_formateada . ' ' . $hora_formateada; ?></p>
 

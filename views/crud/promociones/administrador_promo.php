@@ -2,7 +2,7 @@
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$statement = $pdo->prepare("SELECT * FROM promociones");
+$statement = $pdo->prepare("SELECT * FROM promociones ORDER BY promocion_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 ?>

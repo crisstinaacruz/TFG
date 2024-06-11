@@ -14,6 +14,7 @@ $sql = "
     JOIN salas s ON h.sala_id = s.sala_id
     JOIN asientos a ON s.sala_id = a.sala_id
     WHERE h.horario_id = :id_horario
+    ORDER BY a.asiento_id
 ";
 
 $stmt = $conexion->prepare($sql);
@@ -164,7 +165,7 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     <div id="comprar-entrada" style="display: none;">
                         <a id="enlace-comprar-entrada" href="tipoEntrada.php" class="btn btn-primary m-3" style="font-family: 'Open Sans', sans-serif; background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>
                     </div>
-                    <p style="color: red; font-family: 'Open Sans', sans-serif;" id="error-message"></p>
+                    <p style="color: red; font-family: 'Open Sans', sans-serif;" id="mensaje-error"></p>
                 </div>
             </div>
         </div>

@@ -193,7 +193,6 @@ class ProcesarPago
 
             $mail->Body = $body;
 
-
             $mail->send();
         } catch (Exception $e) {
             echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
@@ -220,17 +219,9 @@ if (isset($_POST['pagar'])) {
         $asientos_info[] = $statement->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Enviar correo con los detalles de los asientos
     $procesarPago->enviarCorreo($email, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
 
-    // Mostrar los detalles en la página de confirmación
-    $_SESSION['asientos_info'] = $asientos_info;
-    $_SESSION['titulo_pelicula'] = $titulo_pelicula;
-    $_SESSION['fecha_formateada'] = $fecha_formateada;
-    $_SESSION['hora_formateada'] = $hora_formateada;
-
 }
-
 
 ?>
 

@@ -145,13 +145,15 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 $clase_asiento = 'seat';
                                 if ($estado == 'Disponible') {
                                     $clase_asiento .= ' available';
+                                    $descripcion = 'Disponible';
                                 } elseif ($estado == 'Seleccionado') {
                                     $clase_asiento .= ' selected';
                                 } elseif ($estado == 'Ocupado') {
                                     $clase_asiento .= ' occupied';
+                                    $descripcion = 'Ocupado';
                                 }
                                 $id = $idButacas[$fila][$columna];
-                                echo '<i class="fa-solid fa-chair ' . $clase_asiento . ' enlarge-icon p-2" data-id="' . $id . '" onclick="seleccionarButaca(this, ' . $fila . ', ' . $columna . ', \'' . $estado . '\')"></i>';
+                                echo '<i class="fa-solid fa-chair ' . $clase_asiento . ' enlarge-icon p-2" data-id="' . $id . '" onclick="seleccionarButaca(this, ' . $fila . ', ' . $columna . ', \'' . $estado . '\')" data-toggle="tooltip" data-placement="top" title="' . $descripcion, $id . '"></i>';
                             }
                         }
                         ?>

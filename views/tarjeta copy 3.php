@@ -15,15 +15,15 @@ $usuario_id = $_SESSION['usuario_id'];
 $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
 $email = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : null;
 $correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
-$horario_id = $_GET['idHorario'];
+$id_horario = $_GET['idHorario'];
 $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
 
 
 
 // Obtiene la fecha del horario y el pelicula_id
-$query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :horario_id";
+$query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :id_horario";
 $statement_fecha = $conexion->prepare($query_fecha);
-$statement_fecha->bindParam(':horario_id', $horario_id);
+$statement_fecha->bindParam(':id_horario', $id_horario);
 $statement_fecha->execute();
 $resultado_horario = $statement_fecha->fetch(PDO::FETCH_ASSOC);
 $fecha_horario = $resultado_horario['fecha'];
@@ -71,33 +71,65 @@ $titulo_pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC)['titulo'];
         }
     
     
-        public function realizarReserva($idsButacas, $usuario_id, $horario_id)
+        public function realizarReserva($idsButacas, $usuario_id, $id_horario)
         {
             $idsButacasArray = explode(',', $idsButacas);
             foreach ($idsButacasArray as $asientoId) {
                 // Obtener información sobre el asiento desde la base de datos (ajusta según tu esquema)
-
+                $infoAsiento = $this->obtenerInfoAsiento($asientoId);
                 // Realizar inserción en la tabla de reservas
-                $sql = "INSERT INTO reservas (usuario_id, horario_id, asiento_id) VALUES (:usuario_id, :horario_id, :asiento_id)";
+                $sql = "INSERT INTO reservas (usuario_id, id_horario, asiento_id) VALUES (:usuario_id, :id_horario, :asiento_id)";
                 $stmt = $this->pdo->prepare($sql);
     
                 $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-                $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
+                $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
                 $stmt->bindParam(':asiento_id', $asientoId, PDO::PARAM_INT);
                 $stmt->execute();
     
-                
+                $this->enviarCorreo($email, $infoAsiento);
             }
         }
     
-       
+        public function enviarCorreo($email, $infoAsiento)
+        {
+            // Configuración de PHPMailer
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.hostinger.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'no-reply@magiccinema.es';
+                $mail->Password = 'MagicCinema2024*';
+                $mail->SMTPSecure = 'ssl';
+                $mail->Port = 465;
+    
+                $mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
+                $mail->addAddress($email);
+    
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Subject = 'Reserva Confirmada';
+    
+                $body = "Gracias por tu reserva. Aquí está la información detallada:<br><br>" .
+                    "Película: {$infoAsiento['titulo_pelicula']}<br>" .
+                    "Sala: {$infoAsiento['nombre_sala']}<br>" .
+                    "Asiento: Fila {$infoAsiento['fila']}, Columna {$infoAsiento['columna']}<br>";
+    
+                $mail->Body = $body;
+    
+                $mail->send();
+            } catch (Exception $e) {
+                echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
+            }
+        }
     }
 
 
 if (isset($_POST['pagar'])) {
+    // Verificar si el formulario ha sido enviado y luego llamar a la función realizarReserva
     $procesarPago = new ProcesarPago();
     $procesarPago->actualizarButacas($idsButacas);
-    $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
+    $procesarPago->realizarReserva($idsButacas, $usuario_id, $id_horario);
 }
 
 
@@ -185,7 +217,7 @@ if (isset($_POST['pagar'])) {
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $fecha_formateada . ' ' . $hora_formateada; ?></p>
 
                 <form method="post">
-                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar" title="Tooltip sobre un botón">Pagar</button>
+                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar">Pagar</button>
                 </form>
 
             </div>

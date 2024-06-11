@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// Verifica si la conexión fue exitosa
 	if ($conexion) {
 		// Recupera el correo electrónico y la contraseña del formulario de inicio de sesión
-		$email = $_POST["user"];
+		$email = $_POST["correo"];
 		$password = $_POST["password"];
 
 		// Crea la consulta SQL para verificar las credenciales del usuario
@@ -208,7 +208,7 @@ function enviarCorreoConfirmacion($email, $verificationCode)
 							</a>
 
 							<div class="sign__group">
-								<input type="text" name="user" class="sign__input" placeholder="Correo electrónico" required>
+								<input type="text" name="correo" class="sign__input" placeholder="Correo electrónico" required>
 							</div>
 
 							<div class="sign__group">

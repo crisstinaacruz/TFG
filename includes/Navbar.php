@@ -1,12 +1,32 @@
 <?php
 
 
+include_once "../includes/config.php";
+
+
+
 class Navbar
 {
+
+    private static function obtenerUsuarioId($email) {
+        $conexion = ConnectDatabase::conectar();
+        if ($conexion) {
+            $query = "SELECT usuario_id FROM usuarios WHERE email = :email";
+            $stmt = $conexion->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['usuario_id'] : null;
+        }
+        return null;
+    }
+
+
     public static function renderAuthenticatedNavbar($email)
     {
         
-        $_SESSION['usuario'] = $email; 
+        $user_id = self::obtenerUsuarioId($email);
+        $_SESSION['usuario_id'] = $user_id;
 
         if ($email == "admi@gmail.com") {          
             echo '<header class="header">

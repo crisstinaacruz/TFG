@@ -2,8 +2,7 @@
 
 session_start();
 
-
-include_once "includes/Navbar.php";
+include_once "../includes/Navbar.php";
 
 // Define variables para los campos del formulario
 $nombreUsuario = '';
@@ -22,15 +21,15 @@ $numeroTotalIDs = count($idsButacasArray);
 
 
 // Si el usuario ha iniciado sesión, obtén los datos del usuario desde la base de datos
-if (!empty($_SESSION["usuario"])) {
+if (!empty($_SESSION["email"])) {
     try {
         // Conecta con la base de datos utilizando tu clase de conexión
         include_once '../includes/config.php';
         $conexion = ConnectDatabase::conectar();
 
-        // Prepara y ejecuta la consulta SQL para obtener los datos del usuario
-        $consulta = $conexion->prepare("SELECT nombre, apellidos, email FROM usuarios WHERE email = :usuario");
-        $consulta->bindParam(':usuario', $_SESSION['usuario'], PDO::PARAM_INT);
+        $usuario_id = $_SESSION['usuario_id'];
+        $consulta = $conexion->prepare("SELECT nombre, apellidos, email FROM usuarios WHERE usuario_id = :usuario_id");
+        $consulta->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
         $consulta->execute();
 
         // Obtiene los resultados

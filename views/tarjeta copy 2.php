@@ -15,15 +15,15 @@ $usuario_id = $_SESSION['usuario_id'];
 $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
 $email = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : null;
 $correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
-$horario_id = $_GET['idHorario'];
+$id_horario = $_GET['idHorario'];
 $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
 
 
 
 // Obtiene la fecha del horario y el pelicula_id
-$query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :horario_id";
+$query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :id_horario";
 $statement_fecha = $conexion->prepare($query_fecha);
-$statement_fecha->bindParam(':horario_id', $horario_id);
+$statement_fecha->bindParam(':id_horario', $id_horario);
 $statement_fecha->execute();
 $resultado_horario = $statement_fecha->fetch(PDO::FETCH_ASSOC);
 $fecha_horario = $resultado_horario['fecha'];
@@ -42,9 +42,44 @@ $titulo_pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC)['titulo'];
 
 
 
+// Generar firma para Redsys
+function generateSignature($parameters, $key) {
+    $key = base64_decode($key);
+    $iv = openssl_random_pseudo_bytes(16);
+    $key = openssl_encrypt($parameters, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+    return base64_encode($key);
+}
+
+// Datos del comercio
+$merchantCode = "tu_codigo_comercio";
+$terminal = "1";
+$amount = $total * 100; // Importe en céntimos
+$currency = "978"; // Código ISO 4217 de la moneda (EUR)
+$order = "pedido123"; // Número de pedido
+$productDescription = "Descripción del producto";
+$titular = "Nombre del titular";
+$urlOK = "comprafin.php";
+$urlKO = "compra-fallida.php";
 
 
+// Datos a firmar
+$parameters = json_encode(array(
+    'Ds_Merchant_MerchantCode' => $merchantCode,
+    'Ds_Merchant_Terminal' => $terminal,
+    'Ds_Merchant_Amount' => $amount,
+    'Ds_Merchant_Currency' => $currency,
+    'Ds_Merchant_Order' => $order,
+    'Ds_Merchant_ProductDescription' => $productDescription,
+    'Ds_Merchant_Titular' => $titular,
+    'Ds_Merchant_UrlOK' => $urlOK,
+    'Ds_Merchant_UrlKO' => $urlKO
+));
 
+// Clave secreta proporcionada por Redsys
+$secretKey = "clave_secreta";
+$signature = generateSignature($parameters, $secretKey);
+
+if (isset($_POST['pagar'])) {
     class ProcesarPago
     {
         private $pdo;
@@ -71,35 +106,59 @@ $titulo_pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC)['titulo'];
         }
     
     
-        public function realizarReserva($idsButacas, $usuario_id, $horario_id)
+        public function realizarReserva($idsButacas, $usuario_id, $email, $id_horario)
         {
             $idsButacasArray = explode(',', $idsButacas);
             foreach ($idsButacasArray as $asientoId) {
                 // Obtener información sobre el asiento desde la base de datos (ajusta según tu esquema)
-
+                $infoAsiento = $this->obtenerInfoAsiento($asientoId);
                 // Realizar inserción en la tabla de reservas
-                $sql = "INSERT INTO reservas (usuario_id, horario_id, asiento_id) VALUES (:usuario_id, :horario_id, :asiento_id)";
+                $sql = "INSERT INTO reservas (usuario_id, id_horario, asiento_id) VALUES (:usuario_id, :id_horario, :asiento_id)";
                 $stmt = $this->pdo->prepare($sql);
     
                 $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-                $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
+                $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
                 $stmt->bindParam(':asiento_id', $asientoId, PDO::PARAM_INT);
                 $stmt->execute();
     
-                
+                $this->enviarCorreo($email, $infoAsiento);
             }
         }
     
-       
+        public function enviarCorreo($email, $infoAsiento)
+        {
+            // Configuración de PHPMailer
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.hostinger.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'no-reply@magiccinema.es';
+                $mail->Password = 'MagicCinema2024*';
+                $mail->SMTPSecure = 'ssl';
+                $mail->Port = 465;
+    
+                $mail->setFrom('no-reply@magiccinema.es', 'no-reply@magiccinema.es');
+                $mail->addAddress($email);
+    
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Subject = 'Reserva Confirmada';
+    
+                $body = "Gracias por tu reserva. Aquí está la información detallada:<br><br>" .
+                    "Película: {$infoAsiento['titulo_pelicula']}<br>" .
+                    "Sala: {$infoAsiento['nombre_sala']}<br>" .
+                    "Asiento: Fila {$infoAsiento['fila']}, Columna {$infoAsiento['columna']}<br>";
+    
+                $mail->Body = $body;
+    
+                $mail->send();
+            } catch (Exception $e) {
+                echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
+            }
+        }
     }
-
-
-if (isset($_POST['pagar'])) {
-    $procesarPago = new ProcesarPago();
-    $procesarPago->actualizarButacas($idsButacas);
-    $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
 }
-
 
 ?>
 
@@ -183,16 +242,28 @@ if (isset($_POST['pagar'])) {
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $correoUsuario; ?></p>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha y Hora:</h3>
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $fecha_formateada . ' ' . $hora_formateada; ?></p>
+                <form id="paymentForm" method="POST" action="https://sis-t.redsys.es:25443/sis/realizarPago">
+                    <!-- Datos del comercio -->
+                    <input type="hidden" name="Ds_Merchant_MerchantCode" value="<?php echo $merchantCode; ?>">
+                    <input type="hidden" name="Ds_Merchant_Terminal" value="<?php echo $terminal; ?>">
+                    <input type="hidden" name="Ds_Merchant_Amount" value="<?php echo $amount; ?>">
+                    <input type="hidden" name="Ds_Merchant_Currency" value="<?php echo $currency; ?>">
+                    <input type="hidden" name="Ds_Merchant_Order" value="<?php echo $order; ?>">
+                    <input type="hidden" name="Ds_Merchant_ProductDescription" value="<?php echo $productDescription; ?>">
+                    <input type="hidden" name="Ds_Merchant_Titular" value="<?php echo $titular; ?>">
+                    <input type="hidden" name="Ds_Merchant_UrlOK" value="<?php echo $urlOK; ?>">
+                    <input type="hidden" name="Ds_Merchant_UrlKO" value="<?php echo $urlKO; ?>">
+                    <input type="hidden" name="Ds_Merchant_MerchantSignature" value="<?php echo $signature; ?>">
+                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar">Pagar</button>
 
-                <form method="post">
-                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar" title="Tooltip sobre un botón">Pagar</button>
+                    
+
                 </form>
-
             </div>
         </div>
     </section>
 
- 
+    <!-- footer -->
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();

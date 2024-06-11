@@ -107,20 +107,7 @@ function enviarCorreoConfirmacion($email) {
                     border-top: 1px solid #ddd;
                     padding-top: 10px;
                 }
-                .button {
-                    background: linear-gradient(90deg, #ff007f, #ff7f00);
-                    padding: 10px 20px;
-                    text-align: center;
-                    text-decoration: none;
-                    display: block;
-                    font-size: 16px;
-                    margin: 20px auto;
-                    border-radius: 5px;
-                    width: fit-content;
-                }
-                a.button:hover {
-                    background: linear-gradient(90deg, #e60073, #e67300);
-                }
+                
             </style>
         </head>
         <body>
@@ -132,7 +119,6 @@ function enviarCorreoConfirmacion($email) {
                     <h2>Bienvenido a Magic Cinema</h2>
                     <p>Gracias por registrarte en nuestro sitio. Tu cuenta ha sido creada con éxito.</p>
                     <p>Ahora puedes disfrutar de todas las ventajas y novedades que ofrecemos.</p>
-                    <a href="https://magiccinema.es" class="button" style="color: #FFFFFF;">Visítanos</a>
                 </div>
                 <div class="footer">
                     <p>&copy; 2024 Magic Cinema. Todos los derechos reservados.</p>
@@ -263,7 +249,6 @@ function enviarCorreoConfirmacion($email) {
 		}
 	</script>
 
-	<!-- JS -->
 	<script src="../../assets/js/jquery-3.3.1.min.js"></script>
 	<script src="../../assets/js/bootstrap.bundle.min.js"></script>
 	<script src="../../assets/js/owl.carousel.min.js"></script>

@@ -60,7 +60,7 @@ class BillboardHandler
 
         echo '<div class="item">
             <div class="card card--big border border-0" style="background-color: transparent;">
-                <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
+                <a href="../includes/session.php?id_pelicula=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
 
                 <div class="card__content">
                     <h3 class="card__title">', $titulo, '</h3>
@@ -123,12 +123,12 @@ class BillboardHandler
             <div class="card card--list border border-0" style="background-color: transparent;">
                 <div class="row">
                     <div class="col-12 col-sm-4">
-                        <a href="../views/pelicula.php?id=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
+                        <a href="../includes/session.php?id_pelicula=', $id_pelicula, '"><img src="', $imagen_ruta, '" class="card-img-top" alt="', $titulo, '"></a>
                     </div>
 
                     <div class="col-12 col-sm-8">
                         <div class="card__content mt-1">
-                            <h3 class="card__title mt-1"><a href="../views/pelicula.php?id=', $id_pelicula, '">', $id_pelicula, $titulo, '</a></h3>
+                            <h3 class="card__title mt-1"><a href="../includes/session.php?id_pelicula=', $id_pelicula, '">', $id_pelicula, $titulo, '</a></h3>
                             <span class="card__category">
                                 <a href="#">', $genero, '</a>
                             </span>

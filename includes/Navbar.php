@@ -15,8 +15,8 @@ class Navbar
             $stmt = $conexion->prepare($query);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result['usuario_id'] : null;
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado ? $resultado['usuario_id'] : null;
         }
         return null;
     }
@@ -145,9 +145,6 @@ class Navbar
                                                 <div class="row my-3">
                                                     <div class="col-12 my-2">
                                                         <a href="../views/user.php">Ver perfil</a>
-                                                    </div>
-                                                    <div class="col-12 my-2">
-                                                        <a href="../../views/reservas.php">Mis reservas</a>
                                                     </div>
                                                 </div>
                                                 <form class="d-flex" role="Cerrar sesion" method="POST" action="../../includes/cerrarSesion.php">

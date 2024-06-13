@@ -2,8 +2,6 @@
 
 session_start();
 
-include_once "../includes/Navbar.php";
-
 // Define variables para los campos del formulario
 $nombreUsuario = '';
 $apellidosUsuario = '';
@@ -12,9 +10,9 @@ $correoUsuario = '';
 
 // Si el formulario se envió por POST, procesa las butacas seleccionadas
 // Recuperar el número total de butacas desde la URL
-$id_horario = isset($_GET['idHorario']) ? $_GET['idHorario'] : '';
-$totalButacas = isset($_GET['butacas']) ? $_GET['butacas'] : 0;
-$idsButacas = isset($_GET['id']) ? $_GET['id'] : '';
+$id_horario = $_SESSION['horario_id'];
+$totalButacas = isset($_SESSION['butacas']) ? $_SESSION['butacas'] : 0;
+$idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
 $idsButacasArray = is_array($idsButacas) ? $idsButacas : explode(',', $idsButacas);
 $numeroTotalIDs = count($idsButacasArray);
 
@@ -40,7 +38,6 @@ if (!empty($_SESSION["email"])) {
         $apellidosUsuario = $resultado['apellidos'];
         $correoUsuario = $resultado['email'];
 
-        // Almacena el correo electrónico en una cookie con una duración de 1 hora
     } catch (PDOException $e) {
         // Maneja cualquier error en la conexión o la consulta
         echo "Error: " . $e->getMessage();
@@ -179,7 +176,7 @@ if (!empty($_SESSION["email"])) {
         </div>
         <div class="container">
 
-            <form action="procesarCompra.php" method="post" class="sign__form" onsubmit="return validarFormulario();">
+            <form method="post" class="sign__form" onsubmit="return validarFormulario();">
 
                 <div class="sign__group">
                     <input type="text" id="nombre" name="nombre" class="sign__input" placeholder="Nombre" value="<?php echo $nombreUsuario; ?>" required>
@@ -197,7 +194,6 @@ if (!empty($_SESSION["email"])) {
                 var maxEntradas = <?php echo $totalButacas; ?>;
                 var totalEntradasSeleccionadas = 0; // Inicializar el total de butacas seleccionadas
 
-                // Resto del código JavaScript...
             </script>
 
             <table>
@@ -254,7 +250,7 @@ if (!empty($_SESSION["email"])) {
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: right;">Total</td>
-                    <td id="total">0.00</td>
+                    <td id="precio">0.00</td>
                 </tr>
             </table>
 
@@ -327,28 +323,17 @@ if (!empty($_SESSION["email"])) {
 
             // Verificar si el total seleccionado es igual al máximo permitido
             if (totalSeleccionado === maxEntradas) {
-                <?php if (!empty($_SESSION["usuario"])) : ?>
-                    var correoUsuario = <?php echo json_encode($correoUsuario); ?>;
-                <?php else : ?>
-                    var correoUsuario = document.getElementById('correo').value.trim();
-                <?php endif; ?>
+                
+                var correoUsuario = document.getElementById('correo').value;
+                    var precio = parseFloat(document.getElementById('precio').innerText).toFixed(2);
 
-                // Validar el formulario y redirigir si es válido
-                if (validarFormulario(correoUsuario)) {
-                    var total = parseFloat(document.getElementById('total').innerText).toFixed(2);
 
-                    // Pasar directamente los IDs de las butacas al script
-                    var idsButacas = <?php echo json_encode($idsButacasArray); ?>;
 
                     // Agregar el código restante...
-                    var url = "../views/bar.php?total=" + total + "&idsButacas=" + idsButacas.join(',') + "&correo=" + correoUsuario + "&idHorario=<?php echo $id_horario ?>";
+                    var url = "../includes/session.php?precio=" + precio + "&correo=" + correoUsuario;
                     window.location.href = url;
                     return true; // Permite que el formulario se envíe
-                } else {
-                    // Mostrar un mensaje indicando al usuario que debe seleccionar todas las entradas
-                    alert("Completa todos los campos.");
-                    return false; // Detiene el envío del formulario
-                }
+                
             } else {
                 // Mostrar un mensaje indicando al usuario que debe seleccionar todas las entradas
                 alert("Debes seleccionar todas las entradas disponibles antes de continuar.");
@@ -356,23 +341,7 @@ if (!empty($_SESSION["email"])) {
             }
         }
 
-        function obtenerIdsButacas() {
-            var idsButacas = [];
 
-            // Loop through the selected seats and get their IDs
-            for (var i = 0; i < maxEntradas; i++) {
-                var idButaca = obtenerIdButaca(i);
-                idsButacas.push(idButaca);
-            }
-
-            return idsButacas;
-        }
-
-        function obtenerIdButaca(indice) {
-            // Modify this function to get the actual seat IDs based on your implementation
-            // Example: return document.getElementById('butaca' + indice).value;
-            return "ID-Butaca-" + indice;
-        }
 
 
         // Función para incrementar la cantidad
@@ -437,15 +406,15 @@ if (!empty($_SESSION["email"])) {
         // Función para actualizar el total
         function actualizarTotal() {
             var subtotales = document.querySelectorAll('[id^="subtotal"]');
-            var total = 0;
+            var precio = 0;
 
             subtotales.forEach(function(subtotal) {
-                total += parseFloat(subtotal.innerText);
+                precio += parseFloat(subtotal.innerText);
             });
 
             // Actualizar el total en la tabla
-            var totalElemento = document.getElementById('total');
-            totalElemento.innerText = total.toFixed(2);
+            var precioElemento = document.getElementById('precio');
+            precioElemento.innerText = precio.toFixed(2);
         }
     </script>
 

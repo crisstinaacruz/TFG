@@ -2,8 +2,17 @@
 session_start();
 include_once '../includes/config.php';
 
-// Obtén el id_horario de la URL
-$id_horario = $_GET['id'];
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: Login.php");
+    exit();
+}
+
+$id_horario = $_SESSION['horario_id'];
+
+if (!isset($_SESSION['horario_id']) || $_SESSION['horario_id'] === 0) {
+    header("Location: cartelera.php");
+    exit();
+}
 
 // Realiza una consulta para obtener la información de los asientos disponibles
 $conexion = ConnectDatabase::conectar();
@@ -237,7 +246,7 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
                 // Modificar el enlace para incluir los parámetros
                 var enlaceComprarEntrada = document.getElementById('enlace-comprar-entrada');
-                enlaceComprarEntrada.href = 'tipoEntrada.php?butacas=' + butacasSeleccionadas.length + '&id=' + idsButacas.join(',') + '&idHorario=<?php echo $id_horario ?>';
+                enlaceComprarEntrada.href = '/../includes/session.php?butacas=' + butacasSeleccionadas.length + '&id=' + idsButacas.join(',') + '&horario=<?php echo $id_horario ?>';
             } else {
                 comprarEntradaElement.style.display = 'none';
             }

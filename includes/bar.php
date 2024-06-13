@@ -1,21 +1,21 @@
 <?php
 
+
 class BarHandler
 {
     public static function obtenerBar($pdo)
     {
         try {
-            $total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
-            $idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
-            $correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
-            $id_horario = $_GET['idHorario'];
 
             // Realizar la consulta a la base de datos para obtener las experiencias limitadas
-            $stmt = $pdo->prepare("SELECT * FROM bar");
+            $stmt = $pdo->prepare("SELECT * FROM bar ORDER BY bar_id");
             $stmt->execute();
 
             $experiencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
+
+            $precio = isset($_SESSION['precio']) ? floatval($_SESSION['precio']) : 0.00;
+
+            ?>
             <div class="row d-flex justify-content-center">
                 <?php foreach ($experiencias as $experiencia) : ?>
                     <div class="col-md-5 col-12">
@@ -25,7 +25,7 @@ class BarHandler
                                 <h5 class="card-title fw-bold" style="color: #fff; font-family: 'Open Sans', sans-serif;"><?php echo htmlspecialchars($experiencia['titulo']); ?></h5>
                                 <p class="card-text" style="color: #fff; font-family: 'Open Sans', sans-serif;"><?php echo htmlspecialchars($experiencia['precio']); ?> €</p>
                                 <button class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">
-                                <a href="../views/tarjeta.php?total=<?php echo ($total + $experiencia['precio']); ?>&idsButacas=<?php echo $idsButacas ?>&correo=<?php echo $correoUsuario?>&idHorario=<?php echo $id_horario ?>" style="text-decoration: none; color: #fff;">Continuar</a>
+                                <a href="../includes/session.php?total=<?php echo ($precio + $experiencia['precio']); ?>" style="text-decoration: none; color: #fff;">Continuar</a>
                                 </button>
                             </div>
                         </div>
@@ -33,7 +33,7 @@ class BarHandler
                 <?php endforeach; ?>
             </div>
             <button class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">
-                <a href="../views/tarjeta.php?total=<?php echo $total ?> &idsButacas=<?php echo $idsButacas ?> &correo=<?php echo $correoUsuario?> &idHorario=<?php echo $id_horario?>" style="text-decoration: none; color: #fff;">Continuar sin producto</a>
+                <a href="../includes/session.php?total=<?php echo $precio ?>" style="text-decoration: none; color: #fff;">Continuar sin producto</a>
             </button>
 
 <?php

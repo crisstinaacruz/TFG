@@ -12,10 +12,11 @@ $conexion = ConnectDatabase::conectar();
 $usuario_id = $_SESSION['usuario_id'];
 
 // Obtiene los datos necesarios desde la URL
-$idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
-$email = isset($_SESSION["email"]) ? $_SESSION["email"] : null;
-$horario_id = $_GET['idHorario'];
-$total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
+$idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
+$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
+$correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
+$horario_id = $_SESSION['horario_id'];
+$total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
 
 
 
@@ -86,7 +87,7 @@ class ProcesarPago
         return $reserva_id;
     }
 
-    public function enviarCorreo($email, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada)
+    public function enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada)
     {
         $mail = new PHPMailer(true);
         try {
@@ -99,7 +100,7 @@ class ProcesarPago
             $mail->Port = 465;
 
             $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
-            $mail->addAddress($email);
+            $mail->addAddress($correoUsuario);
 
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8';
@@ -219,9 +220,9 @@ if (isset($_POST['pagar'])) {
         $asientos_info[] = $statement->fetch(PDO::FETCH_ASSOC);
     }
 
-    $procesarPago->enviarCorreo($email, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
-
+    $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
 }
+
 
 ?>
 
@@ -244,7 +245,7 @@ if (isset($_POST['pagar'])) {
     <link rel="stylesheet" href="../assets/css/photoswipe.css">
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
     <meta name="description" content="">
     <meta name="keywords" content="">
     <title>Magic Cinema - Resumen de Compra</title>
@@ -272,7 +273,7 @@ if (isset($_POST['pagar'])) {
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="content__title">Resumen de Compra <?php echo $usuario_id; ?></h2>
+                        <h2 class="content__title">Resumen de Compra <?php echo $usuario_id, $correoUsuario; ?></h2>
                     </div>
                 </div>
             </div>
@@ -302,11 +303,14 @@ if (isset($_POST['pagar'])) {
                     ?>
                 </ul>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;  margin-top: 20px;">Correo Electrónico:</h3>
-                <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $email; ?></p>
+                <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $correoUsuario; ?></p>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha y Hora:</h3>
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $fecha_formateada . ' ' . $hora_formateada; ?></p>
+                <h1>Pago con Redsys</h1>
+    <form method="POST">
 
-                <form method="post">
+
+
                     <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar" title="Tooltip sobre un botón">Pagar</button>
                 </form>
 

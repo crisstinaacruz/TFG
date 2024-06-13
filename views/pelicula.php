@@ -3,11 +3,10 @@ session_start();
 include_once '../includes/peliculaFunctions.php';
 include_once '../includes/config.php';
 
-// Obtener el ID de la película desde la URL
-$id_pelicula = isset($_GET['id']) ? intval($_GET['id']) : null;
 
-if ($id_pelicula === 0) {
-    // Redirigir a cartelera.php si no se proporciona un ID de película válido
+$id_pelicula = $_SESSION['id_pelicula'];
+
+if (!isset($_SESSION['id_pelicula']) || $_SESSION['id_pelicula'] === 0) {
     header("Location: cartelera.php");
     exit();
 }
@@ -76,20 +75,12 @@ if (!$pelicula_existe) {
     <section class="section details">
         <div class="details__bg" data-bg="img/home/home__bg.jpg"></div>
 
-        <?php
-
-
-    if ($pelicula_existe) {
-        // Mostrar información de la película
-        echo InfoPeliculaHandler::obtenerInformacionPelicula($id_pelicula);
-    } else {
-        // Redirigir a cartelera.php si la película no existe
-        header("Location: cartelera.php");
-        exit();
-    }
-
-?>
-
+    <?php
+        if ($pelicula_existe) {
+            // Mostrar información de la película
+            echo InfoPeliculaHandler::obtenerInformacionPelicula($id_pelicula);
+        }
+    ?>
 
         </div>
         </div>
@@ -109,15 +100,9 @@ if (!$pelicula_existe) {
             </div>
         </div>
         <?php
-        include_once '../includes/peliculaFunctions.php';
-
-        // Supongamos que recibes el ID de la película como parámetro GET
-        $id_pelicula = isset($_GET['id']) ? $_GET['id'] : null;
-
         // Llama a la función para obtener la información de la película en formato HTML
         echo InfoPeliculaHandler::obtenerInformacionPeliculaEntrada($id_pelicula);
         ?>
-
     </section>
 
     <?php
@@ -139,5 +124,4 @@ if (!$pelicula_existe) {
     <script src="../assets/js/main.js"></script>
 
 </body>
-
 </html>

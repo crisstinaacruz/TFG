@@ -1,15 +1,12 @@
 <?php
 session_start();
 
-$total = isset($_GET['total']) ? floatval($_GET['total']) : 0.00;
-$idsButacas = isset($_GET['idsButacas']) ? $_GET['idsButacas'] : '';
-$correoUsuario = isset($_GET['correo']) ? $_GET['correo'] : '';
-$id_horario = $_GET['idHorario'];
 
+$precio = isset($_SESSION['precio']) ? floatval($_SESSION['precio']) : 0.00;
 
+$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
+$correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
 
-// Si los IDs de las butacas están separados por comas, conviértelos en un array
-$idsButacasArray = explode(',', $idsButacas);
 
 ?>
 <!DOCTYPE html>
@@ -71,7 +68,7 @@ $idsButacasArray = explode(',', $idsButacas);
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="content__title">Productos Bar<?php echo $idsButacas, $correoUsuario, $total, $id_horario, $_SESSION['usuario_id']; ?></h2>
+                        <h2 class="content__title">Productos Bar<?php echo $precio, $email, $correoUsuario; ?></h2>
                     </div>
                 </div>
             </div>
@@ -81,11 +78,8 @@ $idsButacasArray = explode(',', $idsButacas);
             <?php
             try {
                 include_once '../includes/config.php';
-
                 $pdo = ConnectDatabase::conectar();
-
                 require_once('../includes/bar.php');
-
                 BarHandler::obtenerBar($pdo);
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();

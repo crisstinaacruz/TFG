@@ -1,15 +1,16 @@
 <?php
-session_start(); // Asegúrate de que la sesión esté iniciada
+session_start();
 
-if (!empty($_SESSION["usuario"])) {
+
+if (!empty($_SESSION["usuario_id"])) {
     try {
         // Conecta con la base de datos utilizando tu clase de conexión
         include_once '../includes/config.php';
         $conexion = ConnectDatabase::conectar();
 
         // Prepara y ejecuta la consulta SQL para obtener los datos del usuario
-        $consulta = $conexion->prepare("SELECT nombre, apellidos, email FROM usuarios WHERE email = :email");
-        $consulta->bindParam(':email', $_SESSION['usuario'], PDO::PARAM_STR); // Ajusta según el campo de la sesión que contiene el email
+        $consulta = $conexion->prepare("SELECT nombre, apellidos, email FROM usuarios WHERE usuario_id = :usuario_id");
+        $consulta->bindParam(':usuario_id', $_SESSION['usuario_id'], PDO::PARAM_STR); // Ajusta según el campo de la sesión que contiene el email
         $consulta->execute();
 
         // Obtiene los resultados
@@ -19,7 +20,7 @@ if (!empty($_SESSION["usuario"])) {
             // Asigna los datos del usuario a las variables
             $nombreUsuario = $resultado['nombre'];
             $apellidosUsuario = $resultado['apellidos'];
-            $correoUsuario = $resultado['email'];
+            $correoUser = $resultado['email'];
         } else {
             echo "No se encontraron datos para el usuario.";
         }
@@ -86,7 +87,7 @@ if (!empty($_SESSION["usuario"])) {
                 <div class="row">
                     <div class="col-12">
                         <!-- content title -->
-                        <h2 class="content__title">Perfil de <?php echo $_SESSION["usuario"]; ?></h2>
+                        <h2 class="content__title">Perfil de <?php echo $correoUser; ?></h2>
                     </div>
                 </div>
             </div>
@@ -102,7 +103,7 @@ if (!empty($_SESSION["usuario"])) {
                     <input style="cursor: not-allowed;" type="text" id="apellidos" name="apellidos" class="sign__input" placeholder="Apellidos" value="<?php echo $apellidosUsuario; ?>" readonly required>
                 </div>
                 <div class="sign__group">
-                    <input style="cursor: not-allowed;" type="email" id="correo" name="correo" class="sign__input" placeholder="Correo Electronico" value="<?php echo $correoUsuario; ?>" readonly required>
+                    <input style="cursor: not-allowed;" type="email" id="correo" name="correo" class="sign__input" placeholder="Correo Electronico" value="<?php echo $correoUser; ?>" readonly required>
                 </div>
                 <button class="" style="font-family: 'Open Sans', sans-serif; background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Volver</button>
 

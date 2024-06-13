@@ -67,24 +67,24 @@ class InfoPeliculaHandler
             $horarios = self::obtenerHorariosPelicula($conexion, $id_pelicula);
 
             if ($horarios) {
-                foreach ($horarios as $fila) {
+                foreach ($horarios as $horario) {
                     echo '<div class="col-sm-4 mb-3 mb-sm-0">';
                     echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
                     echo '<div class="card-body p-3">';
-                    echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $fila['nombre_pelicula'] . '</h4>';
+                    echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $horario['nombre_pelicula'] . '</h4>';
 
-                    if (isset($fila['fecha'])) {
-                        $fechaFormateada = date('d-m-Y', strtotime($fila['fecha']));
-                        $horaFormateada = date('H:i', strtotime($fila['fecha']));
+                    if (isset($horario['fecha'])) {
+                        $fechaFormateada = date('d-m-Y', strtotime($horario['fecha']));
+                        $horaFormateada = date('H:i', strtotime($horario['fecha']));
                     } else {
                         $fechaFormateada = 'Fecha no disponible';
                         $horaFormateada = 'Hora no disponible';
                     }
 
                     echo '<p class="card-text text-white" style ="font-family: \'Open Sans\', sans-serif;"><strong>Fecha:</strong> ' . $fechaFormateada . '</p>';
-                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sala:</strong> ' . $fila['sala_nombre'] . '</p>';
+                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sala:</strong> ' . $horario['sala_nombre'] . '</p>';
                     echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sesión:</strong> ' . $horaFormateada . '</p>';
-                    echo '<a href="comprarEntrada.php?id=' . $fila['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
+                    echo '<a href="../includes/session.php?horario_id=' . $horario['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
                     echo '</div>';
                     echo '</div>';
                     echo '</div>';
@@ -139,8 +139,8 @@ class InfoPeliculaHandler
 
         if ($stmt->rowCount() > 0) {
             $resultados = [];
-            while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $resultados[] = $fila;
+            while ($horario = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $resultados[] = $horario;
             }
             return $resultados;
         } else {

@@ -74,7 +74,7 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
                                     <a href="../bar/administrador_bar.php" class="header__nav-link">Bar</a>
                                 </li>
 
-                                <a href="administrador_pelicula.php" class="header__sign-in">
+                                <a href="administrador_horario.php" class="header__sign-in">
                                     <i class="icon ion-ios-log-in"></i>
                                     <span>Volver</span>
                                 </a>
@@ -122,15 +122,6 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
         ?>
     </select>            </div>
             
-            <div class="mb-3">
-                <label for="columnas" class="form-label">Numero de columnas:</label>
-                <input type="text" class="form-control" name="columnmas" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="filas" class="form-label">Numero de filas:</label>
-                <input type="text" class="form-control" name="filas" required>
-            </div>
 
             <div class="mb-3">
                 <label for="date" class="form-label">Fecha:</label>

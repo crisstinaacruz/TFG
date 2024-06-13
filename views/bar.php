@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include_once '../includes/config.php';
 
 $precio = isset($_SESSION['precio']) ? floatval($_SESSION['precio']) : 0.00;
 
@@ -68,7 +68,7 @@ $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] 
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="content__title">Productos Bar<?php echo $precio, $email, $correoUsuario; ?></h2>
+                        <h2 class="content__title">Productos Bar</h2>
                     </div>
                 </div>
             </div>

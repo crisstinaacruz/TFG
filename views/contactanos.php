@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="col-md-12 py-3">
                                 <div class="md-form mb-0">
-                                    <label for="email" class="text-white" style="font-family: 'Open Sans', sans-serif;">Correo electronico</label>
+                                    <label for="email" class="text-white" style="font-family: 'Open Sans', sans-serif;">Correo electrónico</label>
                                     <input type="text" id="email" name="email" class="form-control" style="font-family: 'Open Sans', sans-serif;">
 
                                 </div>

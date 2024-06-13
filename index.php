@@ -132,7 +132,7 @@ session_start();
 				<img src="assets/img/peliculas-version-original-septiembre-cinesa.webp" class="card-img" alt="...">
 				<div class="card-img-overlay my-5">
 					<h5 class="card-title fw-bold" style="font-family: 'Open Sans', sans-serif;">¿Prefieres ver las películas en versión original?</h5>
-					<p class="card-text" style="font-family: 'Open Sans', sans-serif;">The Marvels, Los Juegos del Hambre, Five Nights at Freddy's... En Cinesa, encontrarás tus títulos preferidos también en Versión Original Subtitulada al Español.</p>
+					<p class="card-text" style="font-family: 'Open Sans', sans-serif;">The Marvels, Los Juegos del Hambre, Five Nights at Freddy's... En Magic Cinema, encontrarás tus títulos preferidos también en Versión Original Subtitulada al Español.</p>
 				</div>
 			</div>
 		</div>

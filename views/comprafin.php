@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -32,15 +30,47 @@ session_start();
 </head>
 
 <body>
-    <?php
-    include_once "../includes/Navbar.php";
+<header class="header">
+        <div class="header__wrap">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="header__content">
+                            <a href="../../../index.php" class="header__logo">
+                                <img src="../../../assets/img/Magic_Cinema-removebg-preview.png" alt="">
+                            </a>
 
-    if (isset($_SESSION["email"])) {
-        Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
-    } else {
-        Navbar::renderUnauthenticatedNavbar();
-    }
-    ?>
+                            <ul class="header__nav">
+                                <li class="header__nav-item">
+                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Peliculas</a>
+                                </li>
+
+                                <li class="header__nav-item">
+                                    <a href="../promociones/administrador_promo.php" class="header__nav-link">Promociones</a>
+                                </li>
+
+                                <li class="header__nav-item">
+                                    <a href="administrador_horario.php" class="header__nav-link">Horarios</a>
+                                </li>
+
+                                <li class="header__nav-item">
+                                    <a href="../bar/administrador_bar.php" class="header__nav-link">Bar</a>
+                                </li>
+
+                               
+                            </ul>
+
+                            <button class="header__btn" type="button">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     <section class="home">
         <div class="owl-carousel home__bg">
             <div class="item home__cover" data-bg="../assets/img/home/home__bg4.jpg"></div>

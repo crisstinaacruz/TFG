@@ -5,16 +5,18 @@ $pdo = ConnectDatabase::conectar();
 // Obtener los datos del formulario
 $sala = $_POST['sala'];
 $pelicula = $_POST['pelicula'];
-$columnas = $_POST['columnmas'];
-$filas = $_POST['filas'];
 $fecha = $_POST['fecha'];
 
 // Obtener Sala_ID y pelicula_ID
-$sqlSala = "SELECT sala_id FROM salas WHERE nombre = :sala";
+$sqlSala = "SELECT sala_id, filas, columnas FROM salas WHERE nombre = :sala";
 $stmtSala = $pdo->prepare($sqlSala);
 $stmtSala->bindParam(':sala', $sala, PDO::PARAM_STR);
 $stmtSala->execute();
-$salaId = $stmtSala->fetchColumn();
+$sala = $stmtSala->fetch(PDO::FETCH_ASSOC); // Obtener el resultado como array asociativo
+
+$salaId = $sala['sala_id'];
+$filas = $sala['filas'];
+$columnas = $sala['columnas'];
 
 $sqlPelicula = "SELECT pelicula_id FROM peliculas WHERE titulo = :pelicula";
 $stmtPelicula = $pdo->prepare($sqlPelicula);

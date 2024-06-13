@@ -31,21 +31,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$verificationCode = substr(md5(uniqid(mt_rand(), true)), 0, 6);
 
 				// Define la marca de tiempo de expiración (1 minuto desde ahora)
+				// Genera la fecha de expiración (1 minuto desde ahora)
 				$expirationTime = time() + 60;
 
 				// Inserta el código en la tabla check_codes
-				$insertSql = "INSERT INTO check_codes (email, codigo, expira_en) VALUES (:email, :codigo, :expiration)";
+				$insertSql = "INSERT INTO check_codes (email, codigo, expira_en) VALUES (:email, :codigo, CURRENT_TIMESTAMP + INTERVAL '1 minute')";
 				$insertStatement = $conexion->prepare($insertSql);
 				$insertStatement->bindValue(":email", $email, PDO::PARAM_STR);
 				$insertStatement->bindValue(":codigo", $verificationCode, PDO::PARAM_STR);
-				$insertStatement->bindValue(":expiration", date('Y-m-d H:i:s', $expirationTime), PDO::PARAM_STR);
 				$insertStatement->execute();
+
 
 				// Envía el correo de confirmación
 				enviarCorreoConfirmacion($email, $verificationCode);
+				$_SESSION['email'] = $email;
 
-				header("Location: authentication.php?email=" . $email);
-				exit;
+				header("Location: authentication.php");
+				exit();
 			} else {
 				// La contraseña no coincide, muestra un mensaje de error al usuario
 				echo "<script>alert('La contraseña es incorrecta.');</script>";
@@ -157,6 +159,8 @@ function enviarCorreoConfirmacion($email, $verificationCode)
         $mail->send();
     } catch (Exception $e) {
         echo "<script>alert('Error al enviar el correo de verificación. Por favor, inténtalo de nuevo más tarde.');</script>";
+		header("Location: Login.php");
+		exit();
     }
 }
 

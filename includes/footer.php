@@ -7,7 +7,7 @@ function getFooterHTML() {
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Sobre nosotros</h6>
                     <ul class="footer__list">
-                        <li><a href="../views/html/QuienesSomos.html">Quienés somos</a></li>
+                        <li><a href="../views/html/QuienesSomos.html">Quiénes somos</a></li>
                     </ul>
                 </div>
 

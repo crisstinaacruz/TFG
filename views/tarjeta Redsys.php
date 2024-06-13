@@ -5,7 +5,6 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
 include_once '../includes/config.php';
-include_once "../includes/Navbar.php";
 
 
 $conexion = ConnectDatabase::conectar();
@@ -222,12 +221,42 @@ if (isset($_POST['pagar'])) {
     }
 
     $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
-
-    header('Location: redsys.php');
-    exit();
 }
 
+function generateSignature($parameters, $key) {
+    $key = base64_decode($key);
+    $iv = openssl_random_pseudo_bytes(16);
+    $key = openssl_encrypt($parameters, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+    return base64_encode($key);
+}
 
+// Datos del comercio
+$merchantCode = "3048";
+$terminal = "1";
+$amount = "1000"; // Importe en céntimos (10€)
+$currency = "978"; // Código ISO 4217 de la moneda (EUR)
+$order = "pedido123"; // Número de pedido
+$productDescription = "Entradas";
+$titular = "Magic Cinema";
+$urlOK = "comprafin.php";
+$urlKO = "comprafallida.php";
+
+// Datos a firmar
+$parameters = json_encode(array(
+    'Ds_Merchant_MerchantCode' => $merchantCode,
+    'Ds_Merchant_Terminal' => $terminal,
+    'Ds_Merchant_Amount' => $amount,
+    'Ds_Merchant_Currency' => $currency,
+    'Ds_Merchant_Order' => $order,
+    'Ds_Merchant_ProductDescription' => $productDescription,
+    'Ds_Merchant_Titular' => $titular,
+    'Ds_Merchant_UrlOK' => $urlOK,
+    'Ds_Merchant_UrlKO' => $urlKO
+));
+
+// Clave secreta proporcionada por Redsys
+$secretKey = "clave_secreta";
+$signature = generateSignature($parameters, $secretKey);
 ?>
 
 <!DOCTYPE html>
@@ -310,9 +339,27 @@ if (isset($_POST['pagar'])) {
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $correoUsuario; ?></p>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha y Hora:</h3>
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $fecha_formateada . ' ' . $hora_formateada; ?></p>
-                <form method="POST">
-                    <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar">Pagar</button>
-                </form>
+                <form id="paymentForm" method="POST" action="https://sis.redsys.es/sis/realizarPago">
+        <!-- Datos del comercio -->
+        <input type="hidden" name="Ds_Merchant_MerchantCode" value="3048">
+        <input type="hidden" name="Ds_Merchant_Terminal" value="1">
+        <input type="hidden" name="Ds_Merchant_Amount" value="<?php echo $total * 100; ?>"> <!-- Importe en céntimos (10€) -->
+        <input type="hidden" name="Ds_Merchant_Currency" value="978"> <!-- Código ISO 4217 de la moneda (EUR) -->
+        <input type="hidden" name="Ds_Merchant_Order" value="pedido123"> <!-- Número de pedido -->
+        <input type="hidden" name="Ds_Merchant_ProductDescription" value="Entradas">
+        <input type="hidden" name="Ds_Merchant_Titular" value="Magic Cinema">
+        
+        <!-- URLs de respuesta -->
+        <input type="hidden" name="Ds_Merchant_UrlOK" value="comprafin.php">
+        <input type="hidden" name="Ds_Merchant_UrlKO" value="comprafallida.php">
+        
+        <!-- Firma -->
+        <input type="hidden" name="Ds_Merchant_MerchantSignature" value="firma_calculada_con_la_api">
+        
+        <!-- Botón de envío -->
+        <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar">Pagar</button>
+        </form>
+
 
             </div>
         </div>

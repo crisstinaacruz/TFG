@@ -17,9 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($resultado_verificar->rowCount() > 0) {
             echo "<script>alert('El usuario ya existe.');</script>";
-        }
-
-        // Si el usuario no existe, insertarlo en la base de datos
+         
+        } else {
+            // Si el usuario no existe, insertarlo en la base de datos
         $sql_insertar = "INSERT INTO usuarios (nombre, apellidos, password, email) VALUES (:nombre, :lastname, :password, :email)";
         $resultado_insertar = $conexion->prepare($sql_insertar);
 
@@ -36,7 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Redirigir al usuario a la página de inicio de sesión después del registro
         header("Location: Login.php");
-        exit;
+        exit();
+        }
+
+        
     } catch (Exception $e) {
         // Mostrar error en un alert
         echo "<script>alert('Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.');</script>";
@@ -132,9 +135,6 @@ function enviarCorreoConfirmacion($email) {
         echo "<script>alert('Error al enviar el correo de confirmación. Por favor, inténtalo de nuevo más tarde.');</script>";
     }
 }
-
-
-
 ?>
 
 

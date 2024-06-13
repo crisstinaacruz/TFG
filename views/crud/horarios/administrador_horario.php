@@ -7,15 +7,7 @@ $statement = $pdo->prepare("SELECT * FROM horarios ORDER BY horario_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener el total de asientos por sala
-$statementAsientos = $pdo->prepare("
-    SELECT s.sala_id, s.nombre, s.capacidad, COUNT(a.asiento_id) AS Total_Asientos
-    FROM salas s
-    LEFT JOIN asientos a ON s.sala_id = a.sala_id
-    GROUP BY s.sala_id
-");
-$statementAsientos->execute();
-$totalAsientosPorSala = $statementAsientos->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>
 <!DOCTYPE html>
@@ -40,8 +32,7 @@ $totalAsientosPorSala = $statementAsientos->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
 
-<!-- Favicons -->
-<link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
 
 
 <meta name="description" content="">
@@ -107,47 +98,39 @@ $totalAsientosPorSala = $statementAsientos->fetchAll(PDO::FETCH_ASSOC);
 		</section>
 
     <div class="contain mt-5 mx-5">
-    <a href="form_añadir_horario.php?id=' . $horario['horario_id'] . '" class="btn btn-primary btn-sm mt-3">Añadir nuevo Horario</a>
+    <a href="form_añadir_horario.php" class="btn btn-primary btn-sm mt-3">Añadir nuevo Horario</a>
     <table class="table table-striped table-bordered mt-4 w-100">
         <thead class="thead-dark">
             <tr>
                 <th>Sala</th>  
                 <th>Pelicula</th>  
                 <th>Fecha</th>
-                <th>Asientos</th>
+                <th>Filas</th>
+                <th>Columnas</th>
                 <th>Acciones</th>
 
             </tr>
         </thead>
-            <tbody>
+        <tbody>
+            <?php foreach ($resultados as $horario): ?>
                 <?php
-                foreach ($resultados as $horario) {
-                    echo '<tr>';
-                    echo '<td>' . $horario['sala_id'] . '</td>';
-                    echo '<td>' . $horario['pelicula_id'] . '</td>';
-                    echo '<td>' . $horario['fecha'] . '</td>';
-
-                    // Buscar el total de asientos por sala
-                    $totalAsientos = 0;
-                    foreach ($totalAsientosPorSala as $asientos) {
-
-                        if ($asientos['sala_id'] == $horario['sala_id']) {
-                            $totalAsientos = $asientos['total_asientos'];
-                            break;
-                        }
-                    }
-
-                    echo '<td>' . $totalAsientos . '</td>';
-                    echo '<td>
-                            <a href="delete_horario.php?id=' . $horario['horario_id'] . '" class="btn btn-danger btn-sm mt-3">Eliminar</a>
-                          </td>';
-                    echo '</tr>';
-                }
-                                            //<a href="editar_horario.php?id=' . $horario['Horario_ID'] . '" class="btn btn-warning btn-sm mt-3">Editar</a>
-
+                // Obtener información de la sala para el horario actual
+                $statement = $pdo->prepare("SELECT sala_id, nombre, filas, columnas FROM salas WHERE sala_id = :sala_id");
+                $statement->execute(['sala_id' => $horario['sala_id']]);
+                $asientos = $statement->fetch(PDO::FETCH_ASSOC);
                 ?>
-                
-            </tbody>
+                <tr>
+                    <td><?php echo $horario['sala_id']; ?></td>
+                    <td><?php echo $horario['pelicula_id']; ?></td>
+                    <td><?php echo $horario['fecha']; ?></td>
+                    <td><?php echo $asientos['filas']; ?></td>
+                    <td><?php echo $asientos['columnas']; ?></td>
+                    <td>
+                        <a href="delete_horario.php?id=<?php echo $horario['horario_id']; ?>" class="btn btn-danger btn-sm mt-3">Eliminar</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
     </table>
     </div>
 

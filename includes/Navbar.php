@@ -1,10 +1,6 @@
 <?php
 
 
-include_once "../includes/config.php";
-
-
-
 class Navbar
 {
 

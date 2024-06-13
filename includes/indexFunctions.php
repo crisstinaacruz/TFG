@@ -62,7 +62,7 @@ class IndexPeliculaHandler
 
         <div class="item">
             <div class="card card--big border border-0" style="background-color: transparent;">
-                <a href="views/pelicula.php?id=<?php echo $id_pelicula; ?>">
+                <a href="../includes/session.php?id_pelicula=<?php echo $id_pelicula; ?>">
                     <img src="<?php echo $imagen; ?>" class="card-img-top" alt="<?php echo $titulo; ?>">
                 </a>
 

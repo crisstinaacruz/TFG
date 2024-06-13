@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["email"] = $email;
             // Redirige al usuario a la página de inicio o donde sea necesario
             header("Location: ../index.php");
-            exit;
+            exit();
         } else {
             // El código de verificación no es válido o ha expirado
             // Muestra un mensaje de error al usuario
@@ -71,13 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <title>Magic Cinema - Codigo de verificación</title>
+    <title>Magic Cinema - Código de verificación</title>
 </head>
 
 <body class="body">
     <?php
-    if (isset($_GET["email"])) {
-        $email = $_GET["email"];
+    if (isset($_SESSION["email"])) {
+        $email = $_SESSION['email'];
         echo '
     <div class="sign section--bg" data-bg="../assets/img/section/section.jpg">
         <div class="container">
@@ -89,14 +89,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <img src="../../assets/img/logo.png" alt="">
                             </a>
 
-                            <h4 style="color: #fff; font-family: \'Open Sans\', sans-serif;" class="mb-5">Codigo de Verificación</h4>
+                            <h4 style="color: #fff; font-family: \'Open Sans\', sans-serif;" class="mb-5">Código de Verificación</h4>
 
                             <!-- Campo oculto para almacenar el ID de usuario -->
                             <input type="hidden" name="email" value="' . htmlspecialchars($email) . '">
 
                             <div class="sign__group">
                                 <!-- Único código -->
-                                <input type="text" id="verificationCode" name="verificationCode" class="sign__input" placeholder="Codigo de Verificación" required>
+                                <input type="text" id="verificationCode" name="verificationCode" class="sign__input" placeholder="Código de Verificación" required>
                             </div>
 
                             <button class="sign__btn" type="submit">Enviar</button>
@@ -134,18 +134,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         var verificationCode = document.getElementById('verificationCode').value;
 
         if (verificationCode.length !== 6) {
-            alert('Verification code must be 6 characters long.');
+            alert('El código debe ser de 6 carácteres.');
             return false;
         }
-
-        // Additional validation logic can be added here
 
         return true;
     }
 
     // Countdown timer
     var countdownElement = document.getElementById('countdown');
-    var countdown = 60; // 1 minute
+    var countdown = 50; // 1 minute
 
     function updateCountdown() {
         var minutes = Math.floor(countdown / 60);

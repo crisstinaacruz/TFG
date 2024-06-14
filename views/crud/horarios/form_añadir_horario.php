@@ -19,11 +19,10 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!-- Font -->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-<!-- CSS -->
+
 <link rel="stylesheet" href="../../../assets/css/bootstrap-reboot.min.css">
 <link rel="stylesheet" href="../../../assets/css/bootstrap-grid.min.css">
 <link rel="stylesheet" href="../../../assets/css/owl.carousel.min.css">
@@ -35,7 +34,6 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
 
-<!-- Favicons -->
 <link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="../icon/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="72x72" href="../icon/apple-touch-icon-72x72.png">
@@ -132,7 +130,7 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
         </form>
     </div>
 
-    <!-- JS -->
+
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/owl.carousel.min.js"></script>

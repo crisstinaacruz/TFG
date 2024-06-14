@@ -12,7 +12,6 @@ $conexion = ConnectDatabase::conectar();
 
 $usuario_id = $_SESSION['usuario_id'];
 
-// Obtiene los datos necesarios desde la URL
 $idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
 $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
@@ -21,7 +20,6 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
 
 
 
-// Obtiene la fecha del horario y el pelicula_id
 $query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :horario_id";
 $statement_fecha = $conexion->prepare($query_fecha);
 $statement_fecha->bindParam(':horario_id', $horario_id);
@@ -30,11 +28,9 @@ $resultado_horario = $statement_fecha->fetch(PDO::FETCH_ASSOC);
 $fecha_horario = $resultado_horario['fecha'];
 $pelicula_id = $resultado_horario['pelicula_id'];
 
-// Formatear la fecha y hora
 $fecha_formateada = date('d-m-Y', strtotime($fecha_horario));
 $hora_formateada = date('H:i', strtotime($fecha_horario));
 
-// Obtener el título de la película
 $query_pelicula = "SELECT titulo FROM peliculas WHERE pelicula_id = :pelicula_id";
 $statement_pelicula = $conexion->prepare($query_pelicula);
 $statement_pelicula->bindParam(':pelicula_id', $pelicula_id);
@@ -56,11 +52,9 @@ class ProcesarPago
     {
         $idsButacasArray = explode(',', $idsButacas);
 
-        // Escapar y formatear los IDs para la consulta SQL
         $idsButacasArray = array_map('intval', $idsButacasArray);
         $idsButacasStr = implode(',', $idsButacasArray);
 
-        // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
         $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -207,7 +201,6 @@ if (isset($_POST['pagar'])) {
     $procesarPago->actualizarButacas($idsButacas);
     $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
 
-    // Obtener los detalles de los asientos recién reservados
     $idsButacasArray = explode(',', $idsButacas);
     $asientos_info = [];
     foreach ($idsButacasArray as $asiento_id) {
@@ -289,10 +282,10 @@ if (isset($_POST['pagar'])) {
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;">Película: <?php echo $titulo_pelicula; ?></p>
                 <ul style="color:#fff; font-family: 'Open Sans', sans-serif;">
                     <?php
-                    // Parsear los IDs de las butacas y obtener la información de la sala, fila y columna para cada una
+
                     $butacas = explode(",", $idsButacas);
                     foreach ($butacas as $butaca) {
-                        // Obtener información de la butaca
+
                         $query = "SELECT salas.nombre AS sala, asientos.fila, asientos.columna 
                                     FROM asientos 
                                     INNER JOIN salas ON asientos.sala_id = salas.sala_id 
@@ -301,7 +294,7 @@ if (isset($_POST['pagar'])) {
                         $statement->bindParam(':butaca', $butaca);
                         $statement->execute();
                         $butaca_info = $statement->fetch(PDO::FETCH_ASSOC);
-                        // Mostrar la información de la butaca
+
                         echo "<li>" . $butaca_info['sala'] . " - Fila: " . $butaca_info['fila'] . ", Columna: " . $butaca_info['columna'] . "</li>";
                     }
                     ?>

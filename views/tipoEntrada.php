@@ -2,14 +2,11 @@
 
 session_start();
 
-// Define variables para los campos del formulario
 $nombreUsuario = '';
 $apellidosUsuario = '';
 $correoUsuario = '';
 
 
-// Si el formulario se envió por POST, procesa las butacas seleccionadas
-// Recuperar el número total de butacas desde la URL
 $id_horario = $_SESSION['horario_id'];
 $totalButacas = isset($_SESSION['butacas']) ? $_SESSION['butacas'] : 0;
 $idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
@@ -18,10 +15,8 @@ $numeroTotalIDs = count($idsButacasArray);
 
 
 
-// Si el usuario ha iniciado sesión, obtén los datos del usuario desde la base de datos
 if (!empty($_SESSION["email"])) {
     try {
-        // Conecta con la base de datos utilizando tu clase de conexión
         include_once '../includes/config.php';
         $conexion = ConnectDatabase::conectar();
 
@@ -30,19 +25,15 @@ if (!empty($_SESSION["email"])) {
         $consulta->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
         $consulta->execute();
 
-        // Obtiene los resultados
         $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
-        // Asigna los datos del usuario a las variables
         $nombreUsuario = $resultado['nombre'];
         $apellidosUsuario = $resultado['apellidos'];
         $correoUsuario = $resultado['email'];
 
     } catch (PDOException $e) {
-        // Maneja cualquier error en la conexión o la consulta
         echo "Error: " . $e->getMessage();
     } finally {
-        // Cierra la conexión
         $conexion = null;
     }
 }
@@ -55,11 +46,9 @@ if (!empty($_SESSION["email"])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
@@ -71,7 +60,6 @@ if (!empty($_SESSION["email"])) {
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
 
@@ -135,7 +123,7 @@ if (!empty($_SESSION["email"])) {
 
         .boton-limite {
             background-color: #d3d3d3;
-            /* Color gris para indicar el límite alcanzado */
+
         }
     </style>
 
@@ -147,7 +135,6 @@ if (!empty($_SESSION["email"])) {
     include_once "../includes/Navbar.php";
 
 
-    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
         Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
     } else {
@@ -190,9 +177,8 @@ if (!empty($_SESSION["email"])) {
                 </div>
             </form>
             <script>
-                // Inicializar el límite de butacas disponibles desde PHP
                 var maxEntradas = <?php echo $totalButacas; ?>;
-                var totalEntradasSeleccionadas = 0; // Inicializar el total de butacas seleccionadas
+                var totalEntradasSeleccionadas = 0;
 
             </script>
 
@@ -302,14 +288,12 @@ if (!empty($_SESSION["email"])) {
             var nombre = document.getElementById('nombre').value.trim();
             var apellidos = document.getElementById('apellidos').value.trim();
 
-            // Si el usuario no ha iniciado sesión, obtener el correo del input
             var correo = correoUsuario || document.getElementById('correo').value.trim();
 
             if (nombre === '' || apellidos === '' || correo === '') {
-                return false; // Detiene el envío del formulario
+                return false;
             }
 
-            // Si todos los campos están completos, puedes enviar el formulario
             return true;
         }
 
@@ -321,7 +305,6 @@ if (!empty($_SESSION["email"])) {
 
             var totalSeleccionado = cantidadNormal + cantidadMenores + cantidadCarnet + cantidadMayores;
 
-            // Verificar si el total seleccionado es igual al máximo permitido
             if (totalSeleccionado === maxEntradas) {
                 
                 var correoUsuario = document.getElementById('correo').value;
@@ -329,41 +312,36 @@ if (!empty($_SESSION["email"])) {
 
 
 
-                    // Agregar el código restante...
                     var url = "../includes/session.php?precio=" + precio + "&correo=" + correoUsuario;
                     window.location.href = url;
-                    return true; // Permite que el formulario se envíe
+                    return true;
                 
             } else {
-                // Mostrar un mensaje indicando al usuario que debe seleccionar todas las entradas
                 alert("Debes seleccionar todas las entradas disponibles antes de continuar.");
-                return false; // Detiene el envío del formulario
+                return false; 
             }
         }
 
 
 
 
-        // Función para incrementar la cantidad
+
         function incrementarCantidad(idCantidad) {
             var cantidadElemento = document.getElementById(idCantidad);
             var cantidad = parseInt(cantidadElemento.innerText);
 
-            // Verificar si se alcanzó el límite de butacas
             if (totalEntradasSeleccionadas < maxEntradas) {
                 cantidadElemento.innerText = cantidad + 1;
                 totalEntradasSeleccionadas++;
                 document.getElementById('totalEntradasSeleccionadas').innerText = totalEntradasSeleccionadas;
                 calcularSubtotal(idCantidad);
 
-                // Cambiar el color del botón a gris si se alcanza el límite
                 if (totalEntradasSeleccionadas === maxEntradas) {
                     document.getElementById(idCantidad + '-incrementar').classList.add('boton-limite');
                 }
             }
         }
 
-        // Función para decrementar la cantidad
         function decrementarCantidad(idCantidad) {
             var cantidadElemento = document.getElementById(idCantidad);
             var cantidad = parseInt(cantidadElemento.innerText);
@@ -374,36 +352,29 @@ if (!empty($_SESSION["email"])) {
                 document.getElementById('totalEntradasSeleccionadas').innerText = totalEntradasSeleccionadas;
                 calcularSubtotal(idCantidad);
 
-                // Restaurar el color del botón si no se alcanza el límite
                 if (totalEntradasSeleccionadas < maxEntradas) {
                     document.getElementById(idCantidad + '-incrementar').classList.remove('boton-limite');
                 }
             }
         }
 
-        // Función para calcular el subtotal
         function calcularSubtotal(idCantidad) {
             var cantidadElemento = document.getElementById(idCantidad);
             var cantidad = parseInt(cantidadElemento.innerText);
 
-            // Obtener el precio correspondiente
             var precioId = 'precio' + idCantidad.replace('cantidad', '');
             var precioElemento = document.getElementById(precioId);
             var precio = parseFloat(precioElemento.innerText);
 
-            // Calcular el subtotal
             var subtotal = cantidad * precio;
 
-            // Actualizar el subtotal en la tabla
             var subtotalId = 'subtotal' + idCantidad.replace('cantidad', '');
             var subtotalElemento = document.getElementById(subtotalId);
             subtotalElemento.innerText = subtotal.toFixed(2);
 
-            // Actualizar el total
             actualizarTotal();
         }
 
-        // Función para actualizar el total
         function actualizarTotal() {
             var subtotales = document.querySelectorAll('[id^="subtotal"]');
             var precio = 0;
@@ -412,7 +383,6 @@ if (!empty($_SESSION["email"])) {
                 precio += parseFloat(subtotal.innerText);
             });
 
-            // Actualizar el total en la tabla
             var precioElemento = document.getElementById('precio');
             precioElemento.innerText = precio.toFixed(2);
         }

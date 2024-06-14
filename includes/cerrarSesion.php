@@ -28,7 +28,6 @@ class SessionCloseHandler
     }
 }
 
-// Call the cerrarSesion method when the form is submitted
 if (isset($_POST['logout'])) {
     SessionCloseHandler::cerrarSesion();
 }

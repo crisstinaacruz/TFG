@@ -35,10 +35,10 @@ class PromoInsert {
         $directorioDestino = "../../../uploads/promociones/";
         $archivoDestino = $directorioDestino . basename($_FILES['imagen']['name']);
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $archivoDestino)) {
-            // Retorna la ruta del archivo si se sube exitosamente
+            
             return $archivoDestino;
         } else {
-            // Retorna null si falla la subida
+        
             return null;
         }
     }
@@ -73,11 +73,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!-- Font -->
+
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-<!-- CSS -->
+
 <link rel="stylesheet" href="../../../assets/css/bootstrap-reboot.min.css">
 <link rel="stylesheet" href="../../../assets/css/bootstrap-grid.min.css">
 <link rel="stylesheet" href="../../../assets/css/owl.carousel.min.css">
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
-    <!-- JS -->
+   
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/owl.carousel.min.js"></script>

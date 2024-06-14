@@ -150,7 +150,8 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
         
         <header id="header">
             <div class="container">
-                <img src="/sis/graficos/logotipos/comunes/9999logo.png?v=060524055853" alt="Redsys">
+                <img src="../assets/img/redsys.jpg" alt="Redsys">
+                
             </div>
         </header>
         <ol class="steps-wr">

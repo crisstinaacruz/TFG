@@ -102,7 +102,6 @@ class BillboardHandler
             echo '</div>
                     </div>
                 </div>
-                <!-- end content tabs -->
             </div>';
         }
     }
@@ -116,7 +115,6 @@ class BillboardHandler
     $edad = $registro['clasificacion'];
     $descripcion = $registro['descripcion'];
 
-    // Limitar la longitud de la descripción a 100 caracteres
     $descripcion_corta = strlen($descripcion) > 220 ? substr($descripcion, 0, 220) . "..." : $descripcion;
 
     echo '<div class="col-6 col-sm-12 col-lg-6">

@@ -54,7 +54,7 @@ class IndexPeliculaHandler
     private static function mostrarTarjetaPelicula($registro)
     {
         $id_pelicula = $registro['pelicula_id'];
-        $imagen = $registro['imagen']; // Ahora es la ruta de la imagen
+        $imagen = $registro['imagen'];
         $titulo = $registro['titulo'];
         $genero = $registro['genero'];
         

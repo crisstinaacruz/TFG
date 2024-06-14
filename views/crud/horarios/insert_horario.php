@@ -2,12 +2,11 @@
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-// Obtener los datos del formulario
+
 $sala = $_POST['sala'];
 $pelicula = $_POST['pelicula'];
 $fecha = $_POST['fecha'];
 
-// Obtener Sala_ID y pelicula_ID
 $sqlSala = "SELECT sala_id, filas, columnas FROM salas WHERE nombre = :sala";
 $stmtSala = $pdo->prepare($sqlSala);
 $stmtSala->bindParam(':sala', $sala, PDO::PARAM_STR);
@@ -26,7 +25,6 @@ $peliculaId = $stmtPelicula->fetchColumn();
 
 $fechaFormateada = date('Y-m-d H:i:s', strtotime($fecha));
 
-// Insertar el horario en la tabla de horarios
 $sqlHorario = "INSERT INTO horarios (sala_id, pelicula_id, fecha) VALUES (
     :salaId,
     :peliculaId,
@@ -38,10 +36,10 @@ $stmtHorario->bindParam(':peliculaId', $peliculaId, PDO::PARAM_INT);
 $stmtHorario->bindParam(':fecha', $fecha, PDO::PARAM_STR);
 $stmtHorario->execute();
 
-// Obtener el ID del horario recién insertado
+
 $horarioId = $pdo->lastInsertId();
 
-// Insertar los asientos en la tabla de asientos
+
 for ($fila = 1; $fila <= $filas; $fila++) {
     for ($columna = 1; $columna <= $columnas; $columna++) {
         $sqlAsiento = "INSERT INTO asientos (sala_id, fila, columna, estado_asiento) VALUES (
@@ -58,7 +56,7 @@ for ($fila = 1; $fila <= $filas; $fila++) {
     }
 }
 
-// Redirigir o mostrar un mensaje de éxito, según sea necesario
+
     header('Location: administrador_horario.php');
     exit();
 ?>

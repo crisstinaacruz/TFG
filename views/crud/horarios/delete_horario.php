@@ -10,18 +10,6 @@ class HorarioDelete {
         $this->pdo = ConnectDatabase::conectar();
     }
     
-    // public function eliminarAsientos($id) {
-        
-    //     if ($this->validarId($id)) {
-    //         $statement = $this->pdo->prepare("DELETE FROM asientos WHERE Horario_id = ?");
-    //         $statement->execute([$id]);
-    //         return true;
-
-    //     } else {
-    //         return false;
-
-    //     }
-    // }
 
     public function eliminarHorarios($id) {
         

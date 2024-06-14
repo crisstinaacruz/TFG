@@ -6,7 +6,6 @@ class ExperienciasHandler
     public static function obtenerExperienciasLimitadas($pdo, $limite)
     {
         try {
-            // Realizar la consulta a la base de datos para obtener las experiencias limitadas
             $stmt = $pdo->prepare("SELECT * FROM experiencias LIMIT :limite");
             $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
             $stmt->execute();
@@ -15,7 +14,6 @@ class ExperienciasHandler
 
             return $experiencias;
         } catch (PDOException $e) {
-            // Manejar errores de base de datos
             error_log("Error al obtener experiencias: " . $e->getMessage());
             return false;
         }

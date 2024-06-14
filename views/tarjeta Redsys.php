@@ -11,7 +11,6 @@ $conexion = ConnectDatabase::conectar();
 
 $usuario_id = $_SESSION['usuario_id'];
 
-// Obtiene los datos necesarios desde la URL
 $idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
 $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
@@ -20,7 +19,6 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
 
 
 
-// Obtiene la fecha del horario y el pelicula_id
 $query_fecha = "SELECT fecha, pelicula_id FROM horarios WHERE horario_id = :horario_id";
 $statement_fecha = $conexion->prepare($query_fecha);
 $statement_fecha->bindParam(':horario_id', $horario_id);
@@ -29,11 +27,9 @@ $resultado_horario = $statement_fecha->fetch(PDO::FETCH_ASSOC);
 $fecha_horario = $resultado_horario['fecha'];
 $pelicula_id = $resultado_horario['pelicula_id'];
 
-// Formatear la fecha y hora
 $fecha_formateada = date('d-m-Y', strtotime($fecha_horario));
 $hora_formateada = date('H:i', strtotime($fecha_horario));
 
-// Obtener el título de la película
 $query_pelicula = "SELECT titulo FROM peliculas WHERE pelicula_id = :pelicula_id";
 $statement_pelicula = $conexion->prepare($query_pelicula);
 $statement_pelicula->bindParam(':pelicula_id', $pelicula_id);
@@ -55,11 +51,9 @@ class ProcesarPago
     {
         $idsButacasArray = explode(',', $idsButacas);
 
-        // Escapar y formatear los IDs para la consulta SQL
         $idsButacasArray = array_map('intval', $idsButacasArray);
         $idsButacasStr = implode(',', $idsButacasArray);
 
-        // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
         $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -206,7 +200,6 @@ if (isset($_POST['pagar'])) {
     $procesarPago->actualizarButacas($idsButacas);
     $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
 
-    // Obtener los detalles de los asientos recién reservados
     $idsButacasArray = explode(',', $idsButacas);
     $asientos_info = [];
     foreach ($idsButacasArray as $asiento_id) {
@@ -230,12 +223,11 @@ function generateSignature($parameters, $key) {
     return base64_encode($key);
 }
 
-// Datos del comercio
 $merchantCode = "3048";
 $terminal = "1";
-$amount = "1000"; // Importe en céntimos (10€)
-$currency = "978"; // Código ISO 4217 de la moneda (EUR)
-$order = "pedido123"; // Número de pedido
+$amount = "1000"; 
+$currency = "978";
+$order = "pedido123";
 $productDescription = "Entradas";
 $titular = "Magic Cinema";
 $urlOK = "comprafin.php";
@@ -254,7 +246,7 @@ $parameters = json_encode(array(
     'Ds_Merchant_UrlKO' => $urlKO
 ));
 
-// Clave secreta proporcionada por Redsys
+
 $secretKey = "clave_secreta";
 $signature = generateSignature($parameters, $secretKey);
 ?>
@@ -340,7 +332,7 @@ $signature = generateSignature($parameters, $secretKey);
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha y Hora:</h3>
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $fecha_formateada . ' ' . $hora_formateada; ?></p>
                 <form id="paymentForm" method="POST" action="https://sis.redsys.es/sis/realizarPago">
-        <!-- Datos del comercio -->
+        
         <input type="hidden" name="Ds_Merchant_MerchantCode" value="3048">
         <input type="hidden" name="Ds_Merchant_Terminal" value="1">
         <input type="hidden" name="Ds_Merchant_Amount" value="<?php echo $total * 100; ?>"> <!-- Importe en céntimos (10€) -->
@@ -349,14 +341,14 @@ $signature = generateSignature($parameters, $secretKey);
         <input type="hidden" name="Ds_Merchant_ProductDescription" value="Entradas">
         <input type="hidden" name="Ds_Merchant_Titular" value="Magic Cinema">
         
-        <!-- URLs de respuesta -->
+
         <input type="hidden" name="Ds_Merchant_UrlOK" value="comprafin.php">
         <input type="hidden" name="Ds_Merchant_UrlKO" value="comprafallida.php">
         
-        <!-- Firma -->
+
         <input type="hidden" name="Ds_Merchant_MerchantSignature" value="firma_calculada_con_la_api">
         
-        <!-- Botón de envío -->
+
         <button style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" type="submit" class="btn btn-primary" name="pagar">Pagar</button>
         </form>
 

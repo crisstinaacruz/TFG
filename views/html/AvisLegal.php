@@ -10,10 +10,10 @@ NavbarHandler::generateNavbar();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
+   
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 
-    <!-- CSS -->
+    
     <link rel="stylesheet" href="../../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../../assets/css/owl.carousel.min.css">
@@ -25,7 +25,7 @@ NavbarHandler::generateNavbar();
     <link rel="stylesheet" href="../../assets/css/default-skin.css">
     <link rel="stylesheet" href="../../assets/css/main.css">
 
-    <!-- Favicons -->
+   
     <link rel="icon" type="image/png" href="../../assets/icon/favicon-32x32.png" sizes="32x32">
     <link rel="apple-touch-icon" href="../../assets/icon/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="72x72" href="../../assets/icon/apple-touch-icon-72x72.png">
@@ -41,12 +41,12 @@ NavbarHandler::generateNavbar();
 <body class="body">
 
     <section class="home">
-        <!-- home bg -->
+        
         <div class="owl-carousel home__bg">
 
             <div class="item home__cover" data-bg="../../assets/img/home/home__bg4.jpg"></div>
         </div>
-        <!-- end home bg -->
+
     </section>
 
     <section class="content">
@@ -54,7 +54,7 @@ NavbarHandler::generateNavbar();
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12">
-                        <!-- content title -->
+                       
                         <h2 class="content__title">Aviso Legal - Objetivo</h2>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ NavbarHandler::generateNavbar();
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12">
-                        <!-- content title -->
+                       
                         <h2 class="content__title">Aviso Legal - Acceso y Seguridad</h2>
                     </div>
                 </div>
@@ -131,7 +131,7 @@ NavbarHandler::generateNavbar();
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12">
-                        <!-- content title -->
+                      
                         <h2 class="content__title">Aviso Legal - Utilización correcta de los servicios</h2>
                     </div>
                 </div>
@@ -190,7 +190,7 @@ NavbarHandler::generateNavbar();
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12">
-                        <!-- content title -->
+                       
                         <h2 class="content__title">Aviso Legal - Derechos de propiedad intelectual e industrial</h2>
                     </div>
                 </div>
@@ -234,20 +234,18 @@ NavbarHandler::generateNavbar();
     </section>
     
    
-    <!-- footer -->
+    
     <footer class=" footer">
         <div class="container">
             <div class="row justify-content-center">
-                <!-- footer list -->
+                
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Sobre nosotros</h6>
                     <ul class="footer__list">
                         <li><a href="QuienesSomos.php">Quienés somos</a></li>
                     </ul>
                 </div>
-                <!-- end footer list -->
-    
-                <!-- footer list -->
+               
                 <div class="col-6 col-sm-4 col-md-3">
                     <h6 class="footer__title">Legal</h6>
                     <ul class="footer__list">
@@ -256,9 +254,7 @@ NavbarHandler::generateNavbar();
                         <li><a href="politicas.php">Políticas de privacidad</a></li>
                     </ul>
                 </div>
-                <!-- end footer list -->
-    
-                <!-- footer list -->
+                
                 <div class="col-12 col-sm-4 col-md-3">
                     <h6 class="footer__title">Contacto</h6>
                     <ul class="footer__list">
@@ -266,13 +262,11 @@ NavbarHandler::generateNavbar();
                         <li><a href="mailto:atencionalcliente@magiccinema.es">atencionalcliente@magiccinema.es</a></li>
                     </ul>
                 </div>
-                <!-- end footer list -->
+     
             </div>
         </div>
     </footer>
-    <!-- end footer -->
-
-    <!-- JS -->
+    
     <script src="../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/owl.carousel.min.js"></script>

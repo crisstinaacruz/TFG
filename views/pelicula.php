@@ -11,20 +11,16 @@ if (!isset($_SESSION['id_pelicula']) || $_SESSION['id_pelicula'] === 0) {
     exit();
 }
 
-// Conectar a la base de datos
 $conexion = ConnectDatabase::conectar();
 
-// Preparar la consulta para verificar si la película existe
 $sql = "SELECT COUNT(*) FROM peliculas WHERE pelicula_id = :id";
 $stmt = $conexion->prepare($sql);
 $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
 $stmt->execute();
 
-// Verificar si se encontró la película
 $pelicula_existe = $stmt->fetchColumn();
 
 if (!$pelicula_existe) {
-    // Redirigir a cartelera.php si la película no existe
     header("Location: cartelera.php");
     exit();
 }
@@ -77,7 +73,6 @@ if (!$pelicula_existe) {
 
     <?php
         if ($pelicula_existe) {
-            // Mostrar información de la película
             echo InfoPeliculaHandler::obtenerInformacionPelicula($id_pelicula);
         }
     ?>
@@ -93,14 +88,12 @@ if (!$pelicula_existe) {
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <!-- content title -->
                         <h2 class="content__title">Comprar Entrada</h2>
                     </div>
                 </div>
             </div>
         </div>
         <?php
-        // Llama a la función para obtener la información de la película en formato HTML
         echo InfoPeliculaHandler::obtenerInformacionPeliculaEntrada($id_pelicula);
         ?>
     </section>

@@ -9,7 +9,6 @@ require '../vendor/autoload.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        // Verificar si el usuario ya existe
         $sql_verificar = "SELECT * FROM usuarios WHERE email = :email";
         $resultado_verificar = $conexion->prepare($sql_verificar);
         $resultado_verificar->bindValue(":email", $_POST["email"], PDO::PARAM_STR);
@@ -19,7 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('El usuario ya existe.');</script>";
          
         } else {
-            // Si el usuario no existe, insertarlo en la base de datos
         $sql_insertar = "INSERT INTO usuarios (nombre, apellidos, password, email) VALUES (:nombre, :lastname, :password, :email)";
         $resultado_insertar = $conexion->prepare($sql_insertar);
 
@@ -27,29 +25,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $resultado_insertar->execute(array(":nombre" => $_POST["name"], ":lastname" => $_POST["lastname"], ":password" => $pass_cifrado, ":email" => $_POST["email"]));
 
-        // Llamar a la función enviarCorreoConfirmacion después de que el usuario se haya registrado exitosamente
         $registro_exitoso = $resultado_insertar->rowCount() > 0;
         if ($registro_exitoso) {
-            // Llamar a la función enviarCorreoConfirmacion para enviar el correo de confirmación
             enviarCorreoConfirmacion($_POST["email"]);
         }
 
-        // Redirigir al usuario a la página de inicio de sesión después del registro
         header("Location: Login.php");
         exit();
         }
 
         
     } catch (Exception $e) {
-        // Mostrar error en un alert
         echo "<script>alert('Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.');</script>";
     }
 }
 
-// Función para enviar el correo de confirmación
-// Función para enviar el correo de confirmación
 function enviarCorreoConfirmacion($email) {
-    // Configuración de PHPMailer
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -146,10 +137,8 @@ function enviarCorreoConfirmacion($email) {
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<!-- Font -->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 
-	<!-- CSS -->
 	<link rel="stylesheet" href="../../assets/css/bootstrap-reboot.min.css">
 	<link rel="stylesheet" href="../../assets/css/bootstrap-grid.min.css">
 	<link rel="stylesheet" href="../../assets/css/owl.carousel.min.css">
@@ -161,7 +150,6 @@ function enviarCorreoConfirmacion($email) {
 	<link rel="stylesheet" href="../../assets/css/default-skin.css">
 	<link rel="stylesheet" href="../../assets/css/main.css">
 
-	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
 
 	<meta name="description" content="">
@@ -232,20 +220,18 @@ function enviarCorreoConfirmacion($email) {
 			var password = document.getElementById("password").value;
 			var confirm_password = document.getElementById("confirm_password").value;
 
-			// Verificar si las contraseñas coinciden
 			if (password !== confirm_password) {
 				alert("Las contraseñas no coinciden");
 				return false;
 			}
 
-			// Verificar la complejidad de la contraseña
 			var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/;
 			if (!passwordRegex.test(password)) {
 				alert("La contraseña debe tener de 6 a 13 letras, un caracter especial y al menos un número.");
 				return false;
 			}
 
-			return true; // Permite el envío del formulario si todas las validaciones son exitosas
+			return true;
 		}
 	</script>
 

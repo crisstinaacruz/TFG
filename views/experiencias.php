@@ -38,7 +38,6 @@ include_once '../includes/config.php';
     include_once "../includes/Navbar.php";
 
 
-    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
         Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
     } else {
@@ -47,24 +46,19 @@ include_once '../includes/config.php';
 
     ?>
 
-    <!-- home -->
     <section class="home">
-        <!-- home bg -->
         <div class="owl-carousel home__bg">
             <div class="item home__cover" data-bg="../assets/img/home/home__bg2.jpg"></div>
             <div class="item home__cover" data-bg="../assets/img/home/home__bg3.jpg"></div>
             <div class="item home__cover" data-bg="../assets/img/home/home__bg4.jpg"></div>
         </div>
-        <!-- end home bg -->
     </section>
 
-    <!-- end content -->
     <section class="content">
         <div class="content__head">
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12">
-                        <!-- content title -->
                         <h2 class="content__title">Disfruta de las mejores experiencias en Magic Cinema</h2>
                     </div>
                 </div>
@@ -88,14 +82,11 @@ include_once '../includes/config.php';
 
         $pdo = ConnectDatabase::conectar();
 
-        // Incluir el archivo con la lógica de experiencias
-        require_once('../includes/experiencias.php');
+ç        require_once('../includes/experiencias.php');
 
-        // Definir el límite
-        $limiteExperiencias = 4;
+ç        $limiteExperiencias = 4;
 
-        // Obtener las experiencias limitadas
-        $experiencias = ExperienciasHandler::obtenerExperienciasLimitadas($pdo, $limiteExperiencias);
+ç        $experiencias = ExperienciasHandler::obtenerExperienciasLimitadas($pdo, $limiteExperiencias);
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
@@ -107,7 +98,6 @@ include_once '../includes/config.php';
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12">
-                        <!-- content title -->
                         <h2 class="content__title">¿CONOCES TODAS LAS SALAS PREMIUM?</h2>
                     </div>
                 </div>
@@ -118,14 +108,13 @@ include_once '../includes/config.php';
             <?php echo ExperienciasHandler::generarHTMLExperienciasSalas($experiencias); ?>
         </div>
     </section>
-    <!-- footer -->
     <?php
     include_once "../includes/footer.php";
     echo getFooterHTML();
-    ?> <!-- end footer -->
+    ?> 
 
 
-    <!-- JS -->
+
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/owl.carousel.min.js"></script>

@@ -5,19 +5,14 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
 
-// Primero, verifica si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	// Realiza la conexión a la base de datos y realiza la consulta
 	include_once "../includes/config.php";
 	$conexion = ConnectDatabase::conectar();
 
-	// Verifica si la conexión fue exitosa
 	if ($conexion) {
-		// Recupera el correo electrónico y la contraseña del formulario de inicio de sesión
 		$email = $_POST["correo"];
 		$password = $_POST["password"];
 
-		// Crea la consulta SQL para verificar las credenciales del usuario
 		$sql = "SELECT * FROM usuarios WHERE email = :email";
 		$statement = $conexion->prepare($sql);
 		$statement->bindValue(":email", $email, PDO::PARAM_STR);
@@ -27,14 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$usuario = $statement->fetch(PDO::FETCH_ASSOC);
 
 			if (password_verify($password, $usuario["password"])) {
-				// Genera un código alfanumérico
 				$verificationCode = substr(md5(uniqid(mt_rand(), true)), 0, 6);
 
-				// Define la marca de tiempo de expiración (1 minuto desde ahora)
-				// Genera la fecha de expiración (1 minuto desde ahora)
 				$expirationTime = time() + 60;
 
-				// Inserta el código en la tabla check_codes
 				$insertSql = "INSERT INTO check_codes (email, codigo, expira_en) VALUES (:email, :codigo, CURRENT_TIMESTAMP + INTERVAL '1 minute')";
 				$insertStatement = $conexion->prepare($insertSql);
 				$insertStatement->bindValue(":email", $email, PDO::PARAM_STR);
@@ -42,33 +33,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$insertStatement->execute();
 
 
-				// Envía el correo de confirmación
 				enviarCorreoConfirmacion($email, $verificationCode);
 				$_SESSION['email'] = $email;
 
 				header("Location: authentication.php");
 				exit();
 			} else {
-				// La contraseña no coincide, muestra un mensaje de error al usuario
 				echo "<script>alert('La contraseña es incorrecta.');</script>";
 			}
 		} else {
-			// No se encontró ningún usuario con el correo electrónico proporcionado, muestra un mensaje de error al usuario
 			echo "<script>alert('No se encontró ningún usuario con el correo electrónico proporcionado.');</script>";
 		}
 
-		// Cierra la conexión a la base de datos
 		$conexion = null;
 	} else {
-		// No se pudo conectar a la base de datos, muestra un mensaje de error
 		echo "<script>alert('Error al conectar a la base de datos.');</script>";
 	}
 }
 
-// Función para enviar el correo de verificación
 function enviarCorreoConfirmacion($email, $verificationCode)
 {
-    // Configuración de PHPMailer
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -175,10 +159,8 @@ function enviarCorreoConfirmacion($email, $verificationCode)
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<!-- Font -->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 
-	<!-- CSS -->
 	<link rel="stylesheet" href="../../assets/css/bootstrap-reboot.min.css">
 	<link rel="stylesheet" href="../../assets/css/bootstrap-grid.min.css">
 	<link rel="stylesheet" href="../../assets/css/owl.carousel.min.css">

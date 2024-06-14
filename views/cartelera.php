@@ -43,7 +43,6 @@ include_once "../includes/config.php";
     include_once "../includes/Navbar.php";
 
 
-    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
         Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
     } else {

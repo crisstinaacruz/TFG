@@ -7,7 +7,7 @@ class BarHandler
     {
         try {
 
-            // Realizar la consulta a la base de datos para obtener las experiencias limitadas
+
             $stmt = $pdo->prepare("SELECT * FROM bar ORDER BY bar_id");
             $stmt->execute();
 
@@ -39,7 +39,6 @@ class BarHandler
 <?php
             return $experiencias;
         } catch (PDOException $e) {
-            // Manejar errores de base de datos
             error_log("Error al obtener experiencias: " . $e->getMessage());
             return false;
         }

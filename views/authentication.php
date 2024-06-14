@@ -1,20 +1,20 @@
 <?php
-// Inicia la sesión
+
 session_start();
 
-// Verifica si se ha enviado el formulario
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Realiza la conexión a la base de datos y realiza la consulta
+    
     include_once "../includes/config.php";
     $conexion = ConnectDatabase::conectar();
 
-    // Verifica si la conexión fue exitosa
+
     if ($conexion) {
-        // Recupera el ID de usuario y el código de verificación del formulario
+
         $email = $_POST["email"];
         $verificationCode = $_POST["verificationCode"];
 
-        // Crea la consulta SQL para verificar el código de verificación
+        
         $sql = "SELECT * FROM check_codes WHERE email = :email AND codigo = :code AND expira_en > NOW()";
         $statement = $conexion->prepare($sql);
         $statement->bindValue(":email", $email, PDO::PARAM_STR);
@@ -22,22 +22,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $statement->execute();
 
         if ($statement->rowCount() > 0) {
-            // El código de verificación es válido y aún no ha expirado
-            // Inicia la sesión y realiza otras acciones necesarias
+           
             $_SESSION["email"] = $email;
-            // Redirige al usuario a la página de inicio o donde sea necesario
+
             header("Location: ../index.php");
             exit();
         } else {
-            // El código de verificación no es válido o ha expirado
-            // Muestra un mensaje de error al usuario
+           
             echo "<script>alert('El código de verificación es inválido o ha expirado. Por favor, inténtelo de nuevo.');</script>";
         }
 
-        // Cierra la conexión a la base de datos
+        
         $conexion = null;
     } else {
-        // No se pudo conectar a la base de datos, muestra un mensaje de error
+    
         echo "<script>alert('Error al conectar a la base de datos. Por favor, inténtelo de nuevo más tarde.');</script>";
     }
 }
@@ -50,11 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
+    
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- CSS -->
+
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
@@ -109,13 +107,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>';
     } else {
-        // Manejo del caso en el que el parámetro userID no está presente
+
         echo "Error: ID de usuario no encontrado en la URL.";
     }
 
     ?>
 
-    <!-- JS -->
+    
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/owl.carousel.min.js"></script>
@@ -141,9 +139,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return true;
     }
 
-    // Countdown timer
+   
     var countdownElement = document.getElementById('countdown');
-    var countdown = 50; // 1 minute
+    var countdown = 50;
 
     function updateCountdown() {
         var minutes = Math.floor(countdown / 60);
@@ -153,15 +151,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (countdown > 0) {
             countdown--;
-            setTimeout(updateCountdown, 1000); // Update every second
+            setTimeout(updateCountdown, 1000);
         } else {
             countdownElement.textContent = 'Tiempo agotado';
-            // Optionally, you can perform an action when the countdown reaches zero
-            window.location.href = 'Login.php'; // Redirige al usuario al formulario de inicio de sesión
+           
+            window.location.href = 'Login.php'; 
         }
     }
 
-    // Start the countdown when the page loads
+
     updateCountdown();
 </script>
 

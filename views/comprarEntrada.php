@@ -14,7 +14,6 @@ if (!isset($_SESSION['horario_id']) || $_SESSION['horario_id'] === 0) {
     exit();
 }
 
-// Realiza una consulta para obtener la información de los asientos disponibles
 $conexion = ConnectDatabase::conectar();
 
 $sql = "
@@ -30,7 +29,6 @@ $stmt = $conexion->prepare($sql);
 $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
 $stmt->execute();
 
-// Almacena los asientos en un array asociativo para facilitar la manipulación
 $asientos = [];
 $idButacas = [];
 while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -194,20 +192,17 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
             var butaca = {
                 fila: fila,
                 columna: columna,
-                id: id // Incluir el ID en el objeto de butaca
+                id: id
             };
 
-            // Verificar si la butaca ya está seleccionada
             var indice = butacasSeleccionadas.findIndex(function(e) {
                 return e.fila === fila && e.columna === columna;
             });
 
             if (indice !== -1) {
-                // Deseleccionar la butaca si ya está seleccionada
                 butacasSeleccionadas.splice(indice, 1);
                 elemento.classList.remove('selected');
             } else {
-                // Seleccionar la butaca
                 if (butacasSeleccionadas.length < 8) {
                     butacasSeleccionadas.push(butaca);
                     elemento.classList.add('selected');
@@ -216,35 +211,30 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 }
             }
 
-            // Limpiar el mensaje de error después de un tiempo
             setTimeout(function() {
                 mensajeErrorElemento.innerText = '';
             }, 30000);
 
-            // Mostrar información de butacas seleccionadas
             actualizarInfoButacas();
         }
 
         function actualizarInfoButacas() {
             var infoButacas = 'Butacas seleccionadas: ';
-            var idsButacas = []; // Crear un array para almacenar los IDs de las butacas seleccionadas
+            var idsButacas = []; 
 
             for (var i = 0; i < butacasSeleccionadas.length; i++) {
                 infoButacas += butacasSeleccionadas[i].fila + '-' + butacasSeleccionadas[i].columna + ', ';
 
-                // Obtener el ID de cada butaca seleccionada y agregarlo al array
+
                 idsButacas.push(butacasSeleccionadas[i].id);
             }
 
-            // Mostrar información de butacas seleccionadas
             document.getElementById('info-butacas-seleccionadas').innerText = infoButacas;
 
-            // Mostrar el mensaje "Comprar Entrada" al lado de las butacas seleccionadas
             var comprarEntradaElement = document.getElementById('comprar-entrada');
             if (butacasSeleccionadas.length > 0) {
                 comprarEntradaElement.style.display = 'block';
 
-                // Modificar el enlace para incluir los parámetros
                 var enlaceComprarEntrada = document.getElementById('enlace-comprar-entrada');
                 enlaceComprarEntrada.href = '/../includes/session.php?butacas=' + butacasSeleccionadas.length + '&id=' + idsButacas.join(',') + '&horario=<?php echo $id_horario ?>';
             } else {

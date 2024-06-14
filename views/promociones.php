@@ -7,13 +7,10 @@ try {
 
     $pdo = ConnectDatabase::conectar();
 
-    // Incluir el archivo con la lógica de promociones
     require_once('../includes/promociones.php');
 
-    // Obtener las promociones
     $promociones = PromocionesHandler::obtenerPromociones($pdo);
 
-    // Generar el HTML de las tarjetas
     $tarjetasHTML = PromocionesHandler::generarTarjetasHTML($promociones);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
@@ -27,11 +24,9 @@ try {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
@@ -57,7 +52,6 @@ try {
     include_once "../includes/Navbar.php";
 
 
-    // Verifica si el usuario está autenticado
     if (isset($_SESSION["email"])) {
         Navbar::renderAuthenticatedNavbar($_SESSION["email"]);
     } else {
@@ -66,20 +60,16 @@ try {
 
 
     ?>
-    <!-- home -->
     <section class="home">
-        <!-- home bg -->
         <div class="owl-carousel home__bg">
             <div class="item home__cover" data-bg="../assets/img/home/home__bg.jpg"></div>
             <div class="item home__cover" data-bg="../assets/img/home/home__bg2.jpg"></div>
             <div class="item home__cover" data-bg="../assets/img/home/home__bg3.jpg"></div>
             <div class="item home__cover" data-bg="../assets/img/home/home__bg4.jpg"></div>
         </div>
-        <!-- end home bg -->
     </section>
 
     <?php echo $tarjetasHTML; ?>
-    <!-- end content -->
 
 
     <?php
@@ -87,7 +77,6 @@ try {
     echo getFooterHTML();
     ?>
 
-    <!-- JS -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/owl.carousel.min.js"></script>

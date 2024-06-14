@@ -28,7 +28,6 @@ class ProcesarPago
         }, $idsButacasArray);
 
         $idsButacasStr = implode(',', $idsButacasArray);
-        // Actualizar la tabla de asientos (suponiendo que existe una columna llamada 'estado' que representa si está ocupado o no)
         $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute();
@@ -40,9 +39,7 @@ class ProcesarPago
 
         $idsButacasArray = explode(',', $idsButacas);
         foreach ($idsButacasArray as $asientoId) {
-            // Obtener información sobre el asiento desde la base de datos (ajusta según tu esquema)
             $infoAsiento = $this->obtenerInfoAsiento($asientoId);
-            // Realizar inserción en la tabla de reservas
             $sql = "INSERT INTO reservas (usuario_id, id_horario, asiento_id) VALUES (:usuario_id, :id_horario, :asiento_id)";
             $stmt = $this->conexion->prepare($sql);
 
@@ -62,7 +59,6 @@ class ProcesarPago
 
 public function enviarCorreo($email, $infoAsiento)
 {
-    // Configuración de PHPMailer
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();

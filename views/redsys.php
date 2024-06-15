@@ -1,6 +1,206 @@
 <?php
 session_start();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php';
+include_once '../includes/config.php';
+include_once "../includes/Navbar.php";
+
+$conexion = ConnectDatabase::conectar();
+
+$usuario_id = $_SESSION['usuario_id'];
+$idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
+$correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
+$horario_id = $_SESSION['horario_id'];
 $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
+
+$titulo_pelicula = $_SESSION['titulo_pelicula'];
+$fecha_formateada = $_SESSION['fecha_formateada'];
+$hora_formateada = $_SESSION['hora_formateada'];
+
+class ProcesarPago
+{
+    private $pdo;
+
+    public function __construct()
+    {
+        $this->pdo = ConnectDatabase::conectar();
+    }
+
+    public function actualizarButacas($idsButacas)
+    {
+        $idsButacasArray = explode(',', $idsButacas);
+
+        $idsButacasArray = array_map('intval', $idsButacasArray);
+        $idsButacasStr = implode(',', $idsButacasArray);
+
+        $sql = "UPDATE asientos SET estado_asiento = 'Ocupado' WHERE asiento_id IN ($idsButacasStr)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    public function realizarReserva($idsButacas, $usuario_id, $horario_id)
+    {
+        $sql = "INSERT INTO reservas (usuario_id, horario_id) VALUES (:usuario_id, :horario_id)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+        $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $reserva_id = $this->pdo->lastInsertId();
+
+        $idsButacasArray = explode(',', $idsButacas);
+        foreach ($idsButacasArray as $asiento_id) {
+            $sql_asiento = "INSERT INTO reserva_asientos (reserva_id, asiento_id) VALUES (:reserva_id, :asiento_id)";
+            $stmt_asiento = $this->pdo->prepare($sql_asiento);
+            $stmt_asiento->bindParam(':reserva_id', $reserva_id, PDO::PARAM_INT);
+            $stmt_asiento->bindParam(':asiento_id', $asiento_id, PDO::PARAM_INT);
+            $stmt_asiento->execute();
+        }
+
+        return $reserva_id;
+    }
+
+    public function enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada)
+    {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.hostinger.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'no-reply@magiccinema.es';
+            $mail->Password = 'MagicCinema2024*';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
+
+            $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
+            $mail->addAddress($correoUsuario);
+
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = 'Reserva Confirmada';
+
+            $body = "
+            <!DOCTYPE html>
+            <html lang='es'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        background-color: #f8f9fa;
+                        color: #343a40;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
+                    .header {
+                        background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+                        padding: 20px;
+                        border-radius: 8px 8px 0 0;
+                        color: #fff;
+                        text-align: center;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 24px;
+                    }
+                    .content {
+                        padding: 20px;
+                    }
+                    .content h2 {
+                        color: #ff55a5;
+                        font-size: 20px;
+                        margin-top: 0;
+                    }
+                    .content p {
+                        margin: 10px 0;
+                    }
+                    .content ul {
+                        list-style-type: none;
+                        padding: 0;
+                    }
+                    .content ul li {
+                        background-color: #f1f1f1;
+                        margin: 5px 0;
+                        padding: 10px;
+                        border-radius: 4px;
+                    }
+                    .footer {
+                        text-align: center;
+                        padding: 20px;
+                        font-size: 12px;
+                        color: #6c757d;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>Reserva Confirmada</h1>
+                    </div>
+                    <div class='content'>
+                        <h2>Gracias por tu reserva. Aquí está la información detallada:</h2>
+                        <p><strong>Película:</strong> {$titulo_pelicula}</p>
+                        <p><strong>Fecha y Hora:</strong> {$fecha_formateada} a las {$hora_formateada}</p>
+                        <p><strong>Asientos:</strong></p>
+                        <ul>";
+
+            foreach ($asientos_info as $asiento) {
+                $body .= "<li>Sala: {$asiento['sala']} - Fila: {$asiento['fila']}, Columna: {$asiento['columna']}</li>";
+            }
+
+            $body .= "
+                        </ul>
+                    </div>
+                    <div class='footer'>
+                        &copy; 2024 Magic Cinema. Todos los derechos reservados.
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            $mail->Body = $body;
+
+            $mail->send();
+        } catch (Exception $e) {
+            echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
+        }
+    }
+}
+
+if (isset($_POST['continuar'])) {
+    $procesarPago = new ProcesarPago();
+    $procesarPago->actualizarButacas($idsButacas);
+    $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
+
+    // Obtener información de los asientos después de realizar la reserva
+    $idsButacasArray = explode(',', $idsButacas);
+    $asientos_info = [];
+    foreach ($idsButacasArray as $asiento_id) {
+        $query = "SELECT salas.nombre AS sala, asientos.fila, asientos.columna 
+                  FROM asientos 
+                  INNER JOIN salas ON asientos.sala_id = salas.sala_id 
+                  WHERE asiento_id = :asiento_id";
+        $statement = $conexion->prepare($query);
+        $statement->bindParam(':asiento_id', $asiento_id);
+        $statement->execute();
+        $asientos_info[] = $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+ 
+    $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
+
+    header('Location: comprafin.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -9,6 +209,7 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
     <meta charset="ISO-8859-1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="../assets/icon/iconredsys.png" sizes="32x32">
     <title>Página de Pago - Redsys</title>
     <style>
         body {
@@ -146,7 +347,7 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
 </head>
 <body>
 <div id="container">
-    <form autocomplete="off" action="comprafin.php" method="get" name="formCuenta">
+    <form method="post">
         
         <header id="header">
             <div class="container">
@@ -174,7 +375,7 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
         </ol>
         <div id="body">
             <div class="result-mod-wr">
-                <div class="datosDeLaOperacion">Datos de la operación</div>
+                <div class="datosDeLaOperacion">Datos de la operación <?php echo $correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada; ?></div>
                 <div class="ticket-header">
                     <div class="price">
                         <div class="left">
@@ -204,7 +405,7 @@ $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
             </div>
             <div class="buttons-wr">
                 <button type="button" class="btn print">Imprimir</button>
-                <button type="submit" class="btn continue">Continuar</button>
+                <button type="submit" class="btn continue" name="continuar">Continuar</button>
             </div>
         </div>
     </form>

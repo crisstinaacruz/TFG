@@ -31,46 +31,53 @@
 
 <body>
 <header class="header">
-        <div class="header__wrap">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="header__content">
-                            <a href="../../../index.php" class="header__logo">
-                                <img src="../../../assets/img/Magic_Cinema-removebg-preview.png" alt="">
-                            </a>
+            <div class="header__wrap">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="header__content">
 
-                            <ul class="header__nav">
-                                <li class="header__nav-item">
-                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Peliculas</a>
-                                </li>
+                                <a href="../../index.php" class="header__logo">
+                                    <img src="../../assets/img/Magic_Cinema-removebg-preview.png" alt="">
+                                </a>
 
-                                <li class="header__nav-item">
-                                    <a href="../promociones/administrador_promo.php" class="header__nav-link">Promociones</a>
-                                </li>
+                                <ul class="header__nav">
+                                    <li class="header__nav-item">
+                                        <a href="../../views/cartelera.php" class="header__nav-link">Cartelera</a>
+                                    </li>
 
-                                <li class="header__nav-item">
-                                    <a href="administrador_horario.php" class="header__nav-link">Horarios</a>
-                                </li>
+                                    <li class="header__nav-item">
+                                        <a href="../../views/promociones.php" class="header__nav-link">Promociones</a>
+                                    </li>
 
-                                <li class="header__nav-item">
-                                    <a href="../bar/administrador_bar.php" class="header__nav-link">Bar</a>
-                                </li>
+                                    <li class="header__nav-item">
+                                        <a href="../../views/experiencias.php" class="header__nav-link">Experiencias</a>
+                                    </li>
 
-                               
-                            </ul>
+                                    <li class="header__nav-item">
+                                        <a href="../../views/contactanos.php" class="header__nav-link">Contáctanos</a>
+                                    </li>
+                                </ul>
 
-                            <button class="header__btn" type="button">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </button>
+                                <div class="header__auth">
+                                    <a href="../../views/Login.php" class="header__sign-in mx-1">
+                                        <i class="icon ion-ios-log-in"></i>
+                                        <span>Iniciar Sesión</span>
+                                    </a>
+                                </div>
+
+                                <button class="header__btn" type="button">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </button>
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
     <section class="home">
         <div class="owl-carousel home__bg">
             <div class="item home__cover" data-bg="../assets/img/home/home__bg4.jpg"></div>

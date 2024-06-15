@@ -194,7 +194,7 @@ class Navbar
                                     </li>
 
                                     <li class="header__nav-item">
-                                        <a href="../../views/contactanos.php" class="header__nav-link">Contactanos</a>
+                                        <a href="../../views/contactanos.php" class="header__nav-link">Contáctanos</a>
                                     </li>
                                 </ul>
 

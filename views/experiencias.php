@@ -1,6 +1,8 @@
 <?php
 session_start();
 include_once '../includes/config.php';
+require_once('../includes/experiencias.php');
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -82,11 +84,11 @@ include_once '../includes/config.php';
 
         $pdo = ConnectDatabase::conectar();
 
-ç        require_once('../includes/experiencias.php');
+     
 
-ç        $limiteExperiencias = 4;
+     $limiteExperiencias = 4;
 
-ç        $experiencias = ExperienciasHandler::obtenerExperienciasLimitadas($pdo, $limiteExperiencias);
+      $experiencias = ExperienciasHandler::obtenerExperienciasLimitadas($pdo, $limiteExperiencias);
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }

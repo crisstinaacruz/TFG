@@ -46,3 +46,14 @@ services:
     networks:
       red:
         ipv4_address: 172.20.0.24
+
+  python:
+    image: python:3.12.4-slim
+    volumes:
+      - ./scripts:/scripts
+      - ./qr_codes:/qr_codes
+    networks:
+      red:
+        ipv4_address: 172.20.0.25
+    working_dir: /scripts
+    command: ["tail", "-f", "/dev/null"]  # Para mantener el contenedor en funcionamiento

@@ -1,13 +1,15 @@
 <?php
-include_once "../includes/config.php";
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-$conexion = ConnectDatabase::conectar();
+
 
 require '../vendor/autoload.php';
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include_once "../includes/config.php";
+    $conexion = ConnectDatabase::conectar();
     try {
         $sql_verificar = "SELECT * FROM usuarios WHERE email = :email";
         $resultado_verificar = $conexion->prepare($sql_verificar);
@@ -126,6 +128,8 @@ function enviarCorreoConfirmacion($email) {
         echo "<script>alert('Error al enviar el correo de confirmación. Por favor, inténtalo de nuevo más tarde.');</script>";
     }
 }
+
+$conexion = null;
 ?>
 
 
@@ -184,12 +188,12 @@ function enviarCorreoConfirmacion($email) {
 							</div>
 
 							<div class="sign__group">
-								<input type="password" name="password" id="confirm_password" class="sign__input" placeholder="Confirmar Contraseña" required>
+								<input type="password" name="password" id="confirm_password" class="sign__input" placeholder="Confirmar contraseña" required>
 							</div>
 
 							<div class="sign__group sign__group--checkbox">
 								<input id="check" name="check" type="checkbox" checked="checked" required>
-								<label for="check">Acepto las <a href="politicas.html">políticas de
+								<label for="check">Acepto las <a href="html/politicas.html">políticas de
 										privacidad</a></label>
 							</div>
 

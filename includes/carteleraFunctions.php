@@ -126,7 +126,7 @@ class BillboardHandler
 
                     <div class="col-12 col-sm-8">
                         <div class="card__content mt-1">
-                            <h3 class="card__title mt-1"><a href="../includes/session.php?id_pelicula=', $id_pelicula, '">', $id_pelicula, $titulo, '</a></h3>
+                            <h3 class="card__title mt-1"><a href="../includes/session.php?id_pelicula=', $id_pelicula, '">', $titulo, '</a></h3>
                             <span class="card__category">
                                 <a href="#">', $genero, '</a>
                             </span>

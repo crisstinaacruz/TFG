@@ -39,9 +39,9 @@ class PromocionesHandler
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title fw-bold" style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo htmlspecialchars($promocion['titulo']); ?></h5>
-                                    <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo htmlspecialchars($promocion['descripcion']); ?></p>
-                                    <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha: <?php echo htmlspecialchars($promocion['fecha']); ?></p>
+                                    <h5 class="card-title fw-bold" style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $promocion['titulo']; ?></h5>
+                                    <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $promocion['descripcion']; ?></p>
+                                    <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha: <?php echo date('d-m-Y', strtotime($promocion['fecha'])); ?></p>
                                 </div>
                             </div>
                         </div>

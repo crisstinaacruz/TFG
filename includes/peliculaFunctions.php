@@ -33,8 +33,8 @@ class InfoPeliculaHandler
             echo '</ul>';
             echo '</div>';
             echo '<ul class="card__meta">';
-            echo '<li><span>Genero:</span> <a href="#">' . $pelicula['genero'] . '</a></li>';
-            echo '<li><span>Fecha de Lanazamiento:</span> ' . $pelicula['fecha_de_estreno'] . '</li>';
+            echo '<li><span>Género:</span> <a href="#">' . $pelicula['genero'] . '</a></li>';
+            echo '<li><span>Fecha de lanzamiento:</span>  ' . date('d-m-Y', strtotime($pelicula['fecha_de_estreno'])) . '</li>';
             echo '<li><span>Duración:</span> ' . $pelicula['duracion'] . '</li>';
             echo '</ul>';
             echo '<div class="card__description card__description--details">';
@@ -58,6 +58,7 @@ class InfoPeliculaHandler
 
     public static function obtenerInformacionPeliculaEntrada($id_pelicula)
     {
+        
         $conexion = ConnectDatabase::conectar();
 
         if ($id_pelicula !== null) {
@@ -119,34 +120,42 @@ class InfoPeliculaHandler
     }
 
     private static function obtenerHorariosPelicula($conexion, $id_pelicula)
-    {
-        $sql = "SELECT 
-                    p.titulo AS nombre_pelicula,
-                    h.fecha AS fecha,
-                    s.nombre AS sala_nombre,
-                    h.horario_id AS horario_id
-                FROM 
-                    peliculas p
-                INNER JOIN 
-                    horarios h ON p.pelicula_id = h.pelicula_id
-                INNER JOIN
-                    salas s ON h.sala_id = s.sala_id
-                WHERE 
-                    p.pelicula_id = :id;"; // Ag
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
-        $stmt->execute();
+{
+    $fecha_actual = date('Y-m-d H:i:s');
 
-        if ($stmt->rowCount() > 0) {
-            $resultados = [];
-            while ($horario = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $resultados[] = $horario;
-            }
-            return $resultados;
-        } else {
-            return false;
+    $sql = "SELECT 
+                p.titulo AS nombre_pelicula,
+                h.fecha AS fecha,
+                s.nombre AS sala_nombre,
+                h.horario_id AS horario_id
+            FROM 
+                peliculas p
+            INNER JOIN 
+                horarios h ON p.pelicula_id = h.pelicula_id
+            INNER JOIN
+                salas s ON h.sala_id = s.sala_id
+            WHERE 
+                p.pelicula_id = :id
+                AND h.fecha >= :fecha_actual
+            ORDER BY
+                h.fecha ASC"; // Ordenar por fecha ascendente
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
+    $stmt->bindParam(':fecha_actual', $fecha_actual, PDO::PARAM_STR); // Importante mantener la fecha como string para PostgreSQL
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        $resultados = [];
+        while ($horario = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $resultados[] = $horario;
         }
+        return $resultados;
+    } else {
+        return false;
     }
+}
+
 
     private static function obtenerNombrePeliculaPorID($conexion, $id_pelicula)
     {

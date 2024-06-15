@@ -163,7 +163,7 @@ if (!empty($_SESSION["email"])) {
         </div>
         <div class="container">
 
-            <form method="post" class="sign__form" onsubmit="return validarFormulario();">
+            <form method="post" class="sign__form">
 
                 <div class="sign__group">
                     <input type="text" id="nombre" name="nombre" class="sign__input" placeholder="Nombre" value="<?php echo $nombreUsuario; ?>" required>
@@ -175,12 +175,9 @@ if (!empty($_SESSION["email"])) {
                 <div class="sign__group">
                     <input type="email" id="correo" name="correo" class="sign__input" placeholder="Correo Electronico" value="<?php echo $correoUsuario; ?>" required>
                 </div>
+                
             </form>
-            <script>
-                var maxEntradas = <?php echo $totalButacas; ?>;
-                var totalEntradasSeleccionadas = 0;
 
-            </script>
 
             <table>
                 <tr>
@@ -240,7 +237,7 @@ if (!empty($_SESSION["email"])) {
                 </tr>
             </table>
 
-            <button id="continuarBtn" class="my-3" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" onclick="comprobarSeleccion(), validarFormulario()">Continuar</button>
+            <button id="continuarBtn" class="my-3" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;" onclick="return comprobarSeleccion()">Continuar</button>
 
         </div>
 
@@ -248,7 +245,6 @@ if (!empty($_SESSION["email"])) {
 
 
 
-    </section>
 
     <footer class=" footer">
         <div class="container">
@@ -281,21 +277,11 @@ if (!empty($_SESSION["email"])) {
     </footer>
 
     <script>
+
         var maxEntradas = <?php echo $totalButacas; ?>;
         var totalEntradasSeleccionadas = 0;
 
-        function validarFormulario(correoUsuario) {
-            var nombre = document.getElementById('nombre').value.trim();
-            var apellidos = document.getElementById('apellidos').value.trim();
 
-            var correo = correoUsuario || document.getElementById('correo').value.trim();
-
-            if (nombre === '' || apellidos === '' || correo === '') {
-                return false;
-            }
-
-            return true;
-        }
 
         function comprobarSeleccion() {
             var cantidadNormal = parseInt(document.getElementById('cantidadNormal').innerText);
@@ -305,13 +291,24 @@ if (!empty($_SESSION["email"])) {
 
             var totalSeleccionado = cantidadNormal + cantidadMenores + cantidadCarnet + cantidadMayores;
 
+            var correoUsuario = document.getElementById('correo').value;
+
+            var validaremail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (correoUsuario.trim() === "") {
+                alert("El campo de correo electrónico está vacío.");
+                return false;
+            }
+
+            if (!validaremail.test(correoUsuario)) {
+                alert("El correo electrónico no es válido.");
+                return false;
+            }
+
             if (totalSeleccionado === maxEntradas) {
                 
                 var correoUsuario = document.getElementById('correo').value;
                     var precio = parseFloat(document.getElementById('precio').innerText).toFixed(2);
-
-
-
                     var url = "../includes/session.php?precio=" + precio + "&correo=" + correoUsuario;
                     window.location.href = url;
                     return true;

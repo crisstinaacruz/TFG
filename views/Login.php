@@ -188,13 +188,13 @@ function enviarCorreoConfirmacion($email, $verificationCode)
 			<div class="row">
 				<div class="col-12">
 					<div class="sign__content">
-						<form method="post" class="sign__form">
+						<form method="post" class="sign__form" onsubmit="return validarFormulario()">
 							<a href="../../index.php" class="sign__logo">
 								<img src="../../assets/img/logo.png" alt="">
 							</a>
 
 							<div class="sign__group">
-								<input type="text" name="correo" class="sign__input" placeholder="Correo electrónico" required>
+								<input type="email" name="correo" class="sign__input" placeholder="Correo electrónico" required>
 							</div>
 
 							<div class="sign__group">
@@ -212,7 +212,25 @@ function enviarCorreoConfirmacion($email, $verificationCode)
 		</div>
 	</div>
 
-	<!-- JS -->
+	<script>
+        function validarFormulario() {
+            var correo = document.forms["loginForm"]["correo"].value;
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (correo.trim() === "") {
+                alert("El campo de correo electrónico está vacío.");
+                return false;
+            }
+
+            if (!emailRegex.test(correo)) {
+                alert("El correo electrónico no tiene un formato válido.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+	
 	<script src="../../assets/js/jquery-3.3.1.min.js"></script>
 	<script src="../../assets/js/bootstrap.bundle.min.js"></script>
 	<script src="../../assets/js/owl.carousel.min.js"></script>

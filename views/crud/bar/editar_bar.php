@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
                             <ul class="header__nav">
                                 <li class="header__nav-item">
-                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Peliculas</a>
+                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Películas</a>
                                 </li>
 
                                 <li class="header__nav-item">
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                                 </li>
 
                                 <li class="header__nav-item">
-                                    <a href="" class="header__nav-link">Horarios</a>
+                                    <a href="../horarios/administrador_horario.php" class="header__nav-link">Horarios</a>
                                 </li>
 
                                 <li class="header__nav-item">

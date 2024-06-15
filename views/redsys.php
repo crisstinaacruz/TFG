@@ -201,6 +201,7 @@ if (isset($_POST['continuar'])) {
     header('Location: comprafin.php');
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>

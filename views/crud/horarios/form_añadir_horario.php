@@ -34,11 +34,8 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
 
-<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="../icon/favicon-32x32.png">
-<link rel="apple-touch-icon" sizes="72x72" href="../icon/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114" href="../icon/apple-touch-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="144x144" href="../icon/apple-touch-icon-144x144.png">
+<link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
+
 
 <meta name="description" content="">
 <meta name="keywords" content="">
@@ -57,7 +54,7 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 
                             <ul class="header__nav">
                                 <li class="header__nav-item">
-                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Peliculas</a>
+                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Películas</a>
                                 </li>
 
                                 <li class="header__nav-item">
@@ -98,7 +95,6 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
             <div class="mb-3">
                 <label for="sala" class="form-label">Sala:</label>
                     <select class="form-select" name="sala" required>
-        <!-- Aquí se cargarán las opciones de las salas desde la base de datos -->
         <?php
         foreach ($resultados2 as $sala) {
             // Imprime cada opción en el formato correcto
@@ -111,7 +107,7 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
             <div class="mb-3">
                 <label for="pelicula" class="form-label">Pelicula:</label>
     <select class="form-select" name="pelicula" required>
-        <!-- Aquí se cargarán las opciones de las películas desde la base de datos -->
+
         <?php
         foreach ($resultados as $pelicula) {
             // Imprime cada opción en el formato correcto

@@ -53,7 +53,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 
                             <ul class="header__nav">
                                 <li class="header__nav-item">
-                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Peliculas</a>
+                                    <a href="../peliculas/administrador_pelicula.php" class="header__nav-link">Películas</a>
                                 </li>
 
                                 <li class="header__nav-item">

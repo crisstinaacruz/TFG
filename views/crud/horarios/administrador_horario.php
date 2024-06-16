@@ -6,8 +6,6 @@ $statement = $pdo->prepare("SELECT * FROM horarios ORDER BY horario_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -110,23 +108,27 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($resultados as $horario): ?>
-                <?php
-                $statement = $pdo->prepare("SELECT sala_id, nombre, filas, columnas FROM salas WHERE sala_id = :sala_id");
-                $statement->execute(['sala_id' => $horario['sala_id']]);
-                $asientos = $statement->fetch(PDO::FETCH_ASSOC);
-                ?>
-                <tr>
-                    <td><?php echo $horario['sala_id']; ?></td>
-                    <td><?php echo $horario['pelicula_id']; ?></td>
-                    <td><?php echo $horario['fecha']; ?></td>
-                    <td><?php echo $asientos['filas']; ?></td>
-                    <td><?php echo $asientos['columnas']; ?></td>
-                    <td>
-                        <a href="delete_horario.php?id=<?php echo $horario['horario_id']; ?>" class="btn btn-danger btn-sm mt-3">Eliminar</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
+        <?php foreach ($resultados as $horario): ?>
+                    <?php
+                    $statement_sala = $pdo->prepare("SELECT nombre, filas, columnas FROM salas WHERE sala_id = :sala_id");
+                    $statement_sala->execute(['sala_id' => $horario['sala_id']]);
+                    $sala = $statement_sala->fetch(PDO::FETCH_ASSOC);
+
+                    $statement_pelicula = $pdo->prepare("SELECT titulo FROM peliculas WHERE pelicula_id = :pelicula_id");
+                    $statement_pelicula->execute(['pelicula_id' => $horario['pelicula_id']]);
+                    $pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC);
+                    ?>
+                    <tr>
+                        <td><?php echo $sala['nombre']; ?></td>
+                        <td><?php echo $pelicula['titulo']; ?></td>
+                        <td><?php echo $horario['fecha']; ?></td>
+                        <td><?php echo $sala['filas']; ?></td>
+                        <td><?php echo $sala['columnas']; ?></td>
+                        <td>
+                            <a href="delete_horario.php?id=<?php echo $horario['horario_id']; ?>" class="btn btn-danger btn-sm mt-3">Eliminar</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
         </tbody>
     </table>
     </div>

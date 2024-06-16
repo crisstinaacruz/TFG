@@ -12,10 +12,12 @@ $conexion = ConnectDatabase::conectar();
 $usuario_id = $_SESSION['usuario_id'];
 $idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
 $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
+$bar_id = $_SESSION['bar_id'];
 $horario_id = $_SESSION['horario_id'];
 $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
 
 $titulo_pelicula = $_SESSION['titulo_pelicula'];
+$titulo_bar = $_SESSION['titulo_bar'];
 $fecha_formateada = $_SESSION['fecha_formateada'];
 $hora_formateada = $_SESSION['hora_formateada'];
 
@@ -40,11 +42,12 @@ class ProcesarPago
         $stmt->execute();
     }
 
-    public function realizarReserva($idsButacas, $usuario_id, $horario_id)
+    public function realizarReserva($idsButacas, $usuario_id, $bar_id, $horario_id)
     {
-        $sql = "INSERT INTO reservas (usuario_id, horario_id) VALUES (:usuario_id, :horario_id)";
+        $sql = "INSERT INTO reservas (usuario_id, bar_id, horario_id) VALUES (:usuario_id, :bar_id, :horario_id)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+        $stmt->bindParam(':bar_id', $bar_id, PDO::PARAM_INT);
         $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -62,7 +65,7 @@ class ProcesarPago
         return $reserva_id;
     }
 
-    public function enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada)
+    public function enviarCorreo($correoUsuario, $titulo_pelicula, $titulo_bar, $asientos_info, $fecha_formateada, $hora_formateada)
     {
         $mail = new PHPMailer(true);
         try {
@@ -150,11 +153,12 @@ class ProcesarPago
                         <h2>Gracias por tu reserva. Aquí está la información detallada:</h2>
                         <p><strong>Película:</strong> {$titulo_pelicula}</p>
                         <p><strong>Fecha y Hora:</strong> {$fecha_formateada} a las {$hora_formateada}</p>
+                        <p><strong>Producto del bar:</strong> {$titulo_bar}</p>                        
                         <p><strong>Asientos:</strong></p>
                         <ul>";
 
             foreach ($asientos_info as $asiento) {
-                $body .= "<li>Sala: {$asiento['sala']} - Fila: {$asiento['fila']}, Columna: {$asiento['columna']}</li>";
+                $body .= "<li>{$asiento['sala']} - Fila: {$asiento['fila']}, Columna: {$asiento['columna']}</li>";
             }
 
             $body .= "
@@ -179,7 +183,7 @@ class ProcesarPago
 if (isset($_POST['continuar'])) {
     $procesarPago = new ProcesarPago();
     $procesarPago->actualizarButacas($idsButacas);
-    $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $horario_id);
+    $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $bar_id, $horario_id);
 
     // Obtener información de los asientos después de realizar la reserva
     $idsButacasArray = explode(',', $idsButacas);
@@ -196,7 +200,7 @@ if (isset($_POST['continuar'])) {
     }
 
  
-    $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada);
+    $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $titulo_bar, $asientos_info, $fecha_formateada, $hora_formateada);
 
     header('Location: comprafin.php');
     exit();
@@ -376,7 +380,7 @@ if (isset($_POST['continuar'])) {
         </ol>
         <div id="body">
             <div class="result-mod-wr">
-                <div class="datosDeLaOperacion">Datos de la operación <?php echo $correoUsuario, $titulo_pelicula, $asientos_info, $fecha_formateada, $hora_formateada; ?></div>
+                <div class="datosDeLaOperacion">Datos de la operación</div>
                 <div class="ticket-header">
                     <div class="price">
                         <div class="left">

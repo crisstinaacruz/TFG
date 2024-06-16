@@ -12,6 +12,7 @@ $conexion = ConnectDatabase::conectar();
 
 $idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
 $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
+$bar_id = $_SESSION['bar_id'];
 $horario_id = $_SESSION['horario_id'];
 $total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
 
@@ -34,7 +35,14 @@ $statement_pelicula->bindParam(':pelicula_id', $pelicula_id);
 $statement_pelicula->execute();
 $titulo_pelicula = $statement_pelicula->fetch(PDO::FETCH_ASSOC)['titulo'];
 
+$query_bar = "SELECT titulo FROM bar WHERE bar_id = :bar_id";
+$statement_bar = $conexion->prepare($query_bar);
+$statement_bar->bindParam(':bar_id', $bar_id);
+$statement_bar->execute();
+$titulo_bar = $statement_bar->fetch(PDO::FETCH_ASSOC)['titulo'];
+
 $_SESSION['titulo_pelicula'] = $titulo_pelicula;
+$_SESSION['titulo_bar'] = $titulo_bar;
 $_SESSION['fecha_formateada'] = $fecha_formateada;
 $_SESSION['hora_formateada'] = $hora_formateada;
 
@@ -128,6 +136,7 @@ if (isset($_POST['pagar'])) {
                     }
                     ?>
                 </ul>
+                <p style="color:#fff; font-family: 'Open Sans', sans-serif;">Producto del bar: <?php echo $titulo_bar; ?></p>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;  margin-top: 20px;">Correo Electrónico:</h3>
                 <p style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $correoUsuario; ?></p>
                 <h3 style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha y Hora:</h3>

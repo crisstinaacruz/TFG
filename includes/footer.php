@@ -24,7 +24,7 @@ function getFooterHTML() {
                     <h6 class="footer__title">Contacto</h6>
                     <ul class="footer__list">
                         <li><a href="tel:+34624233403">+34 624 23 34 03</a></li>
-                        <li><a href="mailto:atencionalclient@cinemmagic.com">atencionalcliente@magiccinema.com</a></li>
+                        <li><a href="mailto:atencionalclient@cinemmagic.com">atencionalcliente@magiccinema.es</a></li>
                     </ul>
                 </div>
             </div>

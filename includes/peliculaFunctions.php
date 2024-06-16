@@ -56,53 +56,82 @@ class InfoPeliculaHandler
         }
     }
 
+    
+
     public static function obtenerInformacionPeliculaEntrada($id_pelicula)
     {
-        
         $conexion = ConnectDatabase::conectar();
+        function obtenerNombrePeliculaPorID($conexion, $id_pelicula)
+    {
+        $sql = "SELECT titulo FROM peliculas WHERE pelicula_id = :id_pelicula";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(':id_pelicula', $id_pelicula, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC)['titulo'];
+    }
+        
+        
 
         if ($id_pelicula !== null) {
             echo '<div class="container">';
             echo '<div class="row">';
 
             $horarios = self::obtenerHorariosPelicula($conexion, $id_pelicula);
-
-            if ($horarios) {
-                foreach ($horarios as $horario) {
+            echo '<h3>Horarios de Hoy</h3>';
+            if (!empty($horarios['hoy'])) {
+                
+                foreach ($horarios['hoy'] as $horario) {
                     echo '<div class="col-sm-4 mb-3 mb-sm-0">';
-                    echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
-                    echo '<div class="card-body p-3">';
-                    echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $horario['nombre_pelicula'] . '</h4>';
-
-                    if (isset($horario['fecha'])) {
-                        $fechaFormateada = date('d-m-Y', strtotime($horario['fecha']));
-                        $horaFormateada = date('H:i', strtotime($horario['fecha']));
-                    } else {
-                        $fechaFormateada = 'Fecha no disponible';
-                        $horaFormateada = 'Hora no disponible';
-                    }
-
-                    echo '<p class="card-text text-white" style ="font-family: \'Open Sans\', sans-serif;"><strong>Fecha:</strong> ' . $fechaFormateada . '</p>';
-                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sala:</strong> ' . $horario['sala_nombre'] . '</p>';
-                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sesión:</strong> ' . $horaFormateada . '</p>';
-                    echo '<a href="../includes/session.php?horario_id=' . $horario['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
-                    echo '</div>';
-                    echo '</div>';
+                        echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
+                            echo '<div class="card-body p-3">';
+                                echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $horario['nombre_pelicula'] . '</h4>';
+                                echo '<p class="card-text text-white" style ="font-family: \'Open Sans\', sans-serif;"><strong>Fecha:</strong> ' . date('d-m-Y', strtotime($horario['fecha'])) . '</p>';
+                                echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;">' . $horario['sala_nombre'] . '</p>';
+                                echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sesión:</strong> ' . date('H:i', strtotime($horario['fecha'])) . '</p>';
+                                echo '<a href="../includes/session.php?horario_id=' . $horario['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
+                            echo '</div>';
+                        echo '</div>';
                     echo '</div>';
                 }
-
-                echo '</div>';
-                echo '</div>';
-            } else {
-                // Muestra el mensaje de error con el nombre de la película en lugar del ID
-                $nombre_pelicula = self::obtenerNombrePeliculaPorID($conexion, $id_pelicula);
+            }
+            else{
+                $nombre_pelicula = obtenerNombrePeliculaPorID($conexion, $id_pelicula);
 
                 echo '<div class="container">';
                 echo '<p style="color: #fff; font-family: \'.Open Sans\', sans-serif;">No hay fecha para la película ' . $nombre_pelicula . '</p>';
                 echo '</div>';
             }
+            echo '<h3>Horarios Próximos Días</h3>';
+            if (!empty($horarios['proximos_dias'])) {
+                
+                foreach ($horarios['proximos_dias'] as $horario) {
+
+                    echo '<div class="col-sm-4 mb-3 mb-sm-0">';
+                    echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
+                    echo '<div class="card-body p-3">';
+                    echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $horario['nombre_pelicula'] . '</h4>';
+                    echo '<p class="card-text text-white" style ="font-family: \'Open Sans\', sans-serif;"><strong>Fecha:</strong> ' . date('d-m-Y', strtotime($horario['fecha'])) . '</p>';
+                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;">' . $horario['sala_nombre'] . '</p>';
+                    echo '<p class="text-white" style="font-family: \'Open Sans\', sans-serif;"><strong>Sesión:</strong> ' . date('H:i', strtotime($horario['fecha'])) . '</p>';
+                    echo '<a href="../includes/session.php?horario_id=' . $horario['horario_id'] . '" class="" style="background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border: none; color: #fff; padding: 10px 20px; border-radius: 5px;">Comprar Entrada</a>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+
+                }
+            
+            } else {
+                $nombre_pelicula = obtenerNombrePeliculaPorID($conexion, $id_pelicula);
+
+                echo '<div class="container">';
+                echo '<p style="color: #fff; font-family: \'.Open Sans\', sans-serif;">No hay fecha para la película ' . $nombre_pelicula . '</p>';
+                echo '</div>';
+                
+            }
 
             return;
+            
         } else {
             echo 'ID de película no proporcionado.';
             return;
@@ -121,7 +150,9 @@ class InfoPeliculaHandler
 
     private static function obtenerHorariosPelicula($conexion, $id_pelicula)
 {
-    $fecha_actual = date('Y-m-d H:i:s');
+    date_default_timezone_set('Europe/Madrid');
+    $fecha_actual = date('Y-m-d');
+    $hora_actual = date('H:i:s');
 
     $sql = "SELECT 
                 p.titulo AS nombre_pelicula,
@@ -136,37 +167,44 @@ class InfoPeliculaHandler
                 salas s ON h.sala_id = s.sala_id
             WHERE 
                 p.pelicula_id = :id
-                AND h.fecha >= :fecha_actual
+                AND (
+                    h.fecha::date > :fecha_actual::date
+                    OR (h.fecha::date = :fecha_actual::date AND h.fecha::time >= :hora_actual::time)
+                )
             ORDER BY
                 h.fecha ASC"; // Ordenar por fecha ascendente
 
     $stmt = $conexion->prepare($sql);
     $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
-    $stmt->bindParam(':fecha_actual', $fecha_actual, PDO::PARAM_STR); // Importante mantener la fecha como string para PostgreSQL
+    $stmt->bindParam(':fecha_actual', $fecha_actual, PDO::PARAM_STR);
+    $stmt->bindParam(':hora_actual', $hora_actual, PDO::PARAM_STR);
     $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-        $resultados = [];
-        while ($horario = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $resultados[] = $horario;
+    $resultados = [];
+    while ($horario = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $resultados[] = $horario;
+    }
+
+    // Separar los horarios de hoy y los próximos días
+    $horarios_hoy = [];
+    $horarios_proximos_dias = [];
+
+    foreach ($resultados as $horario) {
+        $fecha_horario = date('Y-m-d', strtotime($horario['fecha']));
+
+        if ($fecha_horario == $fecha_actual) {
+            $horarios_hoy[] = $horario;
+        } else {
+            $horarios_proximos_dias[] = $horario;
         }
-        return $resultados;
-    } else {
-        return false;
     }
+
+    return [
+        'hoy' => $horarios_hoy,
+        'proximos_dias' => $horarios_proximos_dias
+    ];
 }
 
-
-    private static function obtenerNombrePeliculaPorID($conexion, $id_pelicula)
-    {
-        $sql = "SELECT titulo FROM peliculas WHERE pelicula_id = :id_pelicula";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(':id_pelicula', $id_pelicula, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetch(PDO::FETCH_ASSOC)['titulo'];
-    }
 }
-
 
 ?>

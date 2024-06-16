@@ -27,8 +27,9 @@ if (isset($_GET['correo']) && isset($_GET['precio'])) {
     exit();
 }
 
-if (isset($_GET['total'])) {
+if (isset($_GET['total'])&& isset($_GET['bar'])) {
     $_SESSION['total'] = $_GET['total'];
+    $_SESSION['bar_id'] = $_GET['bar'];
     header('Location: ../views/tarjeta.php');
     exit();
 }

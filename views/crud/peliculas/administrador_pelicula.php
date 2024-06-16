@@ -15,12 +15,12 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
-
+    
+    <!-- Ionicons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/css/ionicons.min.css">
+    
     <link rel="stylesheet" href="../../../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../../../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../../../assets/css/owl.carousel.min.css">
@@ -31,17 +31,40 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../assets/css/photoswipe.css">
     <link rel="stylesheet" href="../../../assets/css/default-skin.css">
     <link rel="stylesheet" href="../../../assets/css/main.css">
-
     <link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
-
     <meta name="description" content="">
     <meta name="keywords" content="">
     <title>Magic Cinema - Administrador</title>
+    <style>
+        .btn-custom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0.2rem;
+            color: #fff;
+            text-decoration: none;
+        }
 
+        .btn-edit {
+            background-color: #ffc107;
+            border: none;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-custom i {
+            margin-right: 0.25rem;
+        }
+    </style>
 </head>
 
 <body class="body">
-
     <header class="header">
         <div class="header__wrap">
             <div class="container">
@@ -51,30 +74,24 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <a href="../../../index.php" class="header__logo">
                                 <img src="../../../assets/img/Magic_Cinema-removebg-preview.png" alt="">
                             </a>
-
                             <ul class="header__nav">
                                 <li class="header__nav-item">
                                     <a href="administrador_pelicula.php" class="header__nav-link">Películas</a>
                                 </li>
-
                                 <li class="header__nav-item">
                                     <a href="../promociones/administrador_promo.php" class="header__nav-link">Promociones</a>
                                 </li>
-
                                 <li class="header__nav-item">
                                     <a href="../horarios/administrador_horario.php" class="header__nav-link">Horarios</a>
                                 </li>
-
                                 <li class="header__nav-item">
                                     <a href="../bar/administrador_bar.php" class="header__nav-link">Bar</a>
                                 </li>
-
                                 <a href="../../../index.php" class="header__sign-in">
                                     <i class="icon ion-ios-log-in"></i>
                                     <span>Volver</span>
                                 </a>
                             </ul>
-
                             <button class="header__btn" type="button">
                                 <span></span>
                                 <span></span>
@@ -127,9 +144,13 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                     echo '<td><img src="' . $pelicula['imagen'] . '" class="img-thumbnail" style="max-width: 100px;" alt="Película"></td>';
                     echo '<td>' . $pelicula['trailer_url'] . '</td>';
                     echo '<td>
-            <a href="editar_pelicula.php?id=' . $pelicula['pelicula_id'] . '" class="btn btn-warning btn-sm mt-3">Editar</a>
-            <a href="delete_pelicula.php?id=' . $pelicula['pelicula_id'] . '" class="btn btn-danger btn-sm mt-3">Eliminar</a>
-          </td>';
+                            <a href="editar_pelicula.php?id=' . $pelicula['pelicula_id'] . '" class="btn btn-custom btn-edit mt-3">
+                                <i class="ion-edit"></i> Editar
+                            </a>
+                            <a href="delete_pelicula.php?id=' . $pelicula['pelicula_id'] . '" class="btn btn-custom btn-delete mt-3">
+                                <i class="ion-trash-a"></i> Eliminar
+                            </a>
+                          </td>';
                     echo '</tr>';
                 }
                 ?>
@@ -142,11 +163,10 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     echo getFooterHTML();
     ?>
 
-    <!-- JS -->
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/owl.carousel.min.js"></script>
-    <script src="../../../assets/assets/js/jquery.mousewheel.min.js"></script>
+    <script src="../../../assets/js/jquery.mousewheel.min.js"></script>
     <script src="../../../assets/js/jquery.mCustomScrollbar.min.js"></script>
     <script src="../../../assets/js/wNumb.js"></script>
     <script src="../../../assets/js/nouislider.min.js"></script>
@@ -155,7 +175,6 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     <script src="../../../assets/js/photoswipe.min.js"></script>
     <script src="../../../assets/js/photoswipe-ui-default.min.js"></script>
     <script src="../../../assets/js/main.js"></script>
-
 </body>
 
 </html>

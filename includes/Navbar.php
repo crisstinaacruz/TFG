@@ -24,7 +24,7 @@ class Navbar
         $user_id = self::obtenerUsuarioId($email);
         $_SESSION['usuario_id'] = $user_id;
 
-        if ($email == "admi@gmail.com") {          
+        if ($email == "admin@gmail.com") {          
             echo '<header class="header">
             <div class="header__wrap">
                 <div class="container">

@@ -202,7 +202,7 @@ if (!empty($_SESSION["email"])) {
                     <td id="subtotalNormal">0.00</td>
                 </tr>
                 <tr>
-                    <td>Menores de 13 años</td>
+                    <td>Menores de 5 años</td>
                     <td id="precioMenores">6.50</td>
                     <td>
                         <button onclick="decrementarCantidad('cantidadMenores')" class="button">-</button>

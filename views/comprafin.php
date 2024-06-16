@@ -59,13 +59,6 @@
                                     </li>
                                 </ul>
 
-                                <div class="header__auth">
-                                    <a href="../../views/Login.php" class="header__sign-in mx-1">
-                                        <i class="icon ion-ios-log-in"></i>
-                                        <span>Iniciar Sesión</span>
-                                    </a>
-                                </div>
-
                                 <button class="header__btn" type="button">
                                     <span></span>
                                     <span></span>

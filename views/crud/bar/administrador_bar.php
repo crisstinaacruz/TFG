@@ -1,10 +1,23 @@
 <?php
+session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
 $statement = $pdo->prepare("SELECT * FROM bar ORDER BY bar_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_POST['editar'])) {
+    $bar_id = $_POST['editar'];
+    $_SESSION['bar_id'] = $bar_id;
+    header('Location: editar_bar.php');
+    exit();
+} else if (isset($_POST['eliminar'])) {
+    $bar_id = $_POST['eliminar'];
+    $_SESSION['bar_id'] = $bar_id;
+    header('Location: delete_bar.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,12 +39,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="../../../assets/css/photoswipe.css">
 <link rel="stylesheet" href="../../../assets/css/default-skin.css">
 <link rel="stylesheet" href="../../../assets/css/main.css">
-
-
-
 <link rel="icon" type="image/png" href="../../../assets/icon/icono.png" sizes="32x32">
-
-
 <meta name="description" content="">
 <meta name="keywords" content="">
 <title>Magic Cinema - Administrador</title>
@@ -113,47 +121,23 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                     echo '<td>' . $bar['precio'] . '</td>';
                     echo '<td><img src="'. $bar['imagen'] . '" class="img-thumbnail" style="max-width: 100px;" alt="Película"></td>';
                     echo '<td>
-                            <a href="editar_bar.php?id=' . $bar['bar_id'] . '" class="btn btn-warning btn-sm mt-3">Editar</a>
-                            <a href="delete_bar.php?id=' . $bar['bar_id'] . '" class="btn btn-danger btn-sm mt-3">Eliminar</a>
+                    <form method="post">
+                    <button type="submit" class="btn btn-warning btn-sm mt-3" value="' . $bar['bar_id'] . '" name="editar">Editar</button>
+                    <button type="submit" class="btn btn-danger btn-sm mt-3" value="' . $bar['bar_id'] . '" name="eliminar">Eliminar</button>
+                    </form>
                           </td>';
                     echo '</tr>';
                 }
-            ?>
+
+                
+                ?>
         </tbody>
     </table>
     </div>
-
-    <footer class=" footer">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-6 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Sobre nosotros</h6>
-                    <ul class="footer__list">
-                        <li><a href="../../html/QuienesSomos.html">Quienés somos</a></li>
-                        <li><a href="#">Trabaja con nosotros</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-6 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Legal</h6>
-                    <ul class="footer__list">
-                        <li><a href="../../html/AvisLegal.html">Aviso Legal</a></li>
-                        <li><a href="../../html/CondicionesCompra.html">Condiciones de compra</a></li>
-                        <li><a href="../../html/politicas.html">Políticas de privacidad</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-12 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Contacto</h6>
-                    <ul class="footer__list">
-                        <li><a href="tel:+34624233403">+34 624 23 34 03</a></li>
-                        <li><a href="mailto:atencionalclient@cinemmagic.com">atencionalclient@magiccinema.com</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    <?php
+    include_once "../../../includes/footer.php";
+    echo getFooterHTML();
+    ?>
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/owl.carousel.min.js"></script>

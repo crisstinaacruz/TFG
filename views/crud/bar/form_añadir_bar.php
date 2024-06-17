@@ -1,5 +1,6 @@
 <?php
 
+
 include_once '../../../includes/config.php';
 
 class BarInsert {
@@ -113,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <a href="administrador_bar.php" class="header__nav-link">Bar</a>
                                 </li>
 
-                                <a href="administrador_pelicula.php" class="header__sign-in">
+                                <a href="administrador_bar.php" class="header__sign-in">
                                     <i class="icon ion-ios-log-in"></i>
                                     <span>Volver</span>
                                 </a>

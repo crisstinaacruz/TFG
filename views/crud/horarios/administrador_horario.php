@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
@@ -133,36 +134,10 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     </table>
     </div>
 
-    <footer class=" footer">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-6 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Sobre nosotros</h6>
-                    <ul class="footer__list">
-                        <li><a href="../../html/QuienesSomos.html">Quienés somos</a></li>
-                        <li><a href="#">Trabaja con nosotros</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-6 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Legal</h6>
-                    <ul class="footer__list">
-                        <li><a href="../../html/AvisLegal.html">Aviso Legal</a></li>
-                        <li><a href="../../html/CondicionesCompra.html">Condiciones de compra</a></li>
-                        <li><a href="../../html/politicas.html">Políticas de privacidad</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-12 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Contacto</h6>
-                    <ul class="footer__list">
-                        <li><a href="tel:+34624233403">+34 624 23 34 03</a></li>
-                        <li><a href="mailto:atencionalclient@cinemmagic.com">atencionalclient@magiccinema.com</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php
+    include_once "../../../includes/footer.php";
+    echo getFooterHTML();
+    ?>    
 
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>

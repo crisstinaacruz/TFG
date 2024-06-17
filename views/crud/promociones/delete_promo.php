@@ -1,7 +1,7 @@
 <?php
-
+session_start();
 include_once '../../../includes/config.php';
-
+$id = $_SESSION['promo_id'];
 class PromoDelete {
 
     private $pdo;
@@ -30,9 +30,6 @@ class PromoDelete {
 
 $PromoDelete = new PromoDelete();
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-   
-    $id = $_GET['id'];
 
     if ($PromoDelete->eliminarPromo($id)) {
         header('Location: administrador_promo.php');
@@ -42,8 +39,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         echo "Error en la validación del ID.";
     }
 
-} else {
-    header('Location: administrador_promo.php');
-    exit();
-}
+
 ?>

@@ -1,6 +1,8 @@
 <?php
-
+session_start();
 include_once '../../../includes/config.php';
+
+$id = $_SESSION['bar_id'];
 
 class BarDelete {
 
@@ -10,8 +12,7 @@ class BarDelete {
         $this->pdo = ConnectDatabase::conectar();
     }
 
-    public function eliminarBar($id) {
-        
+    public function eliminarBar($id) {       
         if ($this->validarId($id)) {
             $statement = $this->pdo->prepare("DELETE FROM bar WHERE bar_id = ?");
             $statement->execute([$id]);
@@ -30,9 +31,9 @@ class BarDelete {
 
 $BarDelete = new BarDelete();
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+
    
-    $id = $_GET['id'];
+    
 
     if ($BarDelete->eliminarBar($id)) {
         header('Location: administrador_bar.php');
@@ -42,8 +43,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         echo "Error en la validación del ID.";
     }
 
-} else {
-    header('Location: administrador_bar.php');
-    exit();
-}
+
 ?>

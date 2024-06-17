@@ -1,10 +1,23 @@
 <?php
+session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
 $statement = $pdo->prepare("SELECT * FROM promociones ORDER BY promocion_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_POST['editar'])) {
+    $promo_id = $_POST['editar'];
+    $_SESSION['promo_id'] = $promo_id;
+    header('Location: editar_promo.php');
+    exit();
+} else if (isset($_POST['eliminar'])) {
+    $promo_id = $_POST['eliminar'];
+    $_SESSION['promo_id'] = $promo_id;
+    header('Location: delete_promo.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -114,8 +127,10 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                     echo '<td>' . date('d/m/Y', strtotime($promos['fecha'])) . '</td>';
                     echo '<td><img src="'. $promos['imagen'] . '" class="img-thumbnail" style="max-width: 100px;" alt="Película"></td>';
                     echo '<td>
-                            <a href="editar_promo.php?id=' . $promos['promocion_id'] . '" class="btn btn-warning btn-sm mt-3">Editar</a>
-                            <a href="delete_promo.php?id=' . $promos['promocion_id'] . '" class="btn btn-danger btn-sm mt-3">Eliminar</a>
+                    <form method="post">
+                    <button type="submit" class="btn btn-warning btn-sm mt-3" value="' . $promos['promocion_id'] . '" name="editar">Editar</button>
+                    <button type="submit" class="btn btn-danger btn-sm mt-3" value="' . $promos['promocion_id'] . '" name="eliminar">Eliminar</button>
+                    </form>
                           </td>';
                     echo '</tr>';
                 }
@@ -124,22 +139,10 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     </table>
     </div>
 
-    <footer class=" footer">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-6 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Sobre nosotros</h6>
-                    <ul class="footer__list">
-                        <li><a href="../../html/QuienesSomos.html">Quiénes somos</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-6 col-sm-4 col-md-3">
-                    <h6 class="footer__title">Legal</h6>
-                    <ul class="footer__list">
-                        <li><a href="../../html/AvisLegal.html">Aviso Legal</a></li>
-                        <li><a href="../../html/CondicionesCompra.html">Condiciones de compra</a></li>
-    
+    <?php
+    include_once "../../../includes/footer.php";
+    echo getFooterHTML();
+    ?>
 
     
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>

@@ -1,8 +1,9 @@
 <?php
+session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$id = $_GET['id'];
+$id = $_SESSION['pelicula_id'];
 
 $statement = $pdo->prepare("SELECT * FROM peliculas WHERE pelicula_id = ?");
 $statement->execute([$id]);
@@ -169,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="fecha_de_estreno">Fecha de Estreno:</label>
+                    <label for="fecha_de_estreno">Fecha de estreno:</label>
                     <input type="date" class="form-control" name="fecha_de_estreno" value="<?php echo $fecha_de_estreno; ?>">
                 </div>
 

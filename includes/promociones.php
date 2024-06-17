@@ -41,7 +41,7 @@ class PromocionesHandler
                                 <div class="card-body">
                                     <h5 class="card-title fw-bold" style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $promocion['titulo']; ?></h5>
                                     <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;"><?php echo $promocion['descripcion']; ?></p>
-                                    <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">Fecha: <?php echo date('d-m-Y', strtotime($promocion['fecha'])); ?></p>
+                                    <p class="card-text" style="color:#fff; font-family: 'Open Sans', sans-serif;">La oferta termina el: <?php echo date('d-m-Y', strtotime($promocion['fecha'])); ?></p>
                                 </div>
                             </div>
                         </div>

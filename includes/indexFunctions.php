@@ -6,7 +6,7 @@ class IndexPeliculaHandler
     public static function mostrarTopPeliculas()
     {
         $conexion = ConnectDatabase::conectar();
-        $sql = "SELECT * FROM peliculas ORDER BY pelicula_id DESC LIMIT 7";
+        $sql = "SELECT * FROM peliculas ORDER BY pelicula_id ASC LIMIT 7";
         $resultado = $conexion->query($sql);
 
         if ($resultado->rowCount() > 0) {

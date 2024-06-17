@@ -1,25 +1,43 @@
 <?php
+session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$id = $titulo = $precio = $imagen = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
-    $id = $_GET['id'];
+    $bar_id = $_SESSION['bar_id'];
 
     $statement = $pdo->prepare("SELECT * FROM bar WHERE bar_id = ?");
-    $statement->execute([$id]);
+    $statement->execute([$bar_id]);
     $bar = $statement->fetch(PDO::FETCH_ASSOC);
 
     $titulo = $bar['titulo'];
     $precio = $bar['precio'];
-    $imagen = base64_encode($bar['imagen']);
-} else {
+    $imagen = $bar['imagen'];
 
-    header('Location: administrador_bar.php');
-    exit();
-}
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $titulo = $_POST['titulo'];
+        $precio = $_POST['precio'];
+    
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $nuevaimag = '../../../uploads/peliculas/' . $_FILES['imagen']['name'];
+            move_uploaded_file($_FILES['imagen']['tmp_name'], $nuevaimag);
+            $imagen = $nuevaimag;
+        }
+    
+        if (!empty($titulo) && !empty($precio)) {
+            $statement = $pdo->prepare("UPDATE bar SET titulo = ?, precio = ?, imagen = ? WHERE bar_id = ?");
+            $statement->execute([$titulo, $precio, $imagen, $bar_id]);
+    
+            header('Location: administrador_bar.php');
+            exit();
+        } else {
+            echo '<script>alert("Por favor, rellene todos los campos.");</script>';
+        }
+    }
+    
+
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                                     <a href="administrador_bar.php" class="header__nav-link">Bar</a>
                                 </li>
 
-                                <a href="administrador_pelicula.php" class="header__sign-in">
+                                <a href="administrador_bar.php" class="header__sign-in">
                                     <i class="icon ion-ios-log-in"></i>
                                     <span>Volver</span>
                                 </a>
@@ -101,9 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         <div class="container mt-5 text-white">
             <h2 class="mb-3 text-black">-</h2>
             <h2 class="mb-4">Editar Bar</h2>
-            <form action="update_bar.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="<?php echo $id; ?>">
-
+            <form method="POST" enctype="multipart/form-data">
                 <div class="form-row">
                     <div class="form-group mb-3">
                         <label for="titulo">Título:</label>
@@ -111,13 +127,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="descripcion">Precio:</label>
-                        <textarea class="form-control" name="precio" required rows="5"><?php echo $precio; ?></textarea>
+                    <label for="precio">Precio:</label>
+                    <input type="text" class="form-control" name="precio" value="<?php echo $precio; ?>" required>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="imagen">Imagen:</label>
-                        <input type="file" class="form-control" name="imagen" accept="image/*">
+                    <label for="imagen">Imagen:</label>
+                    <input type="file" class="form-control" name="imagen" accept="image/*">
+                    <?php echo '<img src="' . $imagen . '" class="img-thumbnail my-3" style="max-width: 100px;" alt="Bar">';
+                    ?>
                     </div>
 
                 <button type="submit" class="btn btn-primary mt-3 mb-3">Guardar Cambios</button>

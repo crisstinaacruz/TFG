@@ -1,8 +1,9 @@
 <?php
+session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-$id = $_GET['id'];
+$id = $_SESSION['promo_id'];
 
 $statement = $pdo->prepare("SELECT * FROM promociones WHERE promocion_id = ?");
 $statement->execute([$id]);

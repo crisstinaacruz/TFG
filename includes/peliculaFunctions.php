@@ -78,11 +78,11 @@ class InfoPeliculaHandler
             echo '<div class="row">';
 
             $horarios = self::obtenerHorariosPelicula($conexion, $id_pelicula);
-            echo '<h3>Horarios de Hoy</h3>';
+            echo '<h3>Horarios de hoy</h3>';
             if (!empty($horarios['hoy'])) {
                 
                 foreach ($horarios['hoy'] as $horario) {
-                    echo '<div class="col-sm-4 mb-3 mb-sm-0">';
+                    echo '<div class="col-sm-4 mt-3 mb-3 mb-sm-0">';
                         echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
                             echo '<div class="card-body p-3">';
                                 echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $horario['nombre_pelicula'] . '</h4>';
@@ -98,16 +98,16 @@ class InfoPeliculaHandler
             else{
                 $nombre_pelicula = obtenerNombrePeliculaPorID($conexion, $id_pelicula);
 
-                echo '<div class="container">';
+                echo '<div class="container mt-3 mb-2">';
                 echo '<p style="color: #fff; font-family: \'.Open Sans\', sans-serif;">No hay fecha para la película ' . $nombre_pelicula . '</p>';
                 echo '</div>';
             }
-            echo '<h3>Horarios Próximos Días</h3>';
+            echo '<h3>Horarios próximos días</h3>';
             if (!empty($horarios['proximos_dias'])) {
                 
                 foreach ($horarios['proximos_dias'] as $horario) {
 
-                    echo '<div class="col-sm-4 mb-3 mb-sm-0">';
+                    echo '<div class="col-sm-4 mt-3 mb-3 mb-sm-0">';
                     echo '<div class="card " style="box-shadow: 0 5px 25px 0 rgba(0,0,0,0.3); border: 2px solid transparent; border-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); border-image-slice: 1; background-color: #28282d;">';
                     echo '<div class="card-body p-3">';
                     echo '<h4 class="card-title text-white fw-bolder" style ="font-family: \'Open Sans\', sans-serif;">' . $horario['nombre_pelicula'] . '</h4>';

@@ -7,6 +7,18 @@ $pdo = ConnectDatabase::conectar();
 $statement = $pdo->prepare("SELECT * FROM peliculas ORDER BY pelicula_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_POST['editar'])) {
+    $pelicula_id = $_POST['editar'];
+    $_SESSION['pelicula_id'] = $pelicula_id;
+    header('Location: editar_pelicula.php');
+    exit();
+} else if (isset($_POST['eliminar'])) {
+    $pelicula_id = $_POST['eliminar'];
+    $_SESSION['pelicula_id'] = $pelicula_id;
+    header('Location: delete_pelicula.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,10 +29,6 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
-    <!-- Ionicons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/css/ionicons.min.css">
-    
     <link rel="stylesheet" href="../../../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../../../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../../../assets/css/owl.carousel.min.css">
@@ -35,33 +43,6 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     <meta name="description" content="">
     <meta name="keywords" content="">
     <title>Magic Cinema - Administrador</title>
-    <style>
-        .btn-custom {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            border-radius: 0.2rem;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .btn-edit {
-            background-color: #ffc107;
-            border: none;
-        }
-
-        .btn-delete {
-            background-color: #dc3545;
-            border: none;
-        }
-
-        .btn-custom i {
-            margin-right: 0.25rem;
-        }
-    </style>
 </head>
 
 <body class="body">
@@ -143,15 +124,14 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                     echo '<td>' . date('d/m/Y', strtotime($pelicula['fecha_de_estreno'])) . '</td>';
                     echo '<td><img src="' . $pelicula['imagen'] . '" class="img-thumbnail" style="max-width: 100px;" alt="Película"></td>';
                     echo '<td>' . $pelicula['trailer_url'] . '</td>';
-                    echo '<td>
-                            <a href="editar_pelicula.php?id=' . $pelicula['pelicula_id'] . '" class="btn btn-custom btn-edit mt-3">
-                                <i class="ion-edit"></i> Editar
-                            </a>
-                            <a href="delete_pelicula.php?id=' . $pelicula['pelicula_id'] . '" class="btn btn-custom btn-delete mt-3">
-                                <i class="ion-trash-a"></i> Eliminar
-                            </a>
-                          </td>';
+                    echo '<td class="text-center">
+                    <form method="post">
+                    <button type="submit" class="btn btn-warning btn-sm mt-3" value="' . $pelicula['pelicula_id'] . '" name="editar">Editar</button>
+                    <button type="submit" class="btn btn-danger btn-sm mt-3" value="' . $pelicula['pelicula_id'] . '" name="eliminar">Eliminar</button>
+                    </form>
+                    </td>';
                     echo '</tr>';
+
                 }
                 ?>
             </tbody>
@@ -162,7 +142,6 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
     include_once "../../../includes/footer.php";
     echo getFooterHTML();
     ?>
-
     <script src="../../../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/owl.carousel.min.js"></script>

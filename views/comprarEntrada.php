@@ -43,10 +43,10 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Magic Cinema - Butacas</title>
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
@@ -57,11 +57,14 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
     <link rel="stylesheet" href="../assets/css/photoswipe.css">
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
+
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
+
+
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Magic Cinema - Butacas</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <style>
         .seating-plan {
             display: grid;
@@ -100,10 +103,9 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
     ?>
     <section class="home">
-        <div class="owl-carousel home__bg">
-            <div class="item home__cover" data-bg="../assets/img/home/home__bg3.jpg"></div>
-            <div class="item home__cover" data-bg="../assets/img/home/home__bg4.jpg"></div>
-        </div>
+    <div class="owl-carousel home__bg">
+        <div class="item home__cover" data-bg="../assets/img/home/home__bg3.jpg"></div>
+    </div>
     </section>
     <section class="content">
         <div class="content__head">
@@ -129,11 +131,11 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
             while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div>';
-                echo '<h2 style="color: #fff; font-family: \'Open Sans\', sans-serif;">Detalles de la Reserva</h2>';
-                echo '<p style="color: #fff; font-family: \'Open Sans\', sans-serif;"><strong>Nombre de la Película:</strong> ' . $fila['nombre_pelicula']  . '</p>';
-                echo '<p style="color: #fff; font-family: \'Open Sans\', sans-serif;"><strong>Sala:</strong> ' . $fila['sala_nombre'] . '</p>';
+                echo '<h2 style="color: #fff; font-family: \'Open Sans\', sans-serif;">Detalles de la reserva</h2>';
+                echo '<p style="color: #fff; font-family: \'Open Sans\', sans-serif;"><strong>Nombre de la película: </strong> ' . $fila['nombre_pelicula']  . '</p>';
+                echo '<p style="color: #fff; font-family: \'Open Sans\', sans-serif;"> ' . $fila['sala_nombre'] . '</p>';
                 $fechaFormateada = date('d-m-Y H:i', strtotime($fila['fecha']));
-                echo '<p style="color: #fff; font-family: \'Open Sans\', sans-serif;"><strong>Fecha y Hora:</strong> ' . $fechaFormateada . '</p>';
+                echo '<p style="color: #fff; font-family: \'Open Sans\', sans-serif;"><strong>Fecha y hora: </strong> ' . $fechaFormateada . '</p>';
                 echo '</div>';
             }
             ?>
@@ -161,7 +163,7 @@ while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     $descripcion = 'Ocupado';
                                 }
                                 $id = $idButacas[$fila][$columna];
-                                echo '<i class="fa-solid fa-chair ' . $clase_asiento . ' enlarge-icon p-2" data-id="' . $id . '" onclick="seleccionarButaca(this, ' . $fila . ', ' . $columna . ', \'' . $estado . '\')" data-toggle="tooltip" data-placement="top" title="' . $descripcion, $id . '"></i>';
+                                echo '<i class="fa-solid fa-chair ' . $clase_asiento . ' enlarge-icon p-2" data-id="' . $id . '" onclick="seleccionarButaca(this, ' . $fila . ', ' . $columna . ', \'' . $estado . '\')" data-toggle="tooltip" data-placement="top" title="' . $descripcion. '"></i>';
                             }
                         }
                         ?>

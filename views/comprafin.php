@@ -77,17 +77,17 @@
         </div>
     </section>
 
-    <section class="content">
+    <section class="content mb-5">
         <div class="content__head">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="content__title">Compra Finalizada con Éxito</h2>
+                        <h2 class="content__title">Compra finalizada con éxito</h2>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container mt-5">
+        <div class="container mt-7 mb-5">
             <h3 style="color:#fff; font-family: 'Open Sans', sans-serif; margin-top: 50px;">¡Gracias por su compra!</h3>
             <p style="color:#fff; font-family: 'Open Sans', sans-serif;">Su compra ha sido finalizada con éxito. Hemos enviado un correo electrónico con los detalles de su compra.</p>
             <a href="/../../index.php">

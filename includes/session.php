@@ -27,9 +27,21 @@ if (isset($_GET['correo']) && isset($_GET['precio'])) {
     exit();
 }
 
-if (isset($_GET['total'])&& isset($_GET['bar'])) {
-    $_SESSION['total'] = $_GET['total'];
-    $_SESSION['bar_id'] = $_GET['bar'];
+if (isset($_GET['total']) && isset($_GET['productos'])) {
+    $total = floatval($_GET['total']);
+    $productos = json_decode($_GET['productos'], true);
+
+    $_SESSION['total'] = $total;
+    $_SESSION['bar_productos'] = $productos;
+
+    header('Location: ../views/tarjeta.php');
+    exit();
+}
+else{
+    $total = 0;
+    $productos = '';
+    $_SESSION['total'] = $total;
+    $_SESSION['bar_productos'] = $productos;
     header('Location: ../views/tarjeta.php');
     exit();
 }

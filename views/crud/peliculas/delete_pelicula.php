@@ -1,7 +1,7 @@
 <?php
-
+session_start();
 include_once '../../../includes/config.php';
-
+$id = $_SESSION['pelicula_id'];
 class PeliculaDelete {
 
     private $pdo;

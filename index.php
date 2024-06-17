@@ -56,7 +56,7 @@ session_start();
 				<div class="row">
 					<div class="col-12">
 
-						<h2 class="content__title">Ofertas y Sorteos</h2>
+						<h2 class="content__title">Ofertas y sorteos</h2>
 					</div>
 				</div>
 			</div>
@@ -123,7 +123,7 @@ session_start();
 		</div>
 		<div class="container">
 			<div class="card text-bg-dark">
-				<img src="assets/img/peliculas-version-original-septiembre-cinesa.webp" class="card-img" alt="...">
+				<img src="assets/img/peliculas-version-original-cinesa.png" class="card-img" alt="...">
 				<div class="card-img-overlay my-5">
 					<h5 class="card-title fw-bold" style="font-family: 'Open Sans', sans-serif;">¿Prefieres ver las películas en versión original?</h5>
 					<p class="card-text" style="font-family: 'Open Sans', sans-serif;">The Marvels, Los Juegos del Hambre, Five Nights at Freddy's... En Magic Cinema, encontrarás tus títulos preferidos también en Versión Original Subtitulada al Español.</p>

@@ -12,12 +12,11 @@ $conexion = ConnectDatabase::conectar();
 $usuario_id = $_SESSION['usuario_id'];
 $idsButacas = isset($_SESSION['id']) ? $_SESSION['id'] : '';
 $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
-$bar_id = $_SESSION['bar_id'];
+$bar_productos = isset($_SESSION['bar_productos']) ? $_SESSION['bar_productos'] : [];
 $horario_id = $_SESSION['horario_id'];
-$total = isset($_SESSION['total']) ? floatval($_SESSION['total']) : 0.00;
+$precio_final = isset($_SESSION['precio_final']) ? floatval($_SESSION['precio_final']) : 0.00;
 
 $titulo_pelicula = $_SESSION['titulo_pelicula'];
-$titulo_bar = $_SESSION['titulo_bar'];
 $fecha_formateada = $_SESSION['fecha_formateada'];
 $hora_formateada = $_SESSION['hora_formateada'];
 
@@ -33,7 +32,6 @@ class ProcesarPago
     public function actualizarButacas($idsButacas)
     {
         $idsButacasArray = explode(',', $idsButacas);
-
         $idsButacasArray = array_map('intval', $idsButacasArray);
         $idsButacasStr = implode(',', $idsButacasArray);
 
@@ -42,17 +40,18 @@ class ProcesarPago
         $stmt->execute();
     }
 
-    public function realizarReserva($idsButacas, $usuario_id, $bar_id, $horario_id)
+    public function realizarReserva($idsButacas, $usuario_id, $bar_productos, $horario_id, $precio_final)
     {
-        $sql = "INSERT INTO reservas (usuario_id, bar_id, horario_id) VALUES (:usuario_id, :bar_id, :horario_id)";
+        $sql = "INSERT INTO reservas (usuario_id, horario_id, total) VALUES (:usuario_id, :horario_id, :precio_final)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-        $stmt->bindParam(':bar_id', $bar_id, PDO::PARAM_INT);
         $stmt->bindParam(':horario_id', $horario_id, PDO::PARAM_INT);
+        $stmt->bindParam(':precio_final', $precio_final, PDO::PARAM_STR);
         $stmt->execute();
 
         $reserva_id = $this->pdo->lastInsertId();
 
+        // Insertar asientos reservados
         $idsButacasArray = explode(',', $idsButacas);
         foreach ($idsButacasArray as $asiento_id) {
             $sql_asiento = "INSERT INTO reserva_asientos (reserva_id, asiento_id) VALUES (:reserva_id, :asiento_id)";
@@ -62,128 +61,163 @@ class ProcesarPago
             $stmt_asiento->execute();
         }
 
+        if (!empty($bar_productos)) {
+            foreach ($bar_productos as $producto) {
+                $sql_producto = "INSERT INTO reserva_productos_bar (reserva_id, bar_id, cantidad) VALUES (:reserva_id, :bar_id, :cantidad)";
+                $stmt_producto = $this->pdo->prepare($sql_producto);
+                $stmt_producto->bindParam(':reserva_id', $reserva_id, PDO::PARAM_INT);
+                $stmt_producto->bindParam(':bar_id', $producto['id'], PDO::PARAM_INT);
+                $stmt_producto->bindParam(':cantidad', $producto['cantidad'], PDO::PARAM_INT);
+                $stmt_producto->execute();
+            }
+        }
+
         return $reserva_id;
     }
-
-    public function enviarCorreo($correoUsuario, $titulo_pelicula, $titulo_bar, $asientos_info, $fecha_formateada, $hora_formateada)
+    public function getBarTitleById($bar_id)
     {
-        $mail = new PHPMailer(true);
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.hostinger.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'no-reply@magiccinema.es';
-            $mail->Password = 'MagicCinema2024*';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
+        // Lógica para obtener el título del producto del bar por su ID
+        $sql = "SELECT titulo FROM bar WHERE bar_id = :bar_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':bar_id', $bar_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $titulo_bar = $stmt->fetchColumn(); // Suponiendo que devuelve un solo valor (el título)
+        return $titulo_bar;
+    }
 
-            $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
-            $mail->addAddress($correoUsuario);
+public function enviarCorreo($correoUsuario, $titulo_pelicula, $bar_productos, $asientos_info, $fecha_formateada, $hora_formateada, $precio_final)
+{
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.hostinger.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'no-reply@magiccinema.es';
+        $mail->Password = 'MagicCinema2024*';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
 
-            $mail->isHTML(true);
-            $mail->CharSet = 'UTF-8';
-            $mail->Subject = 'Reserva Confirmada';
+        $mail->setFrom('no-reply@magiccinema.es', 'Magic Cinema');
+        $mail->addAddress($correoUsuario);
 
-            $body = "
-            <!DOCTYPE html>
-            <html lang='es'>
-            <head>
-                <meta charset='UTF-8'>
-                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        background-color: #f8f9fa;
-                        color: #343a40;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 0 auto;
-                        background-color: #fff;
-                        padding: 20px;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    }
-                    .header {
-                        background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
-                        padding: 20px;
-                        border-radius: 8px 8px 0 0;
-                        color: #fff;
-                        text-align: center;
-                    }
-                    .header h1 {
-                        margin: 0;
-                        font-size: 24px;
-                    }
-                    .content {
-                        padding: 20px;
-                    }
-                    .content h2 {
-                        color: #ff55a5;
-                        font-size: 20px;
-                        margin-top: 0;
-                    }
-                    .content p {
-                        margin: 10px 0;
-                    }
-                    .content ul {
-                        list-style-type: none;
-                        padding: 0;
-                    }
-                    .content ul li {
-                        background-color: #f1f1f1;
-                        margin: 5px 0;
-                        padding: 10px;
-                        border-radius: 4px;
-                    }
-                    .footer {
-                        text-align: center;
-                        padding: 20px;
-                        font-size: 12px;
-                        color: #6c757d;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class='container'>
-                    <div class='header'>
-                        <h1>Reserva Confirmada</h1>
-                    </div>
-                    <div class='content'>
-                        <h2>Gracias por tu reserva. Aquí está la información detallada:</h2>
-                        <p><strong>Película:</strong> {$titulo_pelicula}</p>
-                        <p><strong>Fecha y Hora:</strong> {$fecha_formateada} a las {$hora_formateada}</p>
-                        <p><strong>Producto del bar:</strong> {$titulo_bar}</p>                        
-                        <p><strong>Asientos:</strong></p>
-                        <ul>";
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = 'Reserva Confirmada';
 
-            foreach ($asientos_info as $asiento) {
-                $body .= "<li>{$asiento['sala']} - Fila: {$asiento['fila']}, Columna: {$asiento['columna']}</li>";
-            }
-
-            $body .= "
-                        </ul>
-                    </div>
-                    <div class='footer'>
-                        &copy; 2024 Magic Cinema. Todos los derechos reservados.
-                    </div>
+        $body = "
+        <!DOCTYPE html>
+        <html lang='es'>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <style>
+                body {
+                    font-family: 'Arial', sans-serif;
+                    background-color: #f8f9fa;
+                    color: #343a40;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                    background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+                    padding: 20px;
+                    border-radius: 8px 8px 0 0;
+                    color: #fff;
+                    text-align: center;
+                }
+                .header h1 {
+                    margin: 0;
+                    font-size: 24px;
+                }
+                .content {
+                    padding: 20px;
+                }
+                .content h2 {
+                    color: #ff55a5;
+                    font-size: 20px;
+                    margin-top: 0;
+                }
+                .content p {
+                    margin: 10px 0;
+                }
+                .content ul {
+                    list-style-type: none;
+                    padding: 0;
+                }
+                .content ul li {
+                    background-color: #f1f1f1;
+                    margin: 5px 0;
+                    padding: 10px;
+                    border-radius: 4px;
+                }
+                .footer {
+                    text-align: center;
+                    padding: 20px;
+                    font-size: 12px;
+                    color: #6c757d;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Reserva Confirmada</h1>
                 </div>
-            </body>
-            </html>";
+                <div class='content'>
+                    <h2>Gracias por tu reserva. Aquí está la información detallada:</h2>
+                    <p><strong>Película:</strong> {$titulo_pelicula}</p>
+                    <p><strong>Fecha y Hora:</strong> {$fecha_formateada} a las {$hora_formateada}</p>
+                    <p><strong>Productos del bar:</strong></p>
+                    <ul>";
 
-            $mail->Body = $body;
+                    if (empty($bar_productos)) {
+                        $body .= "<p>Sin complementos del bar</p>";
+                    } else {
+                        foreach ($bar_productos as $producto) {
+                            $titulo_bar = $this->getBarTitleById($producto['id']);
+                            $body .= "<li>{$titulo_bar} - Cantidad: {$producto['cantidad']}</li>";
+                        }
+                    }
 
-            $mail->send();
-        } catch (Exception $e) {
-            echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
+        $body .= "
+                    </ul>
+                    <p><strong>Asientos:</strong></p>
+                    <ul>";
+
+        foreach ($asientos_info as $asiento) {
+            $body .= "<li>{$asiento['sala']} - Fila: {$asiento['fila']}, Columna: {$asiento['columna']}</li>";
         }
+
+        $body .= "
+                    </ul>
+                    <p><strong>Total:</strong> {$precio_final} €</p>
+                </div>
+                <div class='footer'>
+                    &copy; 2024 Magic Cinema. Todos los derechos reservados.
+                </div>
+            </div>
+        </body>
+        </html>";
+
+        $mail->Body = $body;
+
+        $mail->send();
+    } catch (Exception $e) {
+        echo "Error al enviar el correo de confirmación: {$mail->ErrorInfo}";
     }
 }
+}
 
-if (isset($_POST['continuar'])) {
+if(isset($_POST['continuar'])) {
     $procesarPago = new ProcesarPago();
     $procesarPago->actualizarButacas($idsButacas);
-    $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $bar_id, $horario_id);
+    $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $bar_productos, $horario_id, $precio_final);
 
     // Obtener información de los asientos después de realizar la reserva
     $idsButacasArray = explode(',', $idsButacas);
@@ -199,12 +233,12 @@ if (isset($_POST['continuar'])) {
         $asientos_info[] = $statement->fetch(PDO::FETCH_ASSOC);
     }
 
- 
-    $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $titulo_bar, $asientos_info, $fecha_formateada, $hora_formateada);
+    $procesarPago->enviarCorreo($correoUsuario, $titulo_pelicula, $bar_productos, $asientos_info, $fecha_formateada, $hora_formateada, $precio_final);
 
     header('Location: comprafin.php');
     exit();
 }
+
 
 ?>
 
@@ -380,14 +414,14 @@ if (isset($_POST['continuar'])) {
         </ol>
         <div id="body">
             <div class="result-mod-wr">
-                <div class="datosDeLaOperacion">Datos de la operación</div>
+                <div class="datosDeLaOperacion">Datos de la operación <?php echo $titulo_pelicula; ?></div>
                 <div class="ticket-header">
                     <div class="price">
                         <div class="left">
                             <p>Importe</p>
                         </div>
                         <div class="right">
-                            <p><?php echo number_format($total, 2); ?>&nbsp;Euros</p>
+                            <p><?php echo number_format($precio_final, 2); ?>&nbsp;Euros</p>
                         </div>
                     </div>
                 </div>

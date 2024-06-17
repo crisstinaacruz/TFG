@@ -1,17 +1,9 @@
 <?php
 session_start();
 include_once '../includes/config.php';
-
-$precio = isset($_SESSION['precio']) ? floatval($_SESSION['precio']) : 0.00;
-
-$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
-$correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] : '';
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -29,18 +21,29 @@ $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] 
     <link rel="stylesheet" href="../assets/css/photoswipe.css">
     <link rel="stylesheet" href="../assets/css/default-skin.css">
     <link rel="stylesheet" href="../assets/css/main.css">
-
-   
     <link rel="icon" type="image/png" href="../assets/icon/icono.png" sizes="32x32">
-
-
     <meta name="description" content="">
     <meta name="keywords" content="">
     <title>Magic Cinema - Productos Bar</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        .container{
+            padding-top: 20px;
+        }
+        .total-section {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .button-group {
+            margin-top: 10px;
+        }
+        .button-group .btn {
+            margin-right: 10px;
+        }
+    </style>
 
 </head>
-
 <body>
 
     <?php
@@ -66,7 +69,7 @@ $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] 
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="content__title">Productos Bar</h2>
+                        <h2 class="content__title">Productos bar</h2>
                     </div>
                 </div>
             </div>
@@ -75,7 +78,6 @@ $correoUsuario = isset($_SESSION['correoUsuario']) ? $_SESSION['correoUsuario'] 
 
             <?php
             try {
-                include_once '../includes/config.php';
                 $pdo = ConnectDatabase::conectar();
                 require_once('../includes/bar.php');
                 BarHandler::obtenerBar($pdo);

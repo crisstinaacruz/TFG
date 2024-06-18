@@ -12,6 +12,9 @@ class ConnectDatabase{
             $base = new PDO("pgsql:host=db;dbname=$db_nombre", $db_usuario, $db_pass);
             $base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            $sql = "SET TIMEZONE TO 'Europe/Madrid'";
+            $base->exec($sql);
+
             return $base;
 
         } catch (PDOException $e) {

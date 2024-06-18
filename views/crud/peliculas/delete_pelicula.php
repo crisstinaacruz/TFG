@@ -2,6 +2,7 @@
 session_start();
 include_once '../../../includes/config.php';
 $id = $_SESSION['pelicula_id'];
+
 class PeliculaDelete {
 
     private $pdo;
@@ -12,29 +13,40 @@ class PeliculaDelete {
 
     public function eliminarPelicula($id) {
         try {
-            
-            $statementCheck = $this->pdo->prepare("SELECT * FROM peliculas WHERE pelicula_id = ?");
-            $statementCheck->execute([$id]);
-            if ($statementCheck->rowCount() === 0) {
-                throw new Exception("La película no existe.");
+            $this->pdo->beginTransaction();
+
+            $statementHorarios = $this->pdo->prepare("SELECT horario_id FROM horarios WHERE pelicula_id = ?");
+            $statementHorarios->execute([$id]);
+            $horarios = $statementHorarios->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($horarios as $horario) {
+                $statementReservas = $this->pdo->prepare("SELECT reserva_id FROM reservas WHERE horario_id = ?");
+                $statementReservas->execute([$horario['horario_id']]);
+                $reservas = $statementReservas->fetchAll(PDO::FETCH_ASSOC);
+
+                foreach ($reservas as $reserva) {
+                    $statementDeleteProductosBar = $this->pdo->prepare("DELETE FROM reserva_productos_bar WHERE reserva_id = ?");
+                    $statementDeleteProductosBar->execute([$reserva['reserva_id']]);
+                }
             }
 
+            foreach ($horarios as $horario) {
+                $statementDeleteReservas = $this->pdo->prepare("DELETE FROM reservas WHERE horario_id = ?");
+                $statementDeleteReservas->execute([$horario['horario_id']]);
+            }
+
+            $statementDeleteHorarios = $this->pdo->prepare("DELETE FROM horarios WHERE pelicula_id = ?");
+            $statementDeleteHorarios->execute([$id]);
+
             
-            $statementReservas = $this->pdo->prepare("
-                DELETE FROM reservas 
-                WHERE horario_id IN (SELECT horario_id FROM horarios WHERE pelicula_id = ?)
-            ");
-            $statementReservas->execute([$id]);
+            $statementDeletePeliculas = $this->pdo->prepare("DELETE FROM peliculas WHERE pelicula_id = ?");
+            $statementDeletePeliculas->execute([$id]);
 
-            $statementHorarios = $this->pdo->prepare("DELETE FROM horarios WHERE pelicula_id = ?");
-            $statementHorarios->execute([$id]);
-
-         
-            $statementPeliculas = $this->pdo->prepare("DELETE FROM peliculas WHERE pelicula_id = ?");
-            $statementPeliculas->execute([$id]);
+            $this->pdo->commit();
 
             return true;
         } catch (Exception $e) {
+            $this->pdo->rollBack();
             throw new Exception("Error al eliminar la película: " . $e->getMessage());
         }
     }
@@ -42,21 +54,14 @@ class PeliculaDelete {
 
 $PeliculaDelete = new PeliculaDelete();
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    try {
-        if ($PeliculaDelete->eliminarPelicula($id)) {
-            header('Location: administrador_pelicula.php');
-            exit();
-        } else {
-            echo "Error al eliminar la película.";
-        }
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+try {
+    if ($PeliculaDelete->eliminarPelicula($id)) {
+        header('Location: administrador_pelicula.php');
+        exit();
+    } else {
+        echo "Error al eliminar la película.";
     }
-} else {
-    header('Location: administrador_pelicula.php');
-    exit();
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
 }
 ?>

@@ -172,7 +172,7 @@ class InfoPeliculaHandler
                     OR (h.fecha::date = :fecha_actual::date AND h.fecha::time >= :hora_actual::time)
                 )
             ORDER BY
-                h.fecha ASC"; // Ordenar por fecha ascendente
+                h.fecha ASC";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bindParam(':id', $id_pelicula, PDO::PARAM_INT);
@@ -185,7 +185,6 @@ class InfoPeliculaHandler
         $resultados[] = $horario;
     }
 
-    // Separar los horarios de hoy y los próximos días
     $horarios_hoy = [];
     $horarios_proximos_dias = [];
 

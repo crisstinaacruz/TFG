@@ -7,6 +7,13 @@ $statement = $pdo->prepare("SELECT * FROM horarios ORDER BY horario_id");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+if (isset($_POST['eliminar'])) {
+    $horario_id = $_POST['eliminar'];
+    $_SESSION['horario_id'] = $horario_id;
+    header('Location: delete_horario.php');
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -100,7 +107,7 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
         <thead class="thead-dark">
             <tr>
                 <th>Sala</th>  
-                <th>Pelicula</th>  
+                <th>Película</th>  
                 <th>Fecha</th>
                 <th>Filas</th>
                 <th>Columnas</th>
@@ -126,7 +133,9 @@ $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo $sala['filas']; ?></td>
                         <td><?php echo $sala['columnas']; ?></td>
                         <td>
-                            <a href="delete_horario.php?id=<?php echo $horario['horario_id']; ?>" class="btn btn-danger btn-sm mt-3">Eliminar</a>
+                        <form method="post">
+                            <button type="submit" class="btn btn-danger btn-sm mt-3" value="<?php echo $horario['horario_id']; ?>" name="eliminar">Eliminar</button>
+                        </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -31,7 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->clearAllRecipients();
         $mail->addAddress($email);
         $mail->Subject = 'Confirmación de Envio';
-        $mail->Body = 'Gracias por contactarnos. Nos pondremos en contacto contigo pronto.';
+        $mail->Body = "
+            <div style='font-family: Arial, sans-serif; color: #333;'>
+                <h2 style='color: #ff5860;'>Gracias por contactarnos</h2>
+                <p>Nos pondremos en contacto contigo pronto.</p>
+                <p>Saludos,<br>El equipo de Magic Cinema</p>
+            </div>
+        ";
         $mail->send();
 
     } catch (Exception $e) {

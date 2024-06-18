@@ -51,7 +51,6 @@ class ProcesarPago
 
         $reserva_id = $this->pdo->lastInsertId();
 
-        // Insertar asientos reservados
         $idsButacasArray = explode(',', $idsButacas);
         foreach ($idsButacasArray as $asiento_id) {
             $sql_asiento = "INSERT INTO reserva_asientos (reserva_id, asiento_id) VALUES (:reserva_id, :asiento_id)";
@@ -76,12 +75,11 @@ class ProcesarPago
     }
     public function getBarTitleById($bar_id)
     {
-        // Lógica para obtener el título del producto del bar por su ID
         $sql = "SELECT titulo FROM bar WHERE bar_id = :bar_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':bar_id', $bar_id, PDO::PARAM_INT);
         $stmt->execute();
-        $titulo_bar = $stmt->fetchColumn(); // Suponiendo que devuelve un solo valor (el título)
+        $titulo_bar = $stmt->fetchColumn();
         return $titulo_bar;
     }
 
@@ -219,7 +217,6 @@ if(isset($_POST['continuar'])) {
     $procesarPago->actualizarButacas($idsButacas);
     $reserva_id = $procesarPago->realizarReserva($idsButacas, $usuario_id, $bar_productos, $horario_id, $precio_final);
 
-    // Obtener información de los asientos después de realizar la reserva
     $idsButacasArray = explode(',', $idsButacas);
     $asientos_info = [];
     foreach ($idsButacasArray as $asiento_id) {
@@ -414,7 +411,7 @@ if(isset($_POST['continuar'])) {
         </ol>
         <div id="body">
             <div class="result-mod-wr">
-                <div class="datosDeLaOperacion">Datos de la operación <?php echo $titulo_pelicula; ?></div>
+                <div class="datosDeLaOperacion">Datos de la operación</div>
                 <div class="ticket-header">
                     <div class="price">
                         <div class="left">

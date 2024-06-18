@@ -22,7 +22,6 @@ class ProcesarPago
     {
         $idsButacasArray = explode(',', $idsButacas);
 
-        // Escapar y formatear los IDs para la consulta SQL
         $idsButacasArray = array_map(function ($id) {
             return intval($id);
         }, $idsButacasArray);

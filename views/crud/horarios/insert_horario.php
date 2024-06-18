@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
@@ -12,7 +11,7 @@ $sqlSala = "SELECT sala_id, filas, columnas FROM salas WHERE nombre = :sala";
 $stmtSala = $pdo->prepare($sqlSala);
 $stmtSala->bindParam(':sala', $sala, PDO::PARAM_STR);
 $stmtSala->execute();
-$sala = $stmtSala->fetch(PDO::FETCH_ASSOC); // Obtener el resultado como array asociativo
+$sala = $stmtSala->fetch(PDO::FETCH_ASSOC);
 
 $salaId = $sala['sala_id'];
 $filas = $sala['filas'];

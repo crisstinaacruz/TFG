@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <img src="../../assets/img/logo.png" alt="">
                             </a>
 
-                            <h4 style="color: #fff; font-family: \'Open Sans\', sans-serif;" class="mb-5">Código de Verificación</h4>
+                            <h4 style="color: #fff; font-family: \'Open Sans\', sans-serif;" class="mb-5">Código de verificación</h4>
 
                             <!-- Campo oculto para almacenar el ID de usuario -->
                             <input type="hidden" name="email" value="' . htmlspecialchars($email) . '">

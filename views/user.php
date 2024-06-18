@@ -8,7 +8,7 @@ if (!empty($_SESSION["usuario_id"])) {
         $conexion = ConnectDatabase::conectar();
 
         $consulta = $conexion->prepare("SELECT nombre, apellidos, email FROM usuarios WHERE usuario_id = :usuario_id");
-        $consulta->bindParam(':usuario_id', $_SESSION['usuario_id'], PDO::PARAM_STR); // Ajusta según el campo de la sesión que contiene el email
+        $consulta->bindParam(':usuario_id', $_SESSION['usuario_id'], PDO::PARAM_STR); 
         $consulta->execute();
 
         $resultado = $consulta->fetch(PDO::FETCH_ASSOC);

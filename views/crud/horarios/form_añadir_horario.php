@@ -1,9 +1,7 @@
 <?php
-session_start();
 include_once '../../../includes/config.php';
 $pdo = ConnectDatabase::conectar();
 
-// Obtener los resultados de la tabla horarios
 $statement = $pdo->prepare("SELECT titulo FROM peliculas");
 $statement->execute();
 $resultados = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -98,7 +96,6 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
                     <select class="form-select" name="sala" required>
         <?php
         foreach ($resultados2 as $sala) {
-            // Imprime cada opción en el formato correcto
             echo "<option value=\"{$sala['nombre']}\">{$sala['nombre']}</option>";
         }
         ?>
@@ -106,12 +103,11 @@ $resultados2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="mb-3">
-                <label for="pelicula" class="form-label">Pelicula:</label>
+                <label for="pelicula" class="form-label">Película:</label>
     <select class="form-select" name="pelicula" required>
 
         <?php
         foreach ($resultados as $pelicula) {
-            // Imprime cada opción en el formato correcto
             echo "<option value=\"{$pelicula['titulo']}\">{$pelicula['titulo']}</option>";
         }
         ?>
